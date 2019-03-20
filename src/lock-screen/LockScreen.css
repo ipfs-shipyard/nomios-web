@@ -1,0 +1,79 @@
+@import "@nomios/web-uikit/styles/colors";
+@import "@nomios/web-uikit/styles/mixins/typography";
+
+.lockscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #30433b;
+    user-select: none;
+
+    & .lockscreenContent {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        & .logo {
+            width: 10rem;
+            height: 10rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--color-white);
+            border-radius: 3.2rem;
+            color: var(--color-tan);
+        }
+
+        & .unlockTitle {
+            margin-top: 4rem;
+            margin-bottom: 3rem;
+            color: var(--color-tan);
+        }
+
+        & .unlockHint {
+            width: 40rem;
+            margin-top: 0;
+            margin-bottom: 8rem;
+            color: color(var(--color-white) alpha(0.7));
+        }
+
+        & .passwordInput {
+            width: 0;
+            height: 0;
+            margin: 0;
+            padding: 0;
+            border: none;
+        }
+
+        & .passwordDisplay {
+            height: 1rem;
+
+            & .passwordDot {
+                width: 1rem;
+                height: 1rem;
+                margin-right: 2rem;
+                display: inline-block;
+                border: none;
+                background-color: var(--color-tan);
+                border-radius: 0.5rem;
+
+                &:last-of-type {
+                    margin-right: 0;
+                }
+
+                &.passwordError {
+                    border: color(var(--color-white) alpha(0.6)) solid 0.1rem;
+                    background-color: transparent;
+                }
+            }
+        }
+    }
+}
