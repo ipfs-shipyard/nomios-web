@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import LockScreen from './lock-screen';
 import logo from './logo.svg';
 import styles from './App.css';
 
@@ -16,6 +17,7 @@ class App extends Component {
                         Learn React
                     </a>
                 </header>
+                <LockScreen />
             </div>
         );
     }
