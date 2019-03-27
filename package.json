@@ -28,8 +28,6 @@
     "release": "standard-version"
   },
   "dependencies": {
-    "@nomios/web-uikit": "^0.0.0",
-    "idm-wallet": "^0.0.0",
     "classnames": "^2.2.6",
     "lottie-react-web": "^2.1.4",
     "react-transition-group": "^2.6.1",
@@ -51,7 +49,7 @@
     "stylelint-config-moxy": "^5.0.0",
     "raw-loader": "^2.0.0",
     "svg-css-modules-loader": "^1.6.1",
-    "svg-loader": "^2.2.0"
+    "svgo-loader": "^2.2.0"
   },
   "husky": {
     "hooks": {

@@ -1,0 +1,62 @@
+.WalletContent {
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    flex-direction: row;
+    font-family: "Times New Roman", Times, serif;
+
+    text-align: start;
+}
+
+.WalletContent .leftBar {
+    flex-basis: 60px;
+}
+
+.WalletContent .container {
+    flex-grow: 1;
+}
+
+.WalletContent .container .top {
+    height: 40vh;
+    overflow: hidden;
+    background-color: #f3ece5;
+}
+
+.WalletContent .container .top .timer {
+    margin: 20px;
+    font-size: 100px;
+}
+
+.WalletContent .container .top .timer::before {
+    content: "Current Session:";
+    display: block;
+    font-size: 30px;
+}
+
+.WalletContent .container .bottom {
+    height: 60vh;
+    overflow: hidden;
+    display: flex;
+    background-color: #334a43;
+    color: rgb(201, 213, 210);
+}
+
+.WalletContent .container .bottom .section {
+    box-sizing: border-box;
+    max-width: 500px;
+    padding: 30px;
+    flex-grow: 1;
+}
+
+.WalletContent .container .bottom .section .content {
+    border: 1px solid rgb(201, 213, 210);
+}
+
+.WalletContent .container .bottom .section .content .option {
+    margin: 20px;
+}
+
+.WalletContent .container .bottom .section .content .option > * {
+    margin: 0 10px;
+}
