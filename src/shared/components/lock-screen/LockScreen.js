@@ -85,20 +85,26 @@ class LockScreen extends Component {
         default:
             if ((event.code.includes('Digit') || event.code.includes('Key') || event.code === 'Backspace') && this.state.feedback === 'error') {
                 this.passwordInputRef.current.value = '';
-                this.setState({ feedback: 'none' });
+
+                if (event.code === 'Backspace') {
+                    this.setState({ passwordLength: event.target.value.length, feedback: 'none' });
+                } else {
+                    this.setState({ feedback: 'none' });
+                }
             }
             break;
         }
     };
 
     handleMouseClick = () => {
-        console.log('this.passwordInputRef.current', this.passwordInputRef.current);
         this.passwordInputRef.current.focus();
     };
 
     handleSubmission = () => {
         const { locker } = this.props;
         const password = this.passwordInputRef.current.value;
+
+        this.setState({ feedback: 'loading' });
 
         locker.getLock(LOCK_TYPE).unlock(password)
         .catch(() => this.setState({ feedback: 'error' }));
