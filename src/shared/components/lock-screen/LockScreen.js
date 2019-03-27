@@ -91,20 +91,29 @@ class LockScreen extends Component {
         const animationDelay = feedback === 'loading' ? -0.1 : 0;
 
         return (
-            <div className={ styles.passwordDisplay }>
-                <TransitionGroup component={ null }>
-                    {
-                        Array(passwordLength).fill(0)
-                        .map((val, i) => (
-                            <CSSTransition classNames={ passwordDotsClassNames } key={ passwordLength - i } timeout={ 50 }>
-                                <div className={ passwordClassName } style={ { animationDelay: `${animationDelay * i}s` } } />
-                            </CSSTransition>
-                        ))
-                    }
-                </TransitionGroup>
-                { passwordLength === 0 &&
-                    <div className={ styles.cursor } />
-                }
+            <div className={ styles.lockscreen } onClick={ this.handleMouseClick }>
+                <div className={ styles.lockscreenContent }>
+                    <div className={ styles.logo }>logo</div>
+                    <h2 className={ styles.unlockTitle }>Unlock Nomios</h2>
+                    <p className={ styles.unlockHint }>Enter your passphrase to unlock Nomios and get access to all your data</p>
+                    <input type="password" name="lockerKey" className={ styles.passwordInput } ref={ this.passwordInputRef } onChange={ this.handlePasswordChange } disabled={ feedback === 'loading' } />
+                    <div className={ styles.passwordDisplay }>
+                        <TransitionGroup component={ null }>
+                            {
+                                Array(passwordLength).fill(0)
+                                .map((val, i) => (
+                                    <CSSTransition classNames={ styles.passwordDot } key={ passwordLength - i } component={ null } timeout={ 50 }>
+                                        <div className={ passwordClassName } style={ { animationDelay: `${animationDelay * i}s` } } />
+                                    </CSSTransition>
+                                ))
+                            }
+                        </TransitionGroup>
+                        { passwordLength === 0 &&
+                            <div className={ styles.cursor } />
+                        }
+                    </div>
+                    { feedback === 'error' && <p className={ styles.errorMessage }>The passphrase you entered does not match the saved passphrase. Please try again.</p> }
+                </div>
             </div>
         );
     };
