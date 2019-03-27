@@ -53,7 +53,11 @@ class LockScreen extends Component {
                                 ))
                             }
                         </TransitionGroup>
+                        { passwordLength === 0 &&
+                            <div className={ styles.cursor } />
+                        }
                     </div>
+                    { feedback === 'error' && <p className={ styles.errorMessage }>The passphrase you entered does not match the saved passphrase. Please try again.</p> }
                 </div>
             </div>
         );
