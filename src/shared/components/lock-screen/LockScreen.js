@@ -92,7 +92,7 @@ class LockScreen extends Component {
 
         return (
             <div className={ styles.lockscreen } onClick={ this.handleMouseClick }>
-                <CSSTransition classNames={ styles.lockscreenContent } in={ !unmounting } appear component={ null } timeout={ 1000 }>
+                <CSSTransition classNames={ styles.lockscreenContent } in={ !unmounting } appear component={ null } timeout={ 1500 }>
                     <div className={ styles.lockscreenContent }>
                         <div className={ styles.logo }>logo</div>
                         <h2 className={ styles.unlockTitle }>Unlock Nomios</h2>
