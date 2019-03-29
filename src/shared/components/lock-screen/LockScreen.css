@@ -15,12 +15,78 @@
     background-color: #30433b;
     user-select: none;
 
+    &:global(-enter) {
+        opacity: 0;
+
+        &:global(-active) {
+            opacity: 1;
+            transition: opacity 1s ease-in-out;
+        }
+    }
+
     & .lockscreenContent {
         position: relative;
+        transform: translateY(0);
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        opacity: 1;
+
+        &.mounted {
+            transform: translateY(0);
+            opacity: 1;
+            transition: all 0.5s ease-in-out 0.2s;
+        }
+
+        &:global(-appear) {
+            transform: translateY(10rem);
+            opacity: 0;
+
+            &:global(-active) {
+                transform: translateY(0);
+                opacity: 1;
+                transition: all 0.5s ease-in-out 0.2s;
+            }
+
+        }
+
+        &:global(-exit) {
+            & .unlockHint {
+                opacity: 1;
+            }
+
+            & .passwordDisplay {
+                opacity: 1;
+            }
+
+            &:global(-active) {
+                transform: translateY(25%);
+                transition: transform 0.5s ease-in-out;
+
+                & .unlockHint {
+                    opacity: 0;
+                    transition: opacity 0.5s linear;
+                }
+
+                & .passwordDisplay {
+                    opacity: 0;
+                    transition: opacity 0.5s linear;
+                }
+            }
+
+            &:global(-done) {
+                transform: translateY(25%);
+
+                & .unlockHint {
+                    opacity: 0;
+                }
+
+                & .passwordDisplay {
+                    opacity: 0;
+                }
+            }
+        }
 
         & .logo {
             width: 10rem;

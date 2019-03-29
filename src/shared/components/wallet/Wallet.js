@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
 
 import createWallet from 'idm-wallet';
+import { CSSTransition } from 'react-transition-group';
 
 import WalletContent from './wallet-content/WalletContent';
 import SetupLocker from '../setup-locker/SetupLocker';
 import LockScreen from '../lock-screen';
 
+import styles from './Wallet.css';
+
 class Wallet extends Component {
+    getLock = undefined;
+
     state = {
         wallet: undefined,
     };
@@ -14,6 +19,7 @@ class Wallet extends Component {
     componentDidMount() {
         createWallet().then((wallet) => {
             wallet.locker.onLockedChange(this.handleLockedChanged);
+            this.getLock = wallet.locker.getLock.bind(wallet.locker);
 
             this.setState({ wallet });
         });
@@ -37,11 +43,18 @@ class Wallet extends Component {
             return <SetupLocker locker={ locker } onComplete={ this.handleSetupLockerComplete } />;
         }
 
-        if (locker.isLocked()) {
-            return <LockScreen locker={ locker } />;
-        }
+        const isLocked = locker.isLocked();
 
-        return <WalletContent wallet={ wallet } />;
+        return (
+            <div>
+                <CSSTransition classNames={ styles.appScreen } in={ isLocked } mountOnEnter unmountOnExit component={ null } timeout={ 1500 }>
+                    <LockScreen getLock={ this.getLock } unmounting={ !isLocked } />
+                </CSSTransition>
+                <CSSTransition classNames={ styles.appScreen } in={ !isLocked } mountOnEnter unmountOnExit component={ null } timeout={ 1500 }>
+                    <WalletContent wallet={ wallet } />
+                </CSSTransition>
+            </div>
+        );
     };
 
     unlockWallet = (lockType, challenge) => {

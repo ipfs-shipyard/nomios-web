@@ -23,10 +23,14 @@ class LockScreen extends Component {
 
         input.focus();
         input.addEventListener('keydown', this.handleKeyboardInput);
+
+        this.mounted = false;
+        this.forceUpdate();
     }
 
     render() {
         const { passwordLength, feedback } = this.state;
+        const { unmounting } = this.props;
         const passwordClassName = classNames(
             styles.passwordDot,
             feedback === 'loading' && styles.loading,
@@ -37,28 +41,30 @@ class LockScreen extends Component {
 
         return (
             <div className={ styles.lockscreen } onClick={ this.handleMouseClick }>
-                <div className={ styles.lockscreenContent }>
-                    <div className={ styles.logo }>logo</div>
-                    <h2 className={ styles.unlockTitle }>Unlock Nomios</h2>
-                    <p className={ styles.unlockHint }>Enter your passphrase to unlock Nomios and get access to all your data</p>
-                    <input type="password" name="lockerKey" className={ styles.passwordInput } ref={ this.passwordInputRef } onChange={ this.handlePasswordChange } disabled={ feedback === 'loading' } />
-                    <div className={ styles.passwordDisplay }>
-                        <TransitionGroup component={ null }>
-                            {
-                                Array(passwordLength).fill(0)
-                                .map((val, i) => (
-                                    <CSSTransition classNames={ styles.passwordDot } key={ passwordLength - i } component={ null } timeout={ 50 }>
-                                        <div className={ passwordClassName } style={ { animationDelay: `${animationDelay * i}s` } } />
-                                    </CSSTransition>
-                                ))
+                <CSSTransition classNames={ styles.lockscreenContent } in={ !unmounting } appear component={ null } timeout={ 1000 }>
+                    <div className={ styles.lockscreenContent }>
+                        <div className={ styles.logo }>logo</div>
+                        <h2 className={ styles.unlockTitle }>Unlock Nomios</h2>
+                        <p className={ styles.unlockHint }>Enter your passphrase to unlock Nomios and get access to all your data</p>
+                        <input type="password" name="getLockKey" className={ styles.passwordInput } ref={ this.passwordInputRef } onChange={ this.handlePasswordChange } disabled={ feedback === 'loading' } />
+                        <div className={ styles.passwordDisplay }>
+                            <TransitionGroup component={ null }>
+                                {
+                                    Array(passwordLength).fill(0)
+                                    .map((val, i) => (
+                                        <CSSTransition classNames={ styles.passwordDot } key={ passwordLength - i } component={ null } timeout={ 50 }>
+                                            <div className={ passwordClassName } style={ { animationDelay: `${animationDelay * i}s` } } />
+                                        </CSSTransition>
+                                    ))
+                                }
+                            </TransitionGroup>
+                            { passwordLength === 0 &&
+                                <div className={ styles.cursor } />
                             }
-                        </TransitionGroup>
-                        { passwordLength === 0 &&
-                            <div className={ styles.cursor } />
-                        }
+                        </div>
+                        { feedback === 'error' && <p className={ styles.errorMessage }>The passphrase you entered does not match the saved passphrase. Please try again.</p> }
                     </div>
-                    { feedback === 'error' && <p className={ styles.errorMessage }>The passphrase you entered does not match the saved passphrase. Please try again.</p> }
-                </div>
+                </CSSTransition>
             </div>
         );
     }
@@ -101,18 +107,23 @@ class LockScreen extends Component {
     };
 
     handleSubmission = () => {
-        const { locker } = this.props;
+        const { getLock } = this.props;
         const password = this.passwordInputRef.current.value;
 
         this.setState({ feedback: 'loading' });
 
-        locker.getLock(LOCK_TYPE).unlock(password)
+        getLock(LOCK_TYPE).unlock(password)
         .catch(() => this.setState({ feedback: 'error' }));
     };
 }
 
 LockScreen.propTypes = {
-    locker: PropTypes.object.isRequired,
+    getLock: PropTypes.func.isRequired,
+    unmounting: PropTypes.bool,
+};
+
+LockScreen.defaultProps = {
+    unmounting: false,
 };
 
 export default LockScreen;
