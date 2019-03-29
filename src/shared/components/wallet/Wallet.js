@@ -47,12 +47,12 @@ class Wallet extends Component {
 
         return (
             <div>
-                <CSSTransition classNames={ styles.appScreen } in={ isLocked } mountOnEnter unmountOnExit component={ null } timeout={ 1500 }>
+                <CSSTransition classNames={ styles.appScreen } in={ isLocked } mountOnEnter unmountOnExit component={ null } timeout={ 2000 }>
                     <LockScreen getLock={ this.getLock } unmounting={ !isLocked } />
                 </CSSTransition>
-                <CSSTransition classNames={ styles.appScreen } in={ !isLocked } mountOnEnter unmountOnExit component={ null } timeout={ 1500 }>
+                { !isLocked &&
                     <WalletContent wallet={ wallet } />
-                </CSSTransition>
+                }
             </div>
         );
     };

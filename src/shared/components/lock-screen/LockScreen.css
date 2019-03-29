@@ -52,6 +52,10 @@
         }
 
         &:global(-exit) {
+            & .unlockTitle {
+                opacity: 1;
+            }
+
             & .unlockHint {
                 opacity: 1;
             }
@@ -63,6 +67,11 @@
             &:global(-active) {
                 transform: translateY(25%);
                 transition: transform 0.5s ease-in-out;
+
+                & .unlockTitle {
+                    opacity: 0;
+                    transition: opacity 0.5s linear 1s;
+                }
 
                 & .unlockHint {
                     opacity: 0;
@@ -77,6 +86,10 @@
 
             &:global(-done) {
                 transform: translateY(25%);
+
+                & .unlockTitle {
+                    opacity: 0;
+                }
 
                 & .unlockHint {
                     opacity: 0;

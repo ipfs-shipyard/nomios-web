@@ -13,7 +13,7 @@
 
         &:global(-active) {
             opacity: 0.01;
-            transition: opacity 0.5s ease-in-out 1s;
+            transition: opacity 0.5s ease-in-out 1.5s;
         }
     }
 }
