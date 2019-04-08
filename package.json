@@ -1,5 +1,22 @@
 {
   "name": "nomios-web",
+  "description": "Codebase for the web version of Nomios, a reference implementation of the IDM Wallet UI",
+  "homepage": "https://github.com/ipfs-shipyard/nomios-web#readme",
+  "author": "Pedro Santos <pedro.santos@moxy.studio>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ipfs-shipyard/nomios-web.git"
+  },
+  "keywords": [
+    "nomios",
+    "idm",
+    "wallet",
+    "www",
+    "web",
+    "decentralized",
+    "identity"
+  ],
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -7,19 +24,18 @@
     "build": "craco build",
     "test": "exit 0",
     "lint": "eslint --ignore-path .gitignore . && stylelint --ignore-path .gitignore \"**/*.css\"",
-    "prerelease": "npm t && npm run lint",
-    "release": "standard-version",
-    "eject": "react-scripts eject"
+    "prerelease": "npm t && npm run lint && npm run build",
+    "release": "standard-version"
   },
   "dependencies": {
-    "@craco/craco": "^3.5.0",
-    "@jackwilsdon/craco-use-babelrc": "^1.0.0",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
     "react-scripts": "2.1.8"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^7.5.0",
+    "@craco/craco": "^3.5.0",
+    "@jackwilsdon/craco-use-babelrc": "^1.0.0",
     "babel-preset-moxy": "^3.0.4",
     "commitlint": "^7.5.2",
     "eslint-config-moxy": "^7.0.1",
@@ -30,12 +46,6 @@
     "stylelint": "^9.10.1",
     "stylelint-config-moxy": "^5.0.0"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
