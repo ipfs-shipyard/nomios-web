@@ -13,7 +13,7 @@ module.exports = {
         {
             plugin: {
                 overrideWebpackConfig: ({ webpackConfig, context: { env } }) => {
-                    const options = {
+                    const newModuleCssRule = {
                         test: /\.css$/,
                         include: [
                             path.resolve('src'),
@@ -39,11 +39,11 @@ module.exports = {
                     );
 
                     // Update .module.css files rule
-                    moduleCssRule.test = options.test;
-                    moduleCssRule.include = options.include;
+                    moduleCssRule.test = newModuleCssRule.test;
+                    moduleCssRule.include = newModuleCssRule.include;
 
                     // Update .css files rule
-                    cssRule.exclude = options.include;
+                    cssRule.exclude = newModuleCssRule.include;
 
                     return webpackConfig;
                 },
