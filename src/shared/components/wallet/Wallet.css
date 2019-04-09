@@ -1,19 +1,28 @@
-.appScreen {
-    &:global(-enter) {
-        opacity: 0.01;
 
-        &:global(-active) {
-            opacity: 1;
-            transition: opacity 0.5s ease-in-out;
-        }
-    }
+.parent {
+    width: 100vw;
+    min-width: 102.4rem;
+    height: 100vh;
+    min-height: 70rem;
+    overflow: auto;
 
-    &:global(-exit) {
-        opacity: 1;
-
-        &:global(-active) {
+    & .appScreen {
+        &:global(-enter) {
             opacity: 0.01;
-            transition: opacity 0.5s ease-in-out 1.5s;
+
+            &:global(-active) {
+                opacity: 1;
+                transition: opacity 0.5s ease-in-out;
+            }
+        }
+
+        &:global(-exit) {
+            opacity: 1;
+
+            &:global(-active) {
+                opacity: 0.01;
+                transition: opacity 0.5s ease-in-out 1.3s;
+            }
         }
     }
 }
