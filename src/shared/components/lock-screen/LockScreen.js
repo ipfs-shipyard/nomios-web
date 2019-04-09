@@ -50,7 +50,6 @@ class LockScreen extends Component {
                 <CSSTransition classNames={ styles.lockscreenContent } in={ !unmounting } appear component={ null } timeout={ 1500 }>
                     <div className={ styles.lockscreenContent }>
                         <div className={ styles.logo }>
-                            {/* <Logo variant="symbol" className={ styles.svg } />*/}
                             <Lottie options={ this.animationOptions } className={ styles.svg } isPaused={ !startLogoAnimation } />
                         </div>
                         <h2 className={ styles.unlockTitle }>Unlock Nomios</h2>

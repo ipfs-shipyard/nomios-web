@@ -2,7 +2,7 @@
 @import "@nomios/web-uikit/styles/mixins/typography";
 
 .lockscreen {
-    position: relative;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -37,7 +37,8 @@
     & .lockscreenContent {
         position: relative;
         max-width: 85%;
-        overflow: hidden;
+        overflow-x: hidden;
+        overflow-x: visible;
         transform: translateY(0);
         display: flex;
         flex-direction: column;

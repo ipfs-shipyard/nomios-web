@@ -1,5 +1,6 @@
 
 .parent {
+    position: relative;
     width: 100vw;
     min-width: 102.4rem;
     height: 100vh;
