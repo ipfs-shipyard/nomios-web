@@ -53,13 +53,13 @@ class Wallet extends Component {
         const isLocked = locker.isLocked();
 
         return (
-            <div>
-                <CSSTransition classNames={ styles.appScreen } in={ isLocked } mountOnEnter unmountOnExit component={ null } timeout={ 2000 }>
+            <div className={ styles.parent }>
+                <CSSTransition classNames={ styles.appScreen } in={ isLocked } mountOnEnter unmountOnExit component={ null } timeout={ 1800 }>
                     <LockScreen getLock={ this.getLock } unmounting={ !isLocked } />
                 </CSSTransition>
-                { !isLocked &&
+                <CSSTransition in={ !isLocked } mountOnEnter unmountOnExit component={ null } timeout={ 2000 }>
                     <WalletContent wallet={ wallet } />
-                }
+                </CSSTransition>
             </div>
         );
     };

@@ -92,11 +92,15 @@ class LockScreen extends Component {
 
         return (
             <div className={ styles.lockscreen } onClick={ this.handleMouseClick }>
+                <div className={ styles.background } dangerouslySetInnerHTML={ { __html: background } } />
                 <CSSTransition classNames={ styles.lockscreenContent } in={ !unmounting } appear component={ null } timeout={ 1500 }>
                     <div className={ styles.lockscreenContent }>
-                        <div className={ styles.logo }>logo</div>
+                        <div className={ styles.logo }>
+                            {/* <Logo variant="symbol" className={ styles.svg } />*/}
+                            <Lottie options={ this.animationOptions } className={ styles.svg } isPaused={ !startLogoAnimation } />
+                        </div>
                         <h2 className={ styles.unlockTitle }>Unlock Nomios</h2>
-                        <p className={ styles.unlockHint }>Enter your passphrase to unlock Nomios and get access to all your data</p>
+                        <p className={ styles.unlockHint } onTransitionEnd={ this.handleTransitionEnd }>Enter your passphrase to unlock Nomios and get access to all your data</p>
                         <input type="password" name="getLockKey" className={ styles.passwordInput } ref={ this.passwordInputRef } onChange={ this.handlePasswordChange } disabled={ feedback === 'loading' } />
                         <div className={ styles.passwordDisplay }>
                             <TransitionGroup component={ null }>
