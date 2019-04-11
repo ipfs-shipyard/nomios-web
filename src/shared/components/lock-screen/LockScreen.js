@@ -52,47 +52,6 @@ class LockScreen extends Component {
         return (
             <div className={ styles.lockscreen } onClick={ this.handleMouseClick }>
                 <div className={ styles.background } dangerouslySetInnerHTML={ { __html: background } } />
-                <CSSTransition classNames={ lockscreenContentClassNames } in={ !unmounting } appear component={ null } timeout={ 1500 }>
-                    <div className={ styles.lockscreenContent }>
-                        <div className={ styles.logo }>
-                            <Lottie options={ this.animationOptions } className={ styles.svg } isPaused={ !startLogoAnimation } />
-                        </div>
-                        <h2 className={ styles.unlockTitle }>Unlock Nomios</h2>
-                        <p className={ styles.unlockHint } onTransitionEnd={ this.handleTransitionEnd }>
-                            Enter your passphrase to unlock Nomios and get access to all your data
-                        </p>
-                        <input type="password"
-                            name="getLockKey"
-                            className={ styles.passwordInput }
-                            ref={ this.passwordInputRef }
-                            onChange={ this.handlePasswordChange }
-                            disabled={ feedback === 'loading' } />
-                        { this.renderPasswordDots() }
-                        { feedback === 'error' &&
-                            <p className={ styles.errorMessage }>
-                                The passphrase you entered does not match the saved passphrase. Please try again.
-                            </p>
-                        }
-                    </div>
-                </CSSTransition>
-            </div>
-        );
-    }
-
-    renderPasswordDots = () => {
-        const { passwordLength, feedback } = this.state;
-        const { unmounting } = this.props;
-        const passwordClassName = classNames(
-            styles.passwordDot,
-            feedback === 'loading' && styles.loading,
-            feedback === 'error' && styles.error
-        );
-
-        const animationDelay = feedback === 'loading' ? -0.1 : 0;
-
-        return (
-            <div className={ styles.lockscreen } onClick={ this.handleMouseClick }>
-                <div className={ styles.background } dangerouslySetInnerHTML={ { __html: background } } />
                 <CSSTransition classNames={ styles.lockscreenContent } in={ !unmounting } appear component={ null } timeout={ 1500 }>
                     <div className={ styles.lockscreenContent }>
                         <div className={ styles.logo }>
@@ -104,26 +63,42 @@ class LockScreen extends Component {
                         </p>
                         <input type="password" name="getLockKey" className={ styles.passwordInput }
                             ref={ this.passwordInputRef } onChange={ this.handlePasswordChange } disabled={ feedback === 'loading' } />
-                        <div className={ styles.passwordDisplay }>
-                            <TransitionGroup component={ null }>
-                                {
-                                    Array(passwordLength).fill(0)
-                                    .map((val, i) => (
-                                        <CSSTransition classNames={ styles.passwordDot } key={ passwordLength - i } timeout={ 50 }>
-                                            <div className={ passwordClassName } style={ { animationDelay: `${animationDelay * i}s` } } />
-                                        </CSSTransition>
-                                    ))
-                                }
-                            </TransitionGroup>
-                            { passwordLength === 0 &&
-                                <div className={ styles.cursor } />
-                            }
-                        </div>
+                        { this.renderPasswordDots() }
                         { feedback === 'error' && <p className={ styles.errorMessage }>
                             The passphrase you entered does not match the saved passphrase. Please try again.
                         </p> }
                     </div>
                 </CSSTransition>
+            </div>
+        );
+    }
+
+    renderPasswordDots = () => {
+        const { passwordLength, feedback } = this.state;
+
+        const passwordClassName = classNames(
+            styles.passwordDot,
+            feedback === 'loading' && styles.loading,
+            feedback === 'error' && styles.error
+        );
+
+        const animationDelay = feedback === 'loading' ? -0.1 : 0;
+
+        return (
+            <div className={ styles.passwordDisplay }>
+                <TransitionGroup component={ null }>
+                    {
+                        Array(passwordLength).fill(0)
+                        .map((val, i) => (
+                            <CSSTransition classNames={ styles.passwordDot } key={ passwordLength - i } timeout={ 50 }>
+                                <div className={ passwordClassName } style={ { animationDelay: `${animationDelay * i}s` } } />
+                            </CSSTransition>
+                        ))
+                    }
+                </TransitionGroup>
+                { passwordLength === 0 &&
+                    <div className={ styles.cursor } />
+                }
             </div>
         );
     };
