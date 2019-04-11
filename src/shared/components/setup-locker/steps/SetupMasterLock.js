@@ -39,16 +39,16 @@ class SetupMasterLock extends Component {
 
         return (
             <div>
-                <span>⛔️ Passphrase is not strong enough ⛔️</span>
+                <span> Passphrase is not strong enough </span>
                 { validation.warning &&
                     <div>
-                        <h4>Warning ⚠️</h4>
+                        <h4>Warning </h4>
                         <div>{ validation.warning.message }</div>
                     </div>
                 }
                 { validation.suggestions.length > 0 &&
                     <div>
-                        <h4>Suggestions 📖</h4>
+                        <h4>Suggestions</h4>
                         { validation.suggestions.map((suggestion, index) => <div key={ index }>{ suggestion.message }</div>)}
                     </div>
                 }
