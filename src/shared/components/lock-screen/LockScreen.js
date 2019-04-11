@@ -53,14 +53,17 @@ class LockScreen extends Component {
                             <Lottie options={ this.animationOptions } className={ styles.svg } isPaused={ !startLogoAnimation } />
                         </div>
                         <h2 className={ styles.unlockTitle }>Unlock Nomios</h2>
-                        <p className={ styles.unlockHint } onTransitionEnd={ this.handleTransitionEnd }>Enter your passphrase to unlock Nomios and get access to all your data</p>
-                        <input type="password" name="getLockKey" className={ styles.passwordInput } ref={ this.passwordInputRef } onChange={ this.handlePasswordChange } disabled={ feedback === 'loading' } />
+                        <p className={ styles.unlockHint } onTransitionEnd={ this.handleTransitionEnd }>
+                            Enter your passphrase to unlock Nomios and get access to all your data
+                        </p>
+                        <input type="password" name="getLockKey" className={ styles.passwordInput }
+                            ref={ this.passwordInputRef } onChange={ this.handlePasswordChange } disabled={ feedback === 'loading' } />
                         <div className={ styles.passwordDisplay }>
                             <TransitionGroup component={ null }>
                                 {
                                     Array(passwordLength).fill(0)
                                     .map((val, i) => (
-                                        <CSSTransition classNames={ styles.passwordDot } key={ passwordLength - i } component={ null } timeout={ 50 }>
+                                        <CSSTransition classNames={ styles.passwordDot } key={ passwordLength - i } timeout={ 50 }>
                                             <div className={ passwordClassName } style={ { animationDelay: `${animationDelay * i}s` } } />
                                         </CSSTransition>
                                     ))
@@ -70,16 +73,16 @@ class LockScreen extends Component {
                                 <div className={ styles.cursor } />
                             }
                         </div>
-                        { feedback === 'error' && <p className={ styles.errorMessage }>The passphrase you entered does not match the saved passphrase. Please try again.</p> }
+                        { feedback === 'error' && <p className={ styles.errorMessage }>
+                            The passphrase you entered does not match the saved passphrase. Please try again.
+                        </p> }
                     </div>
                 </CSSTransition>
             </div>
         );
     }
 
-    handlePasswordChange = (event) => {
-        this.setState({ passwordLength: event.target.value.length });
-    };
+    handlePasswordChange = (event) => this.setState({ passwordLength: event.target.value.length });
 
     handleKeyboardInput = (event) => {
         switch (event.code) {
@@ -100,7 +103,8 @@ class LockScreen extends Component {
             this.passwordInputRef.current.focus();
             break;
         default:
-            if ((event.code.includes('Digit') || event.code.includes('Key') || event.code === 'Backspace') && this.state.feedback === 'error') {
+            if ((event.code.includes('Digit') || event.code.includes('Key') || event.code === 'Backspace') &&
+                this.state.feedback === 'error') {
                 this.passwordInputRef.current.value = '';
 
                 if (event.code === 'Backspace') {
@@ -113,9 +117,7 @@ class LockScreen extends Component {
         }
     };
 
-    handleMouseClick = () => {
-        this.passwordInputRef.current.focus();
-    };
+    handleMouseClick = () => this.passwordInputRef.current.focus();
 
     handleSubmission = () => {
         const { getLock } = this.props;
@@ -127,11 +129,7 @@ class LockScreen extends Component {
         .catch(() => this.setState({ feedback: 'error' }));
     };
 
-    handleTransitionEnd = () => {
-        this.setState({
-            startLogoAnimation: true,
-        });
-    };
+    handleTransitionEnd = () => this.setState({ startLogoAnimation: true });
 }
 
 LockScreen.propTypes = {
