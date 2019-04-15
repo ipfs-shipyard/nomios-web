@@ -21,6 +21,7 @@ class Wallet extends Component {
 
     state = {
         wallet: undefined,
+        isPristine: true,
     };
 
     componentDidMount() {
@@ -28,7 +29,7 @@ class Wallet extends Component {
             wallet.locker.onLockedChange(this.handleLockedChanged);
             this.getLock = wallet.locker.getLock.bind(wallet.locker);
 
-            this.setState({ wallet });
+            this.setState({ wallet, isPristine: wallet.locker.isPristine() });
         });
     }
 
@@ -43,12 +44,12 @@ class Wallet extends Component {
     }
 
     renderWallet = () => {
-        const { wallet } = this.state;
+        const { wallet, isPristine } = this.state;
         const { locker } = wallet;
 
-        if (locker.isPristine()) {
-            return <SetupLocker locker={ locker } onComplete={ this.handleSetupLockerComplete } />;
-        }
+        // if (locker.isPristine()) {
+        //     return <SetupLocker locker={ locker } onComplete={ this.handleSetupLockerComplete } />;
+        // }
 
         const isLocked = locker.isLocked();
 
@@ -59,6 +60,7 @@ class Wallet extends Component {
                     <LockScreen getLock={ this.getLock } unmounting={ !isLocked } />
                 </CSSTransition>
                 <WalletContent wallet={ wallet } />
+                <SetupLocker locker={ locker } isOpen={ isPristine } onComplete={ this.handleSetupLockerComplete } />
             </div>
         );
     };
@@ -74,7 +76,7 @@ class Wallet extends Component {
     };
 
     handleSetupLockerComplete = () => {
-        this.forceUpdate();
+        this.setState({ isPristine: this.state.wallet.locker.isPristine() });
     };
 }
 

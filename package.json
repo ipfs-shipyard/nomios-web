@@ -30,10 +30,10 @@
   "dependencies": {
     "classnames": "^2.2.6",
     "lottie-react-web": "^2.1.4",
-    "react-transition-group": "^2.6.1",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
-    "react-scripts": "2.1.8"
+    "react-scripts": "2.1.8",
+    "react-transition-group": "^2.6.1"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^7.5.0",

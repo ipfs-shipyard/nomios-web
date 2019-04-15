@@ -40,42 +40,58 @@ module.exports = {
         {
             plugin: {
                 overrideWebpackConfig: ({ webpackConfig, context: { env } }) => {
+                    // Find 'oneOf' rule of the CRA config, which contains all the rules of files
+                    const oneOfRule = webpackConfig.module.rules.find((rule) => rule.oneOf);
+
+                    if (!oneOfRule) {
+                        throw new Error(`'oneOf' rule not found under module.rules in the ${env} webpack config`);
+                    }
+
+                    // Find .module.css files rule and remove it
+                    // We will later add it before the generic `css` one
+                    const moduleCssRuleIndex = oneOfRule.oneOf.findIndex(
+                        (rule) => rule.test && rule.test.toString().includes('\\.module\\.css')
+                    );
+                    const moduleCssRule = oneOfRule.oneOf[moduleCssRuleIndex];
+
+                    if (!moduleCssRule) {
+                        throw new Error('Could not find \'.module.css\'  rule in \'oneOf\' set of rules');
+                    }
+
+                    oneOfRule.oneOf.splice(moduleCssRuleIndex, 1);
+
+                    // Find generic `css` rule add the newModuleCssRule before it
+                    // Aso remove the `exclude` of the generic `css` rule because it's no longer necessary
+                    const cssRuleIndex = oneOfRule.oneOf.findIndex(
+                        (rule) => rule.test && rule.test.toString().startsWith('/\\.css')
+                    );
+                    const cssRule = oneOfRule.oneOf[cssRuleIndex];
+
+                    if (!cssRule) {
+                        throw new Error('Could not find \'.css\'  rule in \'oneOf\' set of rules');
+                    }
+
+                    delete cssRule.exclude;
+
                     const newModuleCssRule = {
                         test: /\.css$/,
                         include: [
                             path.resolve('src'),
                             fs.realpathSync('node_modules/@nomios/web-uikit'),
                         ],
+                        exclude: [
+                            fs.realpathSync('node_modules/@nomios/web-uikit/node_modules'),
+                        ],
+                        use: moduleCssRule.use,
                     };
 
-                    // Find 'oneOf' rule
-                    const oneOfRule = webpackConfig.module.rules.find((rule) => rule.oneOf);
-
-                    // Throw an error if 'oneOf' rule is not found
-                    if (!oneOfRule) {
-                        throw new Error(`'oneOf' rule not found under module.rules in the ${env} webpack config`);
-                    }
-
-                    // Find .module.css files rule
-                    const moduleCssRule = oneOfRule.oneOf.find(
-                        (rule) => rule.test && rule.test.toString().includes('.module')
-                    );
-                    // Find .css files rule
-                    const cssRule = oneOfRule.oneOf.find(
-                        (rule) => rule.test && rule.test.toString().includes('.css') && !rule.test.toString().includes('.module')
-                    );
-
-                    // Update .module.css files rule
-                    moduleCssRule.test = newModuleCssRule.test;
-                    moduleCssRule.include = newModuleCssRule.include;
-
-                    // Update .css files rule
-                    cssRule.exclude = newModuleCssRule.include;
+                    oneOfRule.oneOf.splice(cssRuleIndex, 0, newModuleCssRule);
 
                     return webpackConfig;
                 },
             },
         },
+
         // Setup loader for svg files
         {
             plugin: {
