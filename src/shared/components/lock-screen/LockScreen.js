@@ -31,21 +31,6 @@ class LockScreen extends Component {
         loop: false,
     };
 
-    lockscreenContentClassNames = {
-        appear: styles.lockscreenContentAppear,
-        appearActive: styles.lockscreenContentAppearActive,
-        exit: styles.lockscreenContentExit,
-        exitActive: styles.lockscreenContentExitActive,
-        exitDone: styles.lockscreenContentExitDone,
-    };
-
-    passwordDotsClassNames = {
-        enter: styles.passwordDotEnter,
-        enterActive: styles.passwordDotEnterActive,
-        exit: styles.passwordDotExit,
-        exitActive: styles.passwordDotExitActive,
-    };
-
     state = {
         passwordLength: 0,
         feedback: 'none',
@@ -67,7 +52,7 @@ class LockScreen extends Component {
         return (
             <div className={ styles.lockscreen } onClick={ this.handleMouseClick }>
                 <div className={ styles.background } dangerouslySetInnerHTML={ { __html: background } } />
-                <CSSTransition classNames={ this.lockscreenContentClassNames } in={ !unmounting } appear component={ null } timeout={ 1500 }>
+                <CSSTransition classNames={ lockscreenContentClassNames } in={ !unmounting } appear component={ null } timeout={ 1500 }>
                     <div className={ styles.lockscreenContent }>
                         <div className={ styles.logo }>
                             <Lottie options={ this.animationOptions } className={ styles.svg } isPaused={ !startLogoAnimation } />
@@ -105,7 +90,7 @@ class LockScreen extends Component {
                     {
                         Array(passwordLength).fill(0)
                         .map((val, i) => (
-                            <CSSTransition classNames={ this.passwordDotsClassNames } key={ passwordLength - i } timeout={ 50 }>
+                            <CSSTransition classNames={ passwordDotsClassNames } key={ passwordLength - i } timeout={ 50 }>
                                 <div className={ passwordClassName } style={ { animationDelay: `${animationDelay * i}s` } } />
                             </CSSTransition>
                         ))
