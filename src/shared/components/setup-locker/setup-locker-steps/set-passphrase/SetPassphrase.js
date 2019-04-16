@@ -59,7 +59,9 @@ class SetPassphrase extends Component {
     };
 
     validatePassword = () => {
-        if (this.confirmation === '' || !this.state.goodEnough) {
+        console.log('this.password', this.password);
+        console.log('this.confirmation', this.confirmation);
+        if (this.confirmation === '') {
             this.setState({ disableContinue: true, showMatchFeedback: undefined });
 
             return;
@@ -71,7 +73,11 @@ class SetPassphrase extends Component {
             return;
         }
 
-        this.setState({ disableContinue: false, showMatchFeedback: 1 });
+        if (this.state.goodEnough) {
+            this.setState({ disableContinue: false, showMatchFeedback: 1 });
+        } else {
+            this.setState({ disableContinue: true, showMatchFeedback: undefined });
+        }
     };
 
     handleSuccess = (testedPassword, testedConfirmation, result) => {
@@ -124,6 +130,7 @@ class SetPassphrase extends Component {
     handleContinue = async () => {
         const { onNextStep, enablePassword } = this.props;
 
+        this.setState({ feedback: 'loading' });
         try {
             await enablePassword(this.password);
         } catch {

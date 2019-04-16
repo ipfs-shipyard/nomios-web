@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Modal, ModalFlow } from '@nomios/web-uikit';
 import PropTypes from 'prop-types';
-import setupLockerSteps from './setup-locker-steps';
-import { injectPropsIntoStepArray } from '../../utils/utils.js';
+
+import SetPassphrase from './setup-locker-steps/set-passphrase/SetPassphrase';
+import SetTimeout from './setup-locker-steps/set-timeout/SetTimeout';
 
 Modal.setAppElement('#root');
 
@@ -13,41 +14,37 @@ class SetupLocker extends Component {
         super(props);
         const locker = props.locker;
 
-        this.setupLockerSteps = injectPropsIntoStepArray(setupLockerSteps, 'passphrase',
-            { analyzePasswordQuality: locker.getLock(LOCK_TYPE).validate.bind(locker.getLock(LOCK_TYPE)),
-                enablePassword: locker.getLock(LOCK_TYPE).enable.bind(locker.getLock(LOCK_TYPE)) });
-        this.setupLockerSteps = injectPropsIntoStepArray(this.setupLockerSteps, 'timeout',
-            { setMaxTime: locker.getIdleTimer().setMaxTime.bind(locker.getIdleTimer()) });
+        this.analyzePasswordQuality = locker.getLock(LOCK_TYPE).validate.bind(locker.getLock(LOCK_TYPE));
+        this.enablePassword = locker.getLock(LOCK_TYPE).enable.bind(locker.getLock(LOCK_TYPE));
+        this.setMaxTime = locker.getIdleTimer().setMaxTime.bind(locker.getIdleTimer());
     }
 
     state = {
         stepId: 'passphrase',
-        feedback: 'none',
+        data: {},
     };
 
     render() {
-        const { stepId, feedback } = this.state;
+        const { stepId } = this.state;
         const { isOpen } = this.props;
 
         return (
             <Modal isOpen={ isOpen }>
                 <ModalFlow variant="simple" step={ stepId } closeButton>
-                    { this.setupLockerSteps.map(({ component: Step, props }, index) => (
-                        <Step { ...props } key={ index }
-                            onNextStep={ this.handleNextStep(props.nextStepId) } feedback={ feedback } />
-                    )) }
+                    <SetPassphrase id="passphrase" onNextStep={ this.handleProceedFromPassphrase }
+                        analyzePasswordQuality={ this.analyzePasswordQuality } enablePassword={ this.enablePassword } />
+                    <SetTimeout id="timeout" onNextStep={ this.handleProceedFromTimeout } setMaxTime={ this.setMaxTime } />
                 </ModalFlow>
             </Modal>
         );
     }
 
-    handleNextStep = (data, nextStepId) => {
-        if (nextStepId != null) {
-            this.setState({ stepId: nextStepId });
-        } else {
-            setTimeout(this.props.onComplete, 300);
-            // this.handleSubmission(newData);
-        }
+    handleProceedFromPassphrase = () => {
+        this.setState({ stepId: 'timeout' });
+    };
+
+    handleProceedFromTimeout = () => {
+        setTimeout(this.props.onComplete, 300);
     };
 }
 

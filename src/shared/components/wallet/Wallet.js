@@ -59,7 +59,7 @@ class Wallet extends Component {
                     mountOnEnter unmountOnExit timeout={ 1800 }>
                     <LockScreen getLock={ this.getLock } unmounting={ !isLocked } />
                 </CSSTransition>
-                <WalletContent wallet={ wallet } />
+                {!locker.isPristine() && <WalletContent wallet={ wallet } /> }
                 <SetupLocker locker={ locker } isOpen={ isPristine } onComplete={ this.handleSetupLockerComplete } />
             </div>
         );
