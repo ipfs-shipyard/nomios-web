@@ -7,23 +7,21 @@
     min-height: 70rem;
     overflow: auto;
 
-    & .appScreen {
-        &:global(-enter) {
-            opacity: 0.01;
+    & .lockscreenEnter {
+        opacity: 0.01;
+    }
 
-            &:global(-active) {
-                opacity: 1;
-                transition: opacity 0.5s ease-in-out;
-            }
-        }
+    & .lockscreenEnterActive {
+        opacity: 1;
+        transition: opacity 0.5s ease-in-out;
+    }
 
-        &:global(-exit) {
-            opacity: 1;
+    & .lockscreenExit {
+        opacity: 1;
+    }
 
-            &:global(-active) {
-                opacity: 0.01;
-                transition: opacity 0.5s ease-in-out 1.3s;
-            }
-        }
+    & .lockscreenExitActive {
+        opacity: 0.01;
+        transition: opacity 0.5s ease-in-out 1.3s;
     }
 }

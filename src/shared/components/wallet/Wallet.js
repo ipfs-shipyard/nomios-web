@@ -9,6 +9,13 @@ import LockScreen from '../lock-screen';
 
 import styles from './Wallet.css';
 
+const lockscreenClassNames = {
+    enter: styles.lockscreenEnter,
+    enterActive: styles.lockscreenEnterActive,
+    exit: styles.lockscreenExit,
+    exitActive: styles.lockscreenExitActive,
+};
+
 class Wallet extends Component {
     getLock = undefined;
 
@@ -47,13 +54,11 @@ class Wallet extends Component {
 
         return (
             <div className={ styles.parent }>
-                <CSSTransition classNames={ styles.appScreen } in={ isLocked }
+                <CSSTransition classNames={ lockscreenClassNames } in={ isLocked }
                     mountOnEnter unmountOnExit timeout={ 1800 }>
                     <LockScreen getLock={ this.getLock } unmounting={ !isLocked } />
                 </CSSTransition>
-                <CSSTransition classNames="none" in={ !isLocked } mountOnEnter unmountOnExit timeout={ 2000 }>
-                    <WalletContent wallet={ wallet } />
-                </CSSTransition>
+                <WalletContent wallet={ wallet } />
             </div>
         );
     };

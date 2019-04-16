@@ -76,41 +76,41 @@
             & .passwordDisplay {
                 opacity: 1;
             }
+        }
 
-            &.lockscreenContentExitActive {
-                transform: translateY(25%);
-                transition: transform 0.5s ease-in-out;
+        &.lockscreenContentExitActive {
+            transform: translateY(25%);
+            transition: transform 0.3s ease-in-out;
 
-                & .unlockTitle {
-                    opacity: 0;
-                    transition: opacity 0.5s linear 1s;
-                }
-
-                & .unlockHint {
-                    opacity: 0;
-                    transition: opacity 0.5s linear;
-                }
-
-                & .passwordDisplay {
-                    opacity: 0;
-                    transition: opacity 0.5s linear;
-                }
+            & .unlockTitle {
+                opacity: 0;
+                transition: opacity 0.3s linear 0.8s;
             }
 
-            &.lockscreenContentExitDone {
-                transform: translateY(25%);
+            & .unlockHint {
+                opacity: 0;
+                transition: opacity 0.3s linear;
+            }
 
-                & .unlockTitle {
-                    opacity: 0;
-                }
+            & .passwordDisplay {
+                opacity: 0;
+                transition: opacity 0.3s linear;
+            }
+        }
 
-                & .unlockHint {
-                    opacity: 0;
-                }
+        &.lockscreenContentExitDone {
+            transform: translateY(25%);
 
-                & .passwordDisplay {
-                    opacity: 0;
-                }
+            & .unlockTitle {
+                opacity: 0;
+            }
+
+            & .unlockHint {
+                opacity: 0;
+            }
+
+            & .passwordDisplay {
+                opacity: 0;
             }
         }
 
