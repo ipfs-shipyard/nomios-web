@@ -97,7 +97,7 @@ class SetPassphrase extends Component {
 
     handleError = (testedPassword, testedConfirmation, result) => {
         const score = result.score;
-        const suggestions = result.suggestions != null ? result.suggestions[0].message : null;
+        const suggestions = result.suggestions.length !== 0 ? result.suggestions[0].message : null;
         const warning = result.warning;
 
         this.setState({ passwordStrength: score, lockerSuggestion: suggestions, lockerWarning: warning, goodEnough: false });
