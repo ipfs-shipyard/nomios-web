@@ -53,26 +53,28 @@ class LockScreen extends Component {
             <div className={ styles.lockscreen } onClick={ this.handleMouseClick }>
                 <div className={ styles.background } dangerouslySetInnerHTML={ { __html: background } } />
                 <CSSTransition classNames={ lockscreenContentClassNames } in={ !unmounting } appear component={ null } timeout={ 1500 }>
-                    <div className={ styles.lockscreenContent }>
-                        <div className={ styles.logo }>
-                            <Lottie options={ this.animationOptions } className={ styles.svg } isPaused={ !startLogoAnimation } />
-                        </div>
-                        <h2 className={ styles.unlockTitle }>Unlock Nomios</h2>
-                        <p className={ styles.unlockHint } onTransitionEnd={ this.handleTransitionEnd }>
+                    <div className={ styles.contentParent }>
+                        <div className={ styles.lockscreenContent }>
+                            <div className={ styles.logo }>
+                                <Lottie options={ this.animationOptions } className={ styles.svg } isPaused={ !startLogoAnimation } />
+                            </div>
+                            <h2 className={ styles.unlockTitle }>Unlock Nomios</h2>
+                            <p className={ styles.unlockHint } onTransitionEnd={ this.handleTransitionEnd }>
                             Enter your passphrase to unlock Nomios and get access to all your data
-                        </p>
-                        <input type="password"
-                            name="getLockKey"
-                            className={ styles.passwordInput }
-                            ref={ this.passwordInputRef }
-                            onChange={ this.handlePasswordChange }
-                            disabled={ feedback === 'loading' } />
-                        { this.renderPasswordDots() }
-                        { feedback === 'error' &&
+                            </p>
+                            <input type="password"
+                                name="getLockKey"
+                                className={ styles.passwordInput }
+                                ref={ this.passwordInputRef }
+                                onChange={ this.handlePasswordChange }
+                                disabled={ feedback === 'loading' } />
+                            { this.renderPasswordDots() }
+                            { feedback === 'error' &&
                             <p className={ styles.errorMessage }>
                                 The passphrase you entered does not match the saved passphrase. Please try again.
                             </p>
-                        }
+                            }
+                        </div>
                     </div>
                 </CSSTransition>
             </div>
