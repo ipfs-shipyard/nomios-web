@@ -43,11 +43,6 @@ class LockScreen extends Component {
         input.focus();
         input.addEventListener('keydown', this.handleKeyboardInput);
         input.addEventListener('blur', () => input.focus());
-
-        this.mounted = false;
-        this.forceUpdate();
-
-        console.log('styles.lockscreenContentAppearActive', styles.lockscreenContentAppearActive);
     }
 
     render() {
@@ -66,12 +61,18 @@ class LockScreen extends Component {
                         <p className={ styles.unlockHint } onTransitionEnd={ this.handleTransitionEnd }>
                             Enter your passphrase to unlock Nomios and get access to all your data
                         </p>
-                        <input type="password" name="getLockKey" className={ styles.passwordInput }
-                            ref={ this.passwordInputRef } onChange={ this.handlePasswordChange } disabled={ feedback === 'loading' } />
+                        <input type="password"
+                            name="getLockKey"
+                            className={ styles.passwordInput }
+                            ref={ this.passwordInputRef }
+                            onChange={ this.handlePasswordChange }
+                            disabled={ feedback === 'loading' } />
                         { this.renderPasswordDots() }
-                        { feedback === 'error' && <p className={ styles.errorMessage }>
-                            The passphrase you entered does not match the saved passphrase. Please try again.
-                        </p> }
+                        { feedback === 'error' &&
+                            <p className={ styles.errorMessage }>
+                                The passphrase you entered does not match the saved passphrase. Please try again.
+                            </p>
+                        }
                     </div>
                 </CSSTransition>
             </div>
