@@ -1,0 +1,339 @@
+@import "@nomios/web-uikit/styles/colors";
+@import "@nomios/web-uikit/styles/mixins/typography";
+
+.lockscreen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 20;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #30433b;
+    user-select: none;
+
+    &:global(-enter) {
+        opacity: 0;
+
+        &:global(-active) {
+            opacity: 1;
+            transition: opacity 1s ease-in-out;
+        }
+    }
+
+    & .background {
+        position: absolute;
+        width: 100vw;
+        min-width: 192rem;
+        height: 100vh;
+        min-height: 108rem;
+        opacity: 0.3;
+    }
+
+    & .lockscreenContent {
+        position: relative;
+        max-width: 85%;
+        overflow-x: hidden;
+        overflow-x: visible;
+        transform: translateY(0);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        opacity: 1;
+
+        &.mounted {
+            transform: translateY(0);
+            opacity: 1;
+            transition: all 0.5s ease-in-out 0.2s;
+        }
+
+        &.lockscreenContentAppear {
+            transform: translateY(7.5rem);
+            opacity: 0;
+
+            &.lockscreenContentAppearActive {
+                transform: translateY(0);
+                opacity: 1;
+                transition: all 0.5s ease-in-out 0.2s;
+            }
+
+        }
+
+        &.lockscreenContentExit {
+            & .unlockTitle {
+                opacity: 1;
+            }
+
+            & .unlockHint {
+                opacity: 1;
+            }
+
+            & .passwordDisplay {
+                opacity: 1;
+            }
+        }
+
+        &.lockscreenContentExitActive {
+            transform: translateY(25%);
+            transition: transform 0.3s ease-in-out;
+
+            & .unlockTitle {
+                opacity: 0;
+                transition: opacity 0.3s linear 0.8s;
+            }
+
+            & .unlockHint {
+                opacity: 0;
+                transition: opacity 0.3s linear;
+            }
+
+            & .passwordDisplay {
+                opacity: 0;
+                transition: opacity 0.3s linear;
+            }
+        }
+
+        &.lockscreenContentExitDone {
+            transform: translateY(25%);
+
+            & .unlockTitle {
+                opacity: 0;
+            }
+
+            & .unlockHint {
+                opacity: 0;
+            }
+
+            & .passwordDisplay {
+                opacity: 0;
+            }
+        }
+
+        & .logo {
+            width: 10rem;
+            height: 10rem;
+            padding: 1.6rem 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--color-white);
+            border-radius: 3.2rem;
+            color: var(--color-tan);
+
+            & .svg {
+                fill: var(--color-tan);
+            }
+        }
+
+        & .unlockTitle {
+            margin-top: 4rem;
+            margin-bottom: 3rem;
+            color: var(--color-tan);
+        }
+
+        & .unlockHint {
+            width: 40rem;
+            margin-top: 0;
+            margin-bottom: 8rem;
+            color: color(var(--color-white) alpha(0.7));
+            text-align: center;
+        }
+
+        & .passwordInput {
+            width: 0;
+            height: 0;
+            margin: 0;
+            padding: 0;
+            border: none;
+        }
+
+        & .passwordDisplay {
+            position: relative;
+            height: 1.2rem;
+            display: flex;
+            flex-direction: row-reverse;
+
+            & .passwordDot {
+                position: relative;
+                width: 1.2rem;
+                height: 1.2rem;
+                margin-top: 0;
+                margin-left: 2rem;
+                margin-bottom: 0;
+                transform: translateX(0);
+                display: inline-block;
+                border: none;
+                background-color: var(--color-tan);
+                border-radius: 0.6rem;
+
+                &:last-of-type {
+                    margin-left: 0;
+                }
+
+                /** Entry and exit of password dots */
+
+                &.passwordDotEnter {
+                    &:only-child {
+                        opacity: 0.4;
+                    }
+
+                    &:not(:only-child) {
+                        transform: translateX(-1.6rem);
+                        opacity: 0.4;
+
+                        & ~ .passwordDot {
+                            transform: translateX(1.6rem);
+                        }
+                    }
+                }
+
+                &.passwordDotEnterActive {
+                    &:only-child {
+                        opacity: 1;
+                        transition: opacity 0.3s linear;
+                    }
+
+                    &:not(:only-child) {
+                        transform: translateX(0);
+                        opacity: 1;
+                        transition: transform 0.05s ease-in-out, opacity 0.3s linear;
+
+                        & ~ .passwordDot {
+                            transform: translateX(0);
+                            transition: transform 0.05s ease-in-out;
+                        }
+                    }
+                }
+
+                &.passwordDotExit {
+                    &:only-child {
+                        opacity: 1;
+                    }
+
+                    &:not(:only-child) {
+                        transform: translateX(0);
+                        opacity: 1;
+
+                        & ~ .passwordDot {
+                            transform: translateX(0);
+                        }
+                    }
+                }
+
+                &.passwordDotExitActive {
+                    &:only-child {
+                        opacity: 1;
+                        transition: opacity 0.05s linear;
+                    }
+
+                    &:not(:only-child) {
+                        transform: translateX(-1.6rem);
+                        opacity: 0.01;
+                        transition: transform 0.05s ease-in-out, opacity 0.05s linear;
+
+                        & ~ .passwordDot {
+                            transform: translateX(1.6rem);
+                            transition: transform 0.05s ease-in-out;
+                        }
+                    }
+                }
+
+                /** Password submission failure */
+
+                &.error {
+                    border: color(var(--color-white) alpha(0.6)) solid 0.1rem;
+                    background-color: transparent;
+                    animation-name: shake;
+                    animation-duration: 1s;
+                }
+
+                /** Password submission loading */
+
+                &.loading {
+                    animation-name: loading;
+                    animation-duration: 0.8s;
+                    animation-iteration-count: infinite;
+                    animation-timing-function: ease-in-out;
+                }
+            }
+
+            & .cursor {
+                width: 0.1rem;
+                height: 4rem;
+                transform: translateY(-2rem);
+                background-color: var(--color-tan);
+                animation-name: blink;
+                animation-direction: alternate;
+                animation-duration: 0.5s;
+                animation-iteration-count: infinite;
+            }
+        }
+
+        & .errorMessage {
+            position: absolute;
+            bottom: -7.8rem;
+            margin: 0;
+            color: var(--color-tan);
+            text-align: center;
+        }
+    }
+}
+
+@keyframes loading {
+    0% {
+        opacity: 0.4;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.4;
+    }
+}
+
+@keyframes shake {
+    10% {
+        transform: translateX(1rem);
+    }
+
+    20% {
+        transform: translateX(-0.9rem);
+    }
+
+    30% {
+        transform: translateX(0.8rem);
+    }
+
+    40% {
+        transform: translateX(-0.7rem);
+    }
+
+    50% {
+        transform: translateX(0.5rem);
+    }
+
+    60% {
+        transform: translateX(-0.3rem);
+    }
+
+    70% {
+        transform: translateX(0.1rem);
+    }
+}
+
+@keyframes blink {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}

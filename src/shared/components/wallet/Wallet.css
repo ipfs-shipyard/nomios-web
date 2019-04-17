@@ -1,0 +1,27 @@
+
+.parent {
+    position: relative;
+    width: 100vw;
+    min-width: 102.4rem;
+    height: 100vh;
+    min-height: 70rem;
+    overflow: auto;
+
+    & .lockscreenEnter {
+        opacity: 0.01;
+    }
+
+    & .lockscreenEnterActive {
+        opacity: 1;
+        transition: opacity 0.5s ease-in-out;
+    }
+
+    & .lockscreenExit {
+        opacity: 1;
+    }
+
+    & .lockscreenExitActive {
+        opacity: 0.01;
+        transition: opacity 0.5s ease-in-out 1.3s;
+    }
+}
