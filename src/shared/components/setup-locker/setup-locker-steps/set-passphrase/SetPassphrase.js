@@ -4,14 +4,14 @@ import PropTypes from 'prop-types';
 
 import styles from './SetPassphrase.css';
 
-const deriveFeedbackFromStrength = (strength) => {
+const deriveFeedbackFromStrength = (strength, error) => {
     const normalizedStrength = Math.ceil(4 * strength);
 
     switch (normalizedStrength) {
     case 1:
         return {
             message: 'Poor',
-            type: 'error',
+            type: 'info',
         };
     case 2:
         return {
@@ -27,6 +27,15 @@ const deriveFeedbackFromStrength = (strength) => {
         return {
             message: 'Strong',
         };
+    case 0:
+        if (error != null) {
+            return {
+                message: error,
+                type: 'error',
+            };
+        }
+
+        return {};
     default:
         return {};
     }
@@ -44,6 +53,7 @@ class SetPassphrase extends Component {
         validation: null,
         disableContinue: true,
         lockerSuggestion: null,
+        lockerWarning: null,
         goodEnough: false,
         feedback: 'none',
     };
@@ -51,11 +61,18 @@ class SetPassphrase extends Component {
     render() {
         const { passwordStrength, showMatchFeedback, disableContinue, lockerSuggestion, lockerWarning, feedback } = this.state;
 
-        const feedbackMessage = deriveFeedbackFromStrength(passwordStrength);
+        const feedbackMessage = deriveFeedbackFromStrength(passwordStrength, lockerWarning);
 
-        if (lockerSuggestion != null) {
+        console.log('feedbackMessage', feedbackMessage);
+
+        if (lockerSuggestion != null && lockerWarning == null) {
             feedbackMessage.tooltip = this.renderSuggestions(lockerSuggestion);
         }
+
+        const confirmationFeedback = showMatchFeedback === 0 ? {
+            message: 'Passwords don\'t match.',
+            type: 'error',
+        } : null;
 
         return (
             <div className={ styles.contentWrapper }>
@@ -63,18 +80,19 @@ class SetPassphrase extends Component {
                 <p>Please define a passphrase which will be used to encrypt all the data stored in this app.</p>
                 <TextInput className={ styles.passwordInput }
                     label="Enter Passphrase"
-                    hint="Enter your passphrase"
+                    placeholder="Enter your passphrase"
                     type="password"
-                    helperText={ lockerWarning }
+                    helperText="Minimum of 8 characters"
                     lineStrength={ passwordStrength }
                     lineType="dashed"
                     feedback={ feedbackMessage }
                     onChange={ this.handlePasswordChange } />
                 <TextInput className={ styles.confirmationInput }
                     label="Confirm Passphrase"
-                    hint="Enter passphrase confirmation"
+                    placeholder="Enter passphrase confirmation"
                     type="password"
-                    lineStrength={ showMatchFeedback }
+                    feedback={ confirmationFeedback }
+                    lineStrength={ showMatchFeedback === 1 ? 1 : undefined }
                     onChange={ this.handleConfirmationChange } />
                 <div className={ styles.continueButton }>
                     <Button onClick={ this.handleContinue } disabled={ disableContinue } feedback={ feedback } >Continue</Button>
@@ -96,10 +114,10 @@ class SetPassphrase extends Component {
 
         return (
             <div>
-                <div className={ styles.tooltipHeader }>Recomendations</div>
-                <ul className={ styles.suggestionList }>
-                    { suggestionList.map((elem, index) => <li key={ index }>{ elem.message }</li>) }
-                </ul>
+                <div className={ styles.tooltipHeader }>Recomendations:</div>
+                <div className={ styles.suggestionList }>
+                    { suggestionList.map((elem, index) => <div key={ index }>- { elem.message }</div>) }
+                </div>
             </div>
         );
     };
@@ -162,7 +180,11 @@ class SetPassphrase extends Component {
         console.log('result.suggestions', result.suggestions);
         console.log('result.warning', result.warning);
 
-        this.setState({ passwordStrength: score, lockerSuggestion: suggestions, lockerWarning: warning, goodEnough: false });
+        if (warning != null) {
+            this.setState({ passwordStrength: 0, lockerSuggestion: null, lockerWarning: warning, goodEnough: false });
+        } else {
+            this.setState({ passwordStrength: score, lockerSuggestion: suggestions, lockerWarning: warning, goodEnough: false });
+        }
     };
 
     handlePasswordChange = (event) => {
