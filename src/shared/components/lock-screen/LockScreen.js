@@ -42,7 +42,10 @@ class LockScreen extends Component {
 
         input.focus();
         input.addEventListener('keydown', this.handleKeyboardInput);
-        input.addEventListener('blur', () => input.focus());
+        input.addEventListener('blur', () => {
+            console.log('blur');
+            input.focus();
+        });
     }
 
     render() {
@@ -52,8 +55,8 @@ class LockScreen extends Component {
         return (
             <div className={ styles.lockscreen } onClick={ this.handleMouseClick }>
                 <div className={ styles.background } dangerouslySetInnerHTML={ { __html: background } } />
-                <CSSTransition classNames={ lockscreenContentClassNames } in={ !unmounting } appear component={ null } timeout={ 1500 }>
-                    <div className={ styles.contentParent }>
+                <div className={ styles.contentParent }>
+                    <CSSTransition classNames={ lockscreenContentClassNames } in={ !unmounting } appear component={ null } timeout={ 1500 }>
                         <div className={ styles.lockscreenContent }>
                             <div className={ styles.logo }>
                                 <Lottie options={ this.animationOptions } className={ styles.svg } isPaused={ !startLogoAnimation } />
@@ -75,8 +78,8 @@ class LockScreen extends Component {
                             </p>
                             }
                         </div>
-                    </div>
-                </CSSTransition>
+                    </CSSTransition>
+                </div>
             </div>
         );
     }
@@ -130,6 +133,10 @@ class LockScreen extends Component {
                 this.handleSubmission();
             }
             this.passwordInputRef.current.focus();
+            setTimeout(() => {
+                this.passwordInputRef.current.focus();
+                console.log('focused');
+            }, 500);
             break;
         default:
             if ((event.code.includes('Digit') || event.code.includes('Key') || event.code === 'Backspace') &&

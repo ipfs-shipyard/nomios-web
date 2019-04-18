@@ -4,6 +4,34 @@ import PropTypes from 'prop-types';
 
 import styles from './SetPassphrase.css';
 
+const deriveFeedbackFromStrength = (strength) => {
+    const normalizedStrength = Math.ceil(4 * strength);
+
+    switch (normalizedStrength) {
+    case 1:
+        return {
+            message: 'Poor',
+            type: 'error',
+        };
+    case 2:
+        return {
+            message: 'Weak',
+            type: 'info',
+        };
+    case 3:
+        return {
+            message: 'Fair',
+            type: 'info',
+        };
+    case 4:
+        return {
+            message: 'Strong',
+        };
+    default:
+        return {};
+    }
+};
+
 class SetPassphrase extends Component {
     password = '';
     passwordInputTimeout = undefined;
@@ -21,7 +49,13 @@ class SetPassphrase extends Component {
     };
 
     render() {
-        const { passwordStrength, showMatchFeedback, disableContinue, lockerSuggestion, feedback } = this.state;
+        const { passwordStrength, showMatchFeedback, disableContinue, lockerSuggestion, lockerWarning, feedback } = this.state;
+
+        const feedbackMessage = deriveFeedbackFromStrength(passwordStrength);
+
+        if (lockerSuggestion != null) {
+            feedbackMessage.tooltip = this.renderSuggestions(lockerSuggestion);
+        }
 
         return (
             <div className={ styles.contentWrapper }>
@@ -31,9 +65,10 @@ class SetPassphrase extends Component {
                     label="Enter Passphrase"
                     hint="Enter your passphrase"
                     type="password"
-                    helperText={ lockerSuggestion }
+                    helperText={ lockerWarning }
                     lineStrength={ passwordStrength }
                     lineType="dashed"
+                    feedback={ feedbackMessage }
                     onChange={ this.handlePasswordChange } />
                 <TextInput className={ styles.confirmationInput }
                     label="Confirm Passphrase"
@@ -48,6 +83,27 @@ class SetPassphrase extends Component {
         );
     }
 
+    renderSuggestions = (suggestionList) => {
+        if (suggestionList == null) {
+            return null;
+        }
+
+        if (suggestionList.length === 1) {
+            return (
+                <div className={ styles.singleSuggestion }>{ suggestionList[0].message }</div>
+            );
+        }
+
+        return (
+            <div>
+                <div className={ styles.tooltipHeader }>Recomendations</div>
+                <ul className={ styles.suggestionList }>
+                    { suggestionList.map((elem, index) => <li key={ index }>{ elem.message }</li>) }
+                </ul>
+            </div>
+        );
+    };
+
     analyzePassword = () => {
         const { analyzePasswordQuality } = this.props;
         const passwordCopy = this.password;
@@ -59,8 +115,6 @@ class SetPassphrase extends Component {
     };
 
     validatePassword = () => {
-        console.log('this.password', this.password);
-        console.log('this.confirmation', this.confirmation);
         if (this.confirmation === '') {
             this.setState({ disableContinue: true, showMatchFeedback: undefined });
 
@@ -87,9 +141,13 @@ class SetPassphrase extends Component {
             return null;
         }
 
+        console.log('result.score', result.score);
+        console.log('result.suggestions', result.suggestions);
+        console.log('result.warning', result.warning);
+
         const score = result.score;
-        const suggestions = result.suggestions.length !== 0 ? result.suggestions[0].message : null;
-        const warning = result.warning;
+        const suggestions = result.suggestions.length !== 0 ? result.suggestions : null;
+        const warning = result.warning != null ? result.warning.message : null;
 
         this.setState({ passwordStrength: score, lockerSuggestion: suggestions, lockerWarning: warning, goodEnough: true });
         this.validatePassword();
@@ -97,8 +155,12 @@ class SetPassphrase extends Component {
 
     handleError = (testedPassword, testedConfirmation, result) => {
         const score = result.score;
-        const suggestions = result.suggestions.length !== 0 ? result.suggestions[0].message : null;
-        const warning = result.warning;
+        const suggestions = result.suggestions.length !== 0 ? result.suggestions : null;
+        const warning = result.warning != null ? result.warning.message : null;
+
+        console.log('result.score', result.score);
+        console.log('result.suggestions', result.suggestions);
+        console.log('result.warning', result.warning);
 
         this.setState({ passwordStrength: score, lockerSuggestion: suggestions, lockerWarning: warning, goodEnough: false });
     };
