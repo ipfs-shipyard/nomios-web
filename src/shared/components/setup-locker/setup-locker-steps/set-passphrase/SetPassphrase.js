@@ -55,14 +55,16 @@ class SetPassphrase extends Component {
                     lineStrength={ passwordStrength }
                     lineType="dashed"
                     feedback={ feedbackMessage }
-                    onChange={ this.handlePasswordChange } />
+                    onChange={ this.handlePasswordChange }
+                    onEnter={ this.handleContinue } />
                 <TextInput className={ styles.confirmationInput }
                     label="Confirm Passphrase"
                     placeholder="Enter passphrase confirmation"
                     type="password"
                     feedback={ confirmationFeedback }
                     lineStrength={ showMatchFeedback === 1 ? 1 : -1 }
-                    onChange={ this.handleConfirmationChange } />
+                    onChange={ this.handleConfirmationChange }
+                    onEnter={ this.handleContinue } />
                 <FeedbackMessage
                     variant="large"
                     type="error"
@@ -144,7 +146,6 @@ class SetPassphrase extends Component {
         case 3:
             return {
                 message: 'Fair',
-                type: 'info',
             };
         case 4:
             return {
@@ -217,8 +218,12 @@ class SetPassphrase extends Component {
     };
 
     handleContinue = async () => {
-        const { writeErrorCountdown } = this.state;
+        const { writeErrorCountdown, disableContinue } = this.state;
         const { onNextStep, enablePassword } = this.props;
+
+        if (disableContinue) {
+            return;
+        }
 
         this.setState({ feedback: 'loading' });
         try {
