@@ -10,7 +10,7 @@ import Home from './pages/home';
 import Identity from './pages/identity';
 import styles from './App.css';
 
-Modal.setAppElement('#root');
+setAppElement('#root');
 
 class App extends Component {
     state = {

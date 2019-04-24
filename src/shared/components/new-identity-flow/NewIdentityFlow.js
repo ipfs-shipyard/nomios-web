@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Modal, ModalFlow } from '@nomios/web-uikit';
+import { FlowModal } from '@nomios/web-uikit';
 import GenericStep from './generic-step';
 import createIdentitySteps from './create-identity-steps';
 
@@ -17,12 +17,10 @@ class NewIdentityFlow extends Component {
         const { currentStepId } = this.state;
 
         return (
-            <Modal isOpen>
-                <ModalFlow variant="advanced" step={ currentStepId }>
-                    <GenericStep id="generic" onNextStep={ this.handleChooseNextFlow } />
-                    { this.renderFlowSteps() }
-                </ModalFlow>
-            </Modal>
+            <FlowModal variant="advanced" step={ currentStepId } { ...this.props }>
+                <GenericStep id="generic" onNextStep={ this.handleChooseNextFlow } />
+                { this.renderFlowSteps() }
+            </FlowModal>
         );
     }
 
