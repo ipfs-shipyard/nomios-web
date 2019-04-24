@@ -34,7 +34,7 @@ class SetPassphrase extends Component {
 
         const feedbackMessage = this.deriveFeedbackFromStrength(passwordStrength, lockerWarning);
 
-        if (lockerSuggestion != null && lockerWarning == null) {
+        if (lockerSuggestion != null && lockerWarning == null && feedbackMessage != null) {
             feedbackMessage.tooltip = this.renderSuggestions(lockerSuggestion);
         }
 
@@ -158,9 +158,9 @@ class SetPassphrase extends Component {
                 };
             }
 
-            return {};
+            return null;
         default:
-            return {};
+            return null;
         }
     };
 
