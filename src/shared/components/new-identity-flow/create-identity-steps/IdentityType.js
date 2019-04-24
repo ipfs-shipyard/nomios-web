@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { ModalStep, Button, TypeGroup, TypeOption, UserIcon, CheckmarkIcon, EntityIcon, OtherIcon } from '@nomios/web-uikit';
+import { FlowModalStep, Button, TypeGroup, TypeOption, UserIcon, CheckmarkIcon, EntityIcon, OtherIcon } from '@nomios/web-uikit';
 import FaderContainer from '../../fader-container';
 import BulletsIndicator from '../../bullets-indicator';
 
@@ -27,7 +27,7 @@ class IdentityType extends Component {
         console.log('activeSubStepIndex', activeSubStepIndex);
 
         return (
-            <ModalStep id={ this.props.id }>
+            <FlowModalStep id={ this.props.id }>
                 <div className={ styles.contentWrapper }>
                     <h2 className={ styles.heading }>1. Tell us who you are</h2>
                     <p>
@@ -56,7 +56,7 @@ class IdentityType extends Component {
                         activeIndex={ activeSubStepIndex }
                         bulletCallbacks={ this.bulletCallbacks } />
                 </div>
-            </ModalStep>
+            </FlowModalStep>
         );
     }
 

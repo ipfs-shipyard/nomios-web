@@ -11,7 +11,7 @@ import Identity from './pages/identity';
 import styles from './App.css';
 import ActivityDetector from './shared/components/activity-detector';
 
-Modal.setAppElement('#root');
+setAppElement('#root');
 
 class App extends Component {
     state = {

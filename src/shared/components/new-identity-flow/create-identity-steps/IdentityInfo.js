@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { ModalStep } from '@nomios/web-uikit';
+import { FlowModalStep } from '@nomios/web-uikit';
 
 const IdentityInfo = (props) => (
-    <ModalStep id={ props.id }><p>IdentityInfo</p></ModalStep>
+    <FlowModalStep id={ props.id }><p>IdentityInfo</p></FlowModalStep>
 );
 
 IdentityInfo.propTypes = {

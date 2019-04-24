@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { ModalStep, Button } from '@nomios/web-uikit';
+import { FlowModalStep, Button } from '@nomios/web-uikit';
 
 import styles from './GenericStep.css';
 
@@ -10,7 +10,7 @@ class GenericStep extends Component {
         const { id } = this.props;
 
         return (
-            <ModalStep id={ id }>
+            <FlowModalStep id={ id }>
                 <div className={ styles.contentWrapper }>
                     <h2 className={ styles.heading }>Start using Nomios</h2>
                     <p>
@@ -25,7 +25,7 @@ class GenericStep extends Component {
                         </div>
                     </div>
                 </div>
-            </ModalStep>
+            </FlowModalStep>
         );
     }
 
