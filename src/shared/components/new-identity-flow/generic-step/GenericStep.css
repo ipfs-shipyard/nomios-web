@@ -14,8 +14,7 @@
         color: var(--color-tan);
     }
 
-    & p {
-        @mixin typography-body-1 rem;
+    & > p {
         max-width: 45rem;
         opacity: 0.7;
         color: var(--color-white);
