@@ -1,45 +1,9 @@
 import React, { Component } from 'react';
-import { TextInput, Button } from '@nomios/web-uikit';
+import { TextInput, Button, FeedbackMessage } from '@nomios/web-uikit';
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
 import styles from './SetPassphrase.css';
-
-const deriveFeedbackFromStrength = (strength, error) => {
-    const normalizedStrength = Math.ceil(4 * strength);
-
-    switch (normalizedStrength) {
-    case 1:
-        return {
-            message: 'Poor',
-            type: 'info',
-        };
-    case 2:
-        return {
-            message: 'Weak',
-            type: 'info',
-        };
-    case 3:
-        return {
-            message: 'Fair',
-            type: 'info',
-        };
-    case 4:
-        return {
-            message: 'Strong',
-        };
-    case 0:
-        if (error != null) {
-            return {
-                message: error,
-                type: 'error',
-            };
-        }
-
-        return {};
-    default:
-        return {};
-    }
-};
 
 class SetPassphrase extends Component {
     password = '';
@@ -49,21 +13,26 @@ class SetPassphrase extends Component {
 
     state = {
         passwordStrength: 0,
-        showMatchFeedback: undefined,
+        showMatchFeedback: -1,
         validation: null,
         disableContinue: true,
         lockerSuggestion: null,
         lockerWarning: null,
         goodEnough: false,
         feedback: 'none',
+        writeErrorCountdown: 2,
     };
 
     render() {
-        const { passwordStrength, showMatchFeedback, disableContinue, lockerSuggestion, lockerWarning, feedback } = this.state;
+        const { passwordStrength,
+            showMatchFeedback,
+            disableContinue,
+            lockerSuggestion,
+            lockerWarning,
+            feedback,
+            writeErrorCountdown } = this.state;
 
-        const feedbackMessage = deriveFeedbackFromStrength(passwordStrength, lockerWarning);
-
-        console.log('feedbackMessage', feedbackMessage);
+        const feedbackMessage = this.deriveFeedbackFromStrength(passwordStrength, lockerWarning);
 
         if (lockerSuggestion != null && lockerWarning == null) {
             feedbackMessage.tooltip = this.renderSuggestions(lockerSuggestion);
@@ -92,8 +61,14 @@ class SetPassphrase extends Component {
                     placeholder="Enter passphrase confirmation"
                     type="password"
                     feedback={ confirmationFeedback }
-                    lineStrength={ showMatchFeedback === 1 ? 1 : undefined }
+                    lineStrength={ showMatchFeedback === 1 ? 1 : -1 }
                     onChange={ this.handleConfirmationChange } />
+                <FeedbackMessage
+                    variant="large"
+                    type="error"
+                    className={ classNames(styles.writeError, writeErrorCountdown <= 0 && styles.show) }>
+                    There was a problem saving your password. Please try again later.
+                </FeedbackMessage>
                 <div className={ styles.continueButton }>
                     <Button onClick={ this.handleContinue } disabled={ disableContinue } feedback={ feedback } >Continue</Button>
                 </div>
@@ -113,10 +88,10 @@ class SetPassphrase extends Component {
         }
 
         return (
-            <div>
-                <div className={ styles.tooltipHeader }>Recomendations:</div>
+            <div className={ styles.tooltip }>
+                <div className={ styles.tooltipHeader }>Recommendations:</div>
                 <div className={ styles.suggestionList }>
-                    { suggestionList.map((elem, index) => <div key={ index }>- { elem.message }</div>) }
+                    { suggestionList.map((elem, index) => <div key={ index }><span className={ styles.bullet }>• </span>{ elem.message }</div>) }
                 </div>
             </div>
         );
@@ -134,7 +109,7 @@ class SetPassphrase extends Component {
 
     validatePassword = () => {
         if (this.confirmation === '') {
-            this.setState({ disableContinue: true, showMatchFeedback: undefined });
+            this.setState({ disableContinue: true, showMatchFeedback: -1 });
 
             return;
         }
@@ -148,7 +123,44 @@ class SetPassphrase extends Component {
         if (this.state.goodEnough) {
             this.setState({ disableContinue: false, showMatchFeedback: 1 });
         } else {
-            this.setState({ disableContinue: true, showMatchFeedback: undefined });
+            this.setState({ disableContinue: true, showMatchFeedback: -1 });
+        }
+    };
+
+    deriveFeedbackFromStrength = (strength, error) => {
+        const normalizedStrength = Math.ceil(4 * strength);
+
+        switch (normalizedStrength) {
+        case 1:
+            return {
+                message: 'Poor',
+                type: 'info',
+            };
+        case 2:
+            return {
+                message: 'Weak',
+                type: 'info',
+            };
+        case 3:
+            return {
+                message: 'Fair',
+                type: 'info',
+            };
+        case 4:
+            return {
+                message: 'Strong',
+            };
+        case 0:
+            if (error != null) {
+                return {
+                    message: error,
+                    type: 'error',
+                };
+            }
+
+            return {};
+        default:
+            return {};
         }
     };
 
@@ -158,10 +170,6 @@ class SetPassphrase extends Component {
 
             return null;
         }
-
-        console.log('result.score', result.score);
-        console.log('result.suggestions', result.suggestions);
-        console.log('result.warning', result.warning);
 
         const score = result.score;
         const suggestions = result.suggestions.length !== 0 ? result.suggestions : null;
@@ -176,15 +184,12 @@ class SetPassphrase extends Component {
         const suggestions = result.suggestions.length !== 0 ? result.suggestions : null;
         const warning = result.warning != null ? result.warning.message : null;
 
-        console.log('result.score', result.score);
-        console.log('result.suggestions', result.suggestions);
-        console.log('result.warning', result.warning);
-
         if (warning != null) {
             this.setState({ passwordStrength: 0, lockerSuggestion: null, lockerWarning: warning, goodEnough: false });
         } else {
             this.setState({ passwordStrength: score, lockerSuggestion: suggestions, lockerWarning: warning, goodEnough: false });
         }
+        this.validatePassword();
     };
 
     handlePasswordChange = (event) => {
@@ -212,13 +217,14 @@ class SetPassphrase extends Component {
     };
 
     handleContinue = async () => {
+        const { writeErrorCountdown } = this.state;
         const { onNextStep, enablePassword } = this.props;
 
         this.setState({ feedback: 'loading' });
         try {
             await enablePassword(this.password);
         } catch {
-            this.setState({ feedback: 'error' });
+            this.setState({ feedback: 'error', writeErrorCountdown: writeErrorCountdown - 1 });
 
             return;
         }

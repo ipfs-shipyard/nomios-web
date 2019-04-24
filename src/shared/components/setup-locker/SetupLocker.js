@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { Modal, ModalFlow } from '@nomios/web-uikit';
+import { FlowModal, FlowModalStep, setAppElement } from '@nomios/web-uikit';
 import PropTypes from 'prop-types';
 
 import SetPassphrase from './setup-locker-steps/set-passphrase/SetPassphrase';
 import SetTimeout from './setup-locker-steps/set-timeout/SetTimeout';
 
-Modal.setAppElement('#root');
+setAppElement('#root');
 
 const LOCK_TYPE = 'passphrase';
 
@@ -29,13 +29,15 @@ class SetupLocker extends Component {
         const { isOpen } = this.props;
 
         return (
-            <Modal isOpen={ isOpen }>
-                <ModalFlow variant="simple" step={ stepId } closeButton>
-                    <SetPassphrase id="passphrase" onNextStep={ this.handleProceedFromPassphrase }
+            <FlowModal open={ isOpen } variant="simple" step={ stepId } showClose={ false }>
+                <FlowModalStep id="passphrase">
+                    <SetPassphrase onNextStep={ this.handleProceedFromPassphrase }
                         analyzePasswordQuality={ this.analyzePasswordQuality } enablePassword={ this.enablePassword } />
-                    <SetTimeout id="timeout" onNextStep={ this.handleProceedFromTimeout } setMaxTime={ this.setMaxTime } />
-                </ModalFlow>
-            </Modal>
+                </FlowModalStep>
+                <FlowModalStep id="timeout">
+                    <SetTimeout onNextStep={ this.handleProceedFromTimeout } setMaxTime={ this.setMaxTime } />
+                </FlowModalStep>
+            </FlowModal>
         );
     }
 

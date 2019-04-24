@@ -43,7 +43,6 @@ class LockScreen extends Component {
         input.focus();
         input.addEventListener('keydown', this.handleKeyboardInput);
         input.addEventListener('blur', () => {
-            console.log('blur');
             input.focus();
         });
     }
@@ -135,7 +134,6 @@ class LockScreen extends Component {
             this.passwordInputRef.current.focus();
             setTimeout(() => {
                 this.passwordInputRef.current.focus();
-                console.log('focused');
             }, 500);
             break;
         default:
