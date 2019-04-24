@@ -10,6 +10,7 @@ class NewIdentityFlow extends Component {
     state = {
         currentStepId: 'generic',
         currentFlow: undefined,
+        data: {},
     };
 
     render() {

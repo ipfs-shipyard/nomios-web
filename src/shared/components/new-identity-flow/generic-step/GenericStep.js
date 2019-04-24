@@ -20,8 +20,8 @@ class GenericStep extends Component {
                     <div className={ styles.bottomContent }>
                         <div>ILLUSTRATION</div>
                         <div className={ styles.buttonsWrapper }>
-                            <Button variant="negative" fullWidth onClick={ this.handleCreateIdentity }>Create new ID</Button>
-                            <Button variant="tertiary" fullWidth onClick={ this.handleImportIdentity }>Use existing ID</Button>
+                            <Button variant="negative" fullWidth onClick={ this.handleCreateIdentity }>Create ID</Button>
+                            <Button variant="tertiary" fullWidth onClick={ this.handleImportIdentity }>Import ID</Button>
                         </div>
                     </div>
                 </div>
