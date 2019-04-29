@@ -60,7 +60,7 @@ class Wallet extends Component {
                     <LockScreen getLock={ this.getLock } unmounting={ !isLocked } />
                 </CSSTransition>
                 {!locker.isPristine() && <WalletContent wallet={ wallet } /> }
-                <SetupLocker locker={ locker } isOpen={ isPristine } onComplete={ this.handleSetupLockerComplete } />
+                <SetupLocker locker={ locker } open={ isPristine } onComplete={ this.handleSetupLockerComplete } />
             </div>
         );
     };

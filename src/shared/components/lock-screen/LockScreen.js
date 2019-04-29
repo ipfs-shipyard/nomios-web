@@ -42,9 +42,13 @@ class LockScreen extends Component {
 
         input.focus();
         input.addEventListener('keydown', this.handleKeyboardInput);
-        input.addEventListener('blur', () => {
-            input.focus();
-        });
+        input.addEventListener('blur', () => input.focus());
+
+        this.focusInterval = setInterval(() => input.focus(), 250);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.focusInterval);
     }
 
     render() {
@@ -121,20 +125,15 @@ class LockScreen extends Component {
         case 'ArrowRight':
         case 'ArrowUp':
         case 'ArrowDown':
+        case 'Home':
         case 'Tab':
             event.preventDefault();
-            event.stopPropagation();
             break;
         case 'Enter':
             event.preventDefault();
-            event.stopPropagation();
             if (this.state.feedback === 'none') {
                 this.handleSubmission();
             }
-            this.passwordInputRef.current.focus();
-            setTimeout(() => {
-                this.passwordInputRef.current.focus();
-            }, 500);
             break;
         default:
             if ((event.code.includes('Digit') || event.code.includes('Key') || event.code === 'Backspace') &&

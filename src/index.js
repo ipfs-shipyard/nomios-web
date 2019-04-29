@@ -2,7 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import { setAppElement } from '@nomios/web-uikit';
 import './index.css';
+
+setAppElement('#root');
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
