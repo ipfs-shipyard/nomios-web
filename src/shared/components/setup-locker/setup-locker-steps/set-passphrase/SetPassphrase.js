@@ -56,7 +56,7 @@ class SetPassphrase extends Component {
                     lineType="dashed"
                     feedback={ feedbackMessage }
                     onChange={ this.handlePasswordChange }
-                    onEnter={ this.handleContinue } />
+                    onKeyDown={ this.handleKeyDown } />
                 <TextInput className={ styles.confirmationInput }
                     label="Confirm Passphrase"
                     placeholder="Enter passphrase confirmation"
@@ -64,7 +64,7 @@ class SetPassphrase extends Component {
                     feedback={ confirmationFeedback }
                     lineStrength={ showMatchFeedback === 1 ? 1 : -1 }
                     onChange={ this.handleConfirmationChange }
-                    onEnter={ this.handleContinue } />
+                    onKeyDown={ this.handleKeyDown } />
                 <FeedbackMessage
                     variant="large"
                     type="error"
@@ -196,6 +196,8 @@ class SetPassphrase extends Component {
     handlePasswordChange = (event) => {
         const { disableContinue } = this.state;
 
+        console.log('password change');
+
         if (this.passwordInputTimeout != null) {
             clearTimeout(this.passwordInputTimeout);
         }
@@ -207,6 +209,8 @@ class SetPassphrase extends Component {
 
     handleConfirmationChange = (event) => {
         const { disableContinue } = this.state;
+
+        console.log('confirmation change');
 
         if (this.confirmationInputTimeout != null) {
             clearTimeout(this.confirmationInputTimeout);
@@ -235,6 +239,12 @@ class SetPassphrase extends Component {
         }
 
         onNextStep({ password: this.password });
+    };
+
+    handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            this.handleContinue();
+        }
     };
 }
 
