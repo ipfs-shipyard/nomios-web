@@ -196,8 +196,6 @@ class SetPassphrase extends Component {
     handlePasswordChange = (event) => {
         const { disableContinue } = this.state;
 
-        console.log('password change');
-
         if (this.passwordInputTimeout != null) {
             clearTimeout(this.passwordInputTimeout);
         }
@@ -209,8 +207,6 @@ class SetPassphrase extends Component {
 
     handleConfirmationChange = (event) => {
         const { disableContinue } = this.state;
-
-        console.log('confirmation change');
 
         if (this.confirmationInputTimeout != null) {
             clearTimeout(this.confirmationInputTimeout);
