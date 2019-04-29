@@ -6,6 +6,8 @@ import { readAsArrayBuffer } from 'promise-file-reader';
 import { FlowModal, FlowModalStep, Button, TextButton } from '@nomios/web-uikit';
 import GenericStep from './generic-step';
 import { IdentityInfo, IdentityDevice, Feedback } from './create-identity-steps';
+import { ImportManualRecovery, ImportConfirmIdentity, ImportFeedback } from './import-identity-steps';
+import SetupDeviceStep from '../../shared/steps/setup-device-step';
 
 const initialState = {
     currentStepId: 'generic',
@@ -73,7 +75,7 @@ class NewIdentityFlow extends Component {
                         { ({ status }) => (
                             <Feedback
                                 status={ status }
-                                successActions={ this.renderCreateFeedbackActions() }
+                                successActions={ this.renderCreateFeedbackSuccessActions() }
                                 errorActions={ this.renderCreateFeedbackErrorActions() } />
                         ) }
                     </PromiseState>
@@ -83,10 +85,59 @@ class NewIdentityFlow extends Component {
     }
 
     renderImportSteps() {
-        throw new Error('Not implemented');
+        const { promise } = this.state;
+        const identityFirstName =
+            this.state.data['import-manual-recovery'] &&
+            this.state.data['import-manual-recovery'].profileDetails &&
+            this.state.data['import-manual-recovery'].profileDetails.name &&
+            this.state.data['import-manual-recovery'].profileDetails.name.split(' ')[0];
+
+        const profileDetails = this.state.data['import-manual-recovery'] &&
+            this.state.data['import-manual-recovery'].profileDetails;
+
+        const setupDeviceText = {
+            title: '2. Your Device Details',
+            description: 'You will be importing this identity to this device.',
+            buttonText: 'Continue',
+        };
+
+        return (
+            <Fragment>
+                <FlowModalStep id="import-manual-recovery">
+                    <ImportManualRecovery
+                        nextStepId="import-confirm-identity"
+                        onNextStep={ this.handleNextStep }
+                        peekIdentity={ this.props.peekIdentity } />
+                </FlowModalStep>
+                <FlowModalStep id="import-confirm-identity">
+                    <ImportConfirmIdentity
+                        nextStepId="import-identity-device"
+                        previousStepId="import-manual-recovery"
+                        identityData={ profileDetails }
+                        onNextStep={ this.handleNextStep } />
+                </FlowModalStep>
+                <FlowModalStep id="import-identity-device">
+                    <SetupDeviceStep
+                        nextStepId="import-success-feedback"
+                        onNextStep={ this.handleImportSubmitForm }
+                        identityFirstName={ identityFirstName }
+                        stepData={ setupDeviceText } />
+                </FlowModalStep>
+                <FlowModalStep id="import-success-feedback">
+                    <PromiseState promise={ promise }>
+                        { ({ status }) => (
+                            <ImportFeedback
+                                status={ status }
+                                successActions={ this.renderImportFeedbackSuccessActions() }
+                                errorActions={ this.renderImportFeedbackErrorActions() } />
+                        ) }
+                    </PromiseState>
+                </FlowModalStep>
+            </Fragment>
+        );
     }
 
-    renderCreateFeedbackActions() {
+    renderCreateFeedbackSuccessActions() {
         return (
             <Fragment>
                 <Button variant="primary" onClick={ this.handleGoToBackupFlow }>Backup my identity</Button>
@@ -100,6 +151,23 @@ class NewIdentityFlow extends Component {
             <Fragment>
                 <Button variant="primary" onClick={ this.handleRetryCreateClick }>Retry</Button>
                 <TextButton onClick={ this.props.onRequestClose }>Skip this step</TextButton>
+            </Fragment>
+        );
+    }
+
+    renderImportFeedbackSuccessActions() {
+        return (
+            <Fragment>
+                <Button variant="primary" onClick={ this.props.onRequestClose }>Go to Homepage</Button>
+            </Fragment>
+        );
+    }
+
+    renderImportFeedbackErrorActions() {
+        return (
+            <Fragment>
+                <Button variant="primary" onClick={ this.handleRetryImport }>Retry</Button>
+                <TextButton onClick={ this.props.onRequestClose }>Close</TextButton>
             </Fragment>
         );
     }
@@ -130,10 +198,19 @@ class NewIdentityFlow extends Component {
         });
     }
 
-    importIdentity(data) {
-        console.log('data', data);
+    async importIdentity(data) {
+        const { importIdentity } = this.props;
 
-        return Promise.reject(new Error('Not implemented'));
+        const mnemonic = this.state.data['import-manual-recovery'].mnemonic;
+        const deviceInfo = data['import-identity-device'];
+
+        console.log('deviceInfo', deviceInfo);
+        console.log('mnemonic', mnemonic);
+
+        return importIdentity({
+            mnemonic,
+            deviceInfo,
+        });
     }
 
     createFlowPromise = (currentStepId, data) => {
@@ -149,11 +226,6 @@ class NewIdentityFlow extends Component {
         if (isLastImportStep) {
             return this.importIdentity(data);
         }
-    };
-
-    handleExited = () => {
-        this.setState(initialState);
-        this.props.onExited && this.props.onExited();
     };
 
     handleChooseFlow = (flow) => {
@@ -191,10 +263,16 @@ class NewIdentityFlow extends Component {
     handleGoToBackupFlow = () => {
         alert('Not yet implemented');
     };
+
+    handleExited = () => {
+        this.setState(initialState);
+        this.props.onExited && this.props.onExited();
+    };
 }
 
 NewIdentityFlow.propTypes = {
     createIdentity: PropTypes.func.isRequired,
+    peekIdentity: PropTypes.func.isRequired,
     importIdentity: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func,
     onExited: PropTypes.func,
@@ -202,10 +280,12 @@ NewIdentityFlow.propTypes = {
 
 export default connectIdmWallet((idmWallet) => {
     const createIdentity = (params) => idmWallet.identities.create('ipid', params);
+    const peekIdentity = (params) => idmWallet.identities.peek('ipid', params);
     const importIdentity = (params) => idmWallet.identities.import('ipid', params);
 
     return () => ({
         createIdentity,
+        peekIdentity,
         importIdentity,
     });
 })(NewIdentityFlow);
