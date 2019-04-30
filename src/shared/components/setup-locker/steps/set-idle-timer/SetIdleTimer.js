@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { IdlePicker, Button } from '@nomios/web-uikit';
 import PropTypes from 'prop-types';
-
+import { PromiseStatus } from 'react-promise-status';
 import styles from './SetIdleTimer.css';
 
 class SetIdleTimer extends Component {
@@ -10,7 +10,7 @@ class SetIdleTimer extends Component {
     };
 
     render() {
-        const { timeoutValue, feedback } = this.state;
+        const { timeoutValue, idleTimerSubmitPromise } = this.state;
 
         return (
             <div className={ styles.contentWrapper }>
@@ -21,8 +21,15 @@ class SetIdleTimer extends Component {
                     <IdlePicker defaultValue={ timeoutValue } onChange={ this.handlePickerChange } />
                 </div>
                 <div className={ styles.continueButton }>
-                    <Button onClick={ this.handleContinue } onFeedbackAnimationEnd={ this.handleButtonAnimationEnd }
-                        feedback={ feedback }>Finish</Button>
+                    <PromiseStatus
+                        promise={ idleTimerSubmitPromise }
+                        statusMap={ { pending: 'loading', fulfilled: 'success', rejected: 'error' } }
+                        delayMs="300">
+                        { (status) => (
+                            <Button onClick={ this.handleContinue } onFeedbackAnimationEnd={ this.handleButtonAnimationEnd }
+                                feedback={ status }>Finish</Button>
+                        ) }
+                    </PromiseStatus>
                 </div>
             </div>
         );
@@ -36,12 +43,7 @@ class SetIdleTimer extends Component {
         const { timeoutValue } = this.state;
         const { onSetMaxTime } = this.props;
 
-        try {
-            await onSetMaxTime(timeoutValue * 60 * 1000);
-            this.setState({ feedback: 'success' });
-        } catch {
-            this.setState({ feedback: 'error' });
-        }
+        this.setState({ idleTimerSubmitPromise: onSetMaxTime(timeoutValue * 60 * 1000) });
     };
 
     handleButtonAnimationEnd = (isSuccess) => {
@@ -49,8 +51,6 @@ class SetIdleTimer extends Component {
 
         if (isSuccess) {
             onNextStep();
-        } else {
-            this.setState({ feedback: 'none' });
         }
     };
 }

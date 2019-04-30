@@ -78,14 +78,12 @@ class SetPassphrase extends Component {
     analyzePassword = async () => {
         const { analyzePasswordQuality } = this.props;
 
-        // Change analyzePasswordQuality use from async/await to cancelable promises
-        // Cancel promise analyePasswordQuality promise if there is a reference to one
+        // Cancel promise analyePasswordQuality promise if there already is a reference to one
 
         analyzePasswordQuality(this.password)
         .then((result) => this.setState({ result }))
-        .catch((error) => this.setState({ result: error }));
-
-        this.validatePasswordMatch();
+        .catch((error) => this.setState({ result: error }))
+        .finally(() => this.validatePasswordMatch());
     };
 
     validatePasswordMatch = () => {
