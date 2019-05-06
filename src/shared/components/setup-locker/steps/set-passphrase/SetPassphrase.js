@@ -1,218 +1,202 @@
 import React, { Component } from 'react';
-import { TextInput, Button, FeedbackMessage, WarningIcon, InfoIcon } from '@nomios/web-uikit';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import { TextInput, Button, FeedbackMessage, WarningIcon, InfoIcon } from '@nomios/web-uikit';
+import { ButtonPromiseState } from '../../../button-promise-state';
+import { Form, Field } from 'react-final-form';
+import { FORM_ERROR } from 'final-form';
+import memoize from 'memoize-one';
+import pDebounce from 'p-debounce';
 import styles from './SetPassphrase.css';
 
-class SetPassphrase extends Component {
-    password = '';
-    passwordInputTimeout = undefined;
-    confirmation = '';
-    confirmationInputTimeout = undefined;
+const createValidatePassphrase = (validatePassphrase) => {
+    validatePassphrase = pDebounce(validatePassphrase, 200);
 
-    state = {
-        result: {
-            score: 0,
-            suggestions: [],
-            warning: null,
-        },
-        matchFeedback: null,
-        continueDisabled: true,
-        feedback: 'none',
-        submitError: false,
+    return async (passphrase, _, meta) => {
+        try {
+            meta.data.validationResult = await validatePassphrase(passphrase);
+        } catch (err) {
+            meta.data.validationResult = err;
+
+            return err.message;
+        }
     };
+};
 
-    componentWillUnmount() {
-        clearTimeout(this.passwordInputTimeout);
-        clearTimeout(this.confirmationInputTimeout);
+const createValidatePassphraseConfirmation = () => {
+    const validatePassphraseConfirmation = pDebounce(async (passphraseConfirmation, passphrase) => {
+        if (passphraseConfirmation !== passphrase) {
+            return 'Passphrases do not match';
+        }
+    }, 400);
+
+    return async (passphraseConfirmation, allValues, meta) => {
+        if (!passphraseConfirmation) {
+            return;
+        }
+
+        const error = await validatePassphraseConfirmation(passphraseConfirmation, allValues.passphrase);
+
+        meta.data.error = error;
+        meta.data.validatedOnce = true;
+
+        return error;
+    };
+};
+
+const getPassphraseFeedback = (validationResult) => {
+    const { score: strength, warning, suggestions } = validationResult;
+
+    const normalizedStrength = Math.ceil(4 * strength);
+    let feedback = null;
+
+    switch (normalizedStrength) {
+    case 1:
+        feedback = { message: 'Poor', type: 'info' };
+        break;
+    case 2:
+        feedback = { message: 'Weak', type: 'info' };
+        break;
+    case 3:
+        feedback = { message: 'Fair' };
+        break;
+    case 4:
+        feedback = { message: 'Strong' };
+        break;
+    default:
+        return null;
     }
 
-    render() {
-        const { matchFeedback,
-            continueDisabled,
-            feedback,
-            submitError } = this.state;
-        const { score: strength } = this.state.result;
+    if (!suggestions.length && !warning) {
+        return feedback;
+    }
 
-        const passphraseFeedback = this.deriveFeedbackFromStrength();
-        const confirmationFeedback = matchFeedback === false ? {
-            message: 'Passwords don\'t match.',
-            type: 'error',
-        } : null;
+    feedback.tooltip = (
+        <div className={ styles.feedbackTooltip }>
+            <div className={ styles.suggestions }>
+                { warning &&
+                    <div><WarningIcon className={ styles.warning } /> { warning.message }</div> }
+                { suggestions.map((suggestion) =>
+                    <div key={ suggestion.code }><InfoIcon /> { suggestion.message }</div>) }
+            </div>
+        </div>
+    );
+
+    return feedback;
+};
+
+class SetPassphrase extends Component {
+    createValidatePassphrase = memoize(createValidatePassphrase);
+    validatePassphraseConfirmation = createValidatePassphraseConfirmation();
+    getPassphraseFeedback = memoize(getPassphraseFeedback);
+
+    state = {
+        promise: undefined,
+    };
+
+    render() {
+        const { promise } = this.state;
+        const { validatePassphrase } = this.props;
 
         return (
             <div className={ styles.contentWrapper }>
                 <h2 className={ styles.title }>Setup your locker.</h2>
                 <p>Please define a passphrase which will be used to encrypt all the data stored in this app.</p>
-                <TextInput className={ styles.passwordInput }
-                    label="Enter Passphrase"
-                    placeholder="Enter your passphrase"
-                    type="password"
-                    helperText="Minimum of 8 characters"
-                    lineStrength={ strength }
-                    lineType="dashed"
-                    feedback={ passphraseFeedback }
-                    onChange={ this.handlePasswordChange }
-                    onKeyDown={ this.handleKeyDown } />
-                <TextInput className={ styles.confirmationInput }
-                    label="Confirm Passphrase"
-                    placeholder="Enter passphrase confirmation"
-                    type="password"
-                    feedback={ confirmationFeedback }
-                    lineStrength={ matchFeedback ? 1 : -1 }
-                    onChange={ this.handleConfirmationChange }
-                    onKeyDown={ this.handleKeyDown } />
-                <FeedbackMessage
-                    variant="large"
-                    type="error"
-                    className={ classNames(styles.writeError, submitError && styles.show) }>
-                    There was a problem saving your password. Please try again later.
-                </FeedbackMessage>
-                <div className={ styles.continueButton }>
-                    <Button onClick={ this.handleContinue } disabled={ continueDisabled } feedback={ feedback } >Continue</Button>
-                </div>
+
+                <Form onSubmit={ this.handleSubmit }>
+                    { ({ handleSubmit, hasValidationErrors, validating, submitting, submitError }) => (
+                        <form autoComplete="off" onSubmit={ handleSubmit }>
+                            <Field name="passphrase" validate={ this.createValidatePassphrase(validatePassphrase) }>
+                                { ({ input, meta }) => (
+                                    <TextInput
+                                        { ...input }
+                                        label="Enter Passphrase"
+                                        placeholder="Enter your passphrase"
+                                        helperText="You may use any characters, including spaces"
+                                        lineType="dashed"
+                                        lineStrength={ meta.data.validationResult && meta.data.validationResult.score }
+                                        feedback={ meta.data.validationResult && this.getPassphraseFeedback(meta.data.validationResult) }
+                                        className={ styles.passphraseInput } />
+                                ) }
+                            </Field>
+
+                            <Field name="confirmPassphrase" validate={ this.validatePassphraseConfirmation }>
+                                { ({ input, meta }) => {
+                                    let lineStrength;
+                                    let feedback;
+
+                                    if (meta.data.validatedOnce) {
+                                        lineStrength = meta.data.error ? 0 : 1;
+                                        feedback = meta.data.error && { message: 'Passphrases don\'t match.', type: 'error' };
+                                    }
+
+                                    return (
+                                        <TextInput
+                                            { ...input }
+                                            type="password"
+                                            label="Confirm Passphrase"
+                                            placeholder="Enter passphrase confirmation"
+                                            lineStrength={ lineStrength }
+                                            feedback={ feedback }
+                                            className={ styles.passphraseInput } />
+                                    );
+                                } }
+                            </Field>
+
+                            <div className={ styles.submitWrapper }>
+                                <FeedbackMessage
+                                    variant="large"
+                                    type="error"
+                                    className={ classNames(styles.saveError, submitError && styles.show) }>
+                                    There was a problem saving your passphrase. Please try again later.
+                                </FeedbackMessage>
+
+                                <div className={ styles.continueButton }>
+                                    <ButtonPromiseState promise={ promise } onSettle={ this.handleSettle }>
+                                        { ({ status }) => (
+                                            <Button
+                                                disabled={ hasValidationErrors || validating || submitting }
+                                                feedback={ status }>
+                                                Continue
+                                            </Button>
+                                        ) }
+                                    </ButtonPromiseState>
+                                </div>
+                            </div>
+                        </form>
+                    ) }
+                </Form>
             </div>
         );
     }
 
-    analyzePassword = async () => {
-        const { analyzePasswordQuality } = this.props;
+    handleSubmit = (data) => {
+        const promise = this.props.enablePassphrase(data.passphrase);
 
-        // Cancel promise analyePasswordQuality promise if there already is a reference to one
+        this.setState({ promise });
 
-        analyzePasswordQuality(this.password)
-        .then((result) => this.setState({ result }))
-        .catch((error) => this.setState({ result: error }))
-        .finally(() => this.validatePasswordMatch());
-    };
+        return promise.catch((err) => {
+            console.error(err);
 
-    validatePasswordMatch = () => {
-        if (this.confirmation === '') {
-            this.setState({ continueDisabled: true, matchFeedback: null });
-
-            return;
-        }
-
-        if (this.password !== this.confirmation) {
-            this.setState({ continueDisabled: true, matchFeedback: false });
-
-            return;
-        }
-
-        if (this.state.result.score > 0.5) {
-            this.setState({ continueDisabled: false, matchFeedback: true });
-        } else {
-            this.setState({ continueDisabled: true, matchFeedback: null });
-        }
-    };
-
-    deriveFeedbackFromStrength = () => {
-        const { score: strength, warning, suggestions } = this.state.result;
-
-        const normalizedStrength = Math.ceil(4 * strength);
-
-        let passphraseFeedback = null;
-
-        switch (normalizedStrength) {
-        case 1:
-            passphraseFeedback = {
-                message: 'Poor',
-                type: 'info',
-            };
-            break;
-        case 2:
-            passphraseFeedback = {
-                message: 'Weak',
-                type: 'info',
-            };
-            break;
-        case 3:
-            passphraseFeedback = {
-                message: 'Fair',
-            };
-            break;
-        case 4:
             return {
-                message: 'Strong',
+                [FORM_ERROR]: err.message,
             };
-        case 0:
-            return null;
-        default:
-            passphraseFeedback = null;
-        }
-
-        const tooltipSuggestionLines = [];
-
-        if (suggestions.length !== 0 || warning != null) {
-            if (suggestions.length !== 0) {
-                suggestions.map((suggestion) => tooltipSuggestionLines.push(suggestion.message));
-            }
-            passphraseFeedback.tooltip = (
-                <div className={ styles.tooltip }>
-                    <div className={ styles.suggestions }>
-                        {warning != null &&
-                            <div><WarningIcon className={ styles.warning } /> { warning.message }</div> }
-                        { tooltipSuggestionLines.map((elem, index) =>
-                            <div key={ index }><InfoIcon /> { elem }</div>) }
-                    </div>
-                </div>
-            );
-        }
-
-        return passphraseFeedback;
+        });
     };
 
-    handlePasswordChange = (event) => {
-        const { continueDisabled } = this.state;
-
-        clearTimeout(this.passwordInputTimeout);
-        this.password = event.target.value;
-        !continueDisabled && this.setState({ continueDisabled: true });
-
-        this.passwordInputTimeout = setTimeout(this.analyzePassword, 400);
-    };
-
-    handleConfirmationChange = (event) => {
-        const { continueDisabled } = this.state;
-
-        clearTimeout(this.confirmationInputTimeout);
-        this.confirmation = event.target.value;
-        !continueDisabled && this.setState({ continueDisabled: true });
-
-        this.confirmationInputTimeout = setTimeout(this.validatePasswordMatch, 400);
-    };
-
-    handleContinue = async () => {
-        const { continueDisabled } = this.state;
-        const { onNextStep, enablePassword } = this.props;
-
-        if (continueDisabled) {
-            return;
-        }
-
-        this.setState({ feedback: 'loading' });
-        try {
-            await enablePassword(this.password);
-        } catch {
-            this.setState({ feedback: 'error', submitError: true });
-
-            return;
-        }
-
-        onNextStep({ password: this.password });
-    };
-
-    handleKeyDown = (event) => {
-        if (event.key === 'Enter') {
-            this.handleContinue();
+    handleSettle = (state) => {
+        if (state.status === 'fulfilled') {
+            this.props.onNextStep();
+        } else {
+            this.setState({ promise: undefined });
         }
     };
 }
 
 SetPassphrase.propTypes = {
     onNextStep: PropTypes.func.isRequired,
-    analyzePasswordQuality: PropTypes.func.isRequired,
-    enablePassword: PropTypes.func.isRequired,
+    validatePassphrase: PropTypes.func.isRequired,
+    enablePassphrase: PropTypes.func.isRequired,
 };
 
 export default SetPassphrase;

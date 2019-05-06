@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import { IdlePicker, Button } from '@nomios/web-uikit';
 import PropTypes from 'prop-types';
-import { PromiseStatus } from 'react-promise-status';
+import { ButtonPromiseState, getPromiseState } from '../../../../../shared/components/button-promise-state';
 import styles from './SetIdleTimer.css';
 
 class SetIdleTimer extends Component {
     state = {
         timeoutValue: 3,
+        promise: undefined,
     };
 
     render() {
-        const { timeoutValue, idleTimerSubmitPromise } = this.state;
+        const { timeoutValue, promise } = this.state;
 
         return (
             <div className={ styles.contentWrapper }>
@@ -21,15 +22,11 @@ class SetIdleTimer extends Component {
                     <IdlePicker defaultValue={ timeoutValue } onChange={ this.handlePickerChange } />
                 </div>
                 <div className={ styles.continueButton }>
-                    <PromiseStatus
-                        promise={ idleTimerSubmitPromise }
-                        statusMap={ { pending: 'loading', fulfilled: 'success', rejected: 'error' } }
-                        delayMs="300">
-                        { (status) => (
-                            <Button onClick={ this.handleContinue } onFeedbackAnimationEnd={ this.handleButtonAnimationEnd }
-                                feedback={ status }>Finish</Button>
+                    <ButtonPromiseState promise={ promise } onSettle={ this.handleSettle }>
+                        { ({ status }) => (
+                            <Button onClick={ this.handleContinue } feedback={ status }>Finish</Button>
                         ) }
-                    </PromiseStatus>
+                    </ButtonPromiseState>
                 </div>
             </div>
         );
@@ -40,24 +37,35 @@ class SetIdleTimer extends Component {
     };
 
     handleContinue = async () => {
-        const { timeoutValue } = this.state;
-        const { onSetMaxTime } = this.props;
+        const { timeoutValue, promise: currentPromise } = this.state;
+        const { setMaxTime } = this.props;
 
-        this.setState({ idleTimerSubmitPromise: onSetMaxTime(timeoutValue * 60 * 1000) });
+        // Protect against the user clicking the button several times while we are still saving the change
+        if (getPromiseState(currentPromise).status === 'pending') {
+            return;
+        }
+
+        const promise = setMaxTime(timeoutValue * 60 * 1000);
+
+        this.setState({ promise });
+
+        return promise.catch((err) => {
+            console.error(err);
+        });
     };
 
-    handleButtonAnimationEnd = (isSuccess) => {
-        const { onNextStep } = this.props;
-
-        if (isSuccess) {
-            onNextStep();
+    handleSettle = (state) => {
+        if (state.status === 'fulfilled') {
+            this.props.onNextStep();
+        } else {
+            this.setState({ promise: undefined });
         }
     };
 }
 
 SetIdleTimer.propTypes = {
     feedback: PropTypes.oneOf(['none', 'loading', 'success', 'error']),
-    onSetMaxTime: PropTypes.func.isRequired,
+    setMaxTime: PropTypes.func.isRequired,
     onNextStep: PropTypes.func.isRequired,
 };
 

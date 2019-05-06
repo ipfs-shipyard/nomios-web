@@ -12,8 +12,8 @@ class SetupLocker extends Component {
         const locker = props.locker;
 
         this.analyzePasswordQuality = locker.getLock(LOCK_TYPE).validate.bind(locker.getLock(LOCK_TYPE));
-        this.enablePassword = locker.getLock(LOCK_TYPE).enable.bind(locker.getLock(LOCK_TYPE));
-        this.handleMaxTime = locker.getIdleTimer().setMaxTime.bind(locker.getIdleTimer());
+        this.enablePassphrase = locker.getLock(LOCK_TYPE).enable.bind(locker.getLock(LOCK_TYPE));
+        this.setMaxTime = locker.idleTimer.setMaxTime.bind(locker.idleTimer);
     }
 
     state = {
@@ -32,11 +32,13 @@ class SetupLocker extends Component {
         return (
             <FlowModal { ...rest } variant="simple" step={ stepId } showClose={ false }>
                 <FlowModalStep id="passphrase">
-                    <SetPassphrase onNextStep={ this.handleProceedFromPassphrase }
-                        analyzePasswordQuality={ this.analyzePasswordQuality } enablePassword={ this.enablePassword } />
+                    <SetPassphrase
+                        onNextStep={ this.handleProceedFromPassphrase }
+                        validatePassphrase={ this.analyzePasswordQuality }
+                        enablePassphrase={ this.enablePassphrase } />
                 </FlowModalStep>
                 <FlowModalStep id="timeout">
-                    <SetIdleTimer onNextStep={ this.handleProceedFromTimeout } onSetMaxTime={ this.handleMaxTime } />
+                    <SetIdleTimer onNextStep={ this.handleProceedFromTimeout } setMaxTime={ this.setMaxTime } />
                 </FlowModalStep>
             </FlowModal>
         );
