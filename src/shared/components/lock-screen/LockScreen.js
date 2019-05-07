@@ -43,6 +43,12 @@ class LockScreen extends Component {
         input.focus();
         input.addEventListener('keydown', this.handleKeyboardInput);
         input.addEventListener('blur', () => input.focus());
+
+        this.focusInterval = setInterval(() => input.focus(), 250);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.focusInterval);
     }
 
     render() {
@@ -52,29 +58,31 @@ class LockScreen extends Component {
         return (
             <div className={ styles.lockscreen } onClick={ this.handleMouseClick }>
                 <div className={ styles.background } dangerouslySetInnerHTML={ { __html: background } } />
-                <CSSTransition classNames={ lockscreenContentClassNames } in={ !unmounting } appear component={ null } timeout={ 1500 }>
-                    <div className={ styles.lockscreenContent }>
-                        <div className={ styles.logo }>
-                            <Lottie options={ this.animationOptions } className={ styles.svg } isPaused={ !startLogoAnimation } />
-                        </div>
-                        <h2 className={ styles.unlockTitle }>Unlock Nomios</h2>
-                        <p className={ styles.unlockHint } onTransitionEnd={ this.handleTransitionEnd }>
+                <div className={ styles.contentParent }>
+                    <CSSTransition classNames={ lockscreenContentClassNames } in={ !unmounting } appear component={ null } timeout={ 1500 }>
+                        <div className={ styles.lockscreenContent }>
+                            <div className={ styles.logo }>
+                                <Lottie options={ this.animationOptions } className={ styles.svg } isPaused={ !startLogoAnimation } />
+                            </div>
+                            <h2 className={ styles.unlockTitle }>Unlock Nomios</h2>
+                            <p className={ styles.unlockHint } onTransitionEnd={ this.handleTransitionEnd }>
                             Enter your passphrase to unlock Nomios and get access to all your data
-                        </p>
-                        <input type="password"
-                            name="getLockKey"
-                            className={ styles.passwordInput }
-                            ref={ this.passwordInputRef }
-                            onChange={ this.handlePasswordChange }
-                            disabled={ feedback === 'loading' } />
-                        { this.renderPasswordDots() }
-                        { feedback === 'error' &&
+                            </p>
+                            <input type="password"
+                                name="getLockKey"
+                                className={ styles.passwordInput }
+                                ref={ this.passwordInputRef }
+                                onChange={ this.handlePasswordChange }
+                                disabled={ feedback === 'loading' } />
+                            { this.renderPasswordDots() }
+                            { feedback === 'error' &&
                             <p className={ styles.errorMessage }>
                                 The passphrase you entered does not match the saved passphrase. Please try again.
                             </p>
-                        }
-                    </div>
-                </CSSTransition>
+                            }
+                        </div>
+                    </CSSTransition>
+                </div>
             </div>
         );
     }
@@ -117,17 +125,15 @@ class LockScreen extends Component {
         case 'ArrowRight':
         case 'ArrowUp':
         case 'ArrowDown':
+        case 'Home':
         case 'Tab':
             event.preventDefault();
-            event.stopPropagation();
             break;
         case 'Enter':
             event.preventDefault();
-            event.stopPropagation();
             if (this.state.feedback === 'none') {
                 this.handleSubmission();
             }
-            this.passwordInputRef.current.focus();
             break;
         default:
             if ((event.code.includes('Digit') || event.code.includes('Key') || event.code === 'Backspace') &&

@@ -1,52 +1,61 @@
 import React, { Component } from 'react';
+import { FlowModal, FlowModalStep } from '@nomios/web-uikit';
 import PropTypes from 'prop-types';
+import SetPassphrase from './steps/set-passphrase/SetPassphrase';
+import SetIdleTimer from './steps/set-idle-timer/SetIdleTimer';
 
-import SetupMasterLock from './steps/SetupMasterLock';
-import SetupIdleTimer from './steps/SetupIdleTimer';
+const LOCK_TYPE = 'passphrase';
 
 class SetupLocker extends Component {
+    constructor(props) {
+        super(props);
+        const locker = props.locker;
+
+        this.analyzePasswordQuality = locker.getLock(LOCK_TYPE).validate.bind(locker.getLock(LOCK_TYPE));
+        this.enablePassphrase = locker.getLock(LOCK_TYPE).enable.bind(locker.getLock(LOCK_TYPE));
+        this.setMaxTime = locker.idleTimer.setMaxTime.bind(locker.idleTimer);
+    }
+
     state = {
-        step: 1,
+        stepId: 'passphrase',
+        data: {},
     };
 
+    componentWillUnmount() {
+        clearTimeout(this.onCompleteTimeout);
+    }
+
     render() {
+        const { stepId } = this.state;
+        const { locker, onComplete, ...rest } = this.props;
+
         return (
-            <div>
-                <h1>Setup Locker</h1>
-                { this.renderStep() }
-            </div>
+            <FlowModal { ...rest } variant="simple" step={ stepId } showClose={ false }>
+                <FlowModalStep id="passphrase">
+                    <SetPassphrase
+                        onNextStep={ this.handleProceedFromPassphrase }
+                        validatePassphrase={ this.analyzePasswordQuality }
+                        enablePassphrase={ this.enablePassphrase } />
+                </FlowModalStep>
+                <FlowModalStep id="timeout">
+                    <SetIdleTimer onNextStep={ this.handleProceedFromTimeout } setMaxTime={ this.setMaxTime } />
+                </FlowModalStep>
+            </FlowModal>
         );
     }
 
-    renderStep() {
-        const { step } = this.state;
-        const { locker } = this.props;
+    handleProceedFromPassphrase = () => {
+        this.setState({ stepId: 'timeout' });
+    };
 
-        switch (step) {
-        case 1:
-            return <SetupMasterLock locker={ locker } onComplete={ this.handleStepComplete } />;
-        case 2:
-            return <SetupIdleTimer locker={ locker } onComplete={ this.handleStepComplete } />;
-        default:
-            return null;
-        }
-    }
-
-    handleStepComplete = () => {
-        const { step } = this.state;
-        const { onComplete } = this.props;
-
-        if (step === 2) {
-            return onComplete();
-        }
-
-        this.setState({ step: step + 1 });
+    handleProceedFromTimeout = () => {
+        this.onCompleteTimeout = setTimeout(this.props.onComplete, 300);
     };
 }
 
 SetupLocker.propTypes = {
     locker: PropTypes.object.isRequired,
-    onComplete: PropTypes.func,
+    onComplete: PropTypes.func.isRequired,
 };
 
 export default SetupLocker;
