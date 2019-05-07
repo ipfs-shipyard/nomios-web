@@ -48,10 +48,6 @@ class SetIdleTimer extends Component {
         const promise = setMaxTime(timeoutValue * 60 * 1000);
 
         this.setState({ promise });
-
-        return promise.catch((err) => {
-            console.error(err);
-        });
     };
 
     handleSettle = (state) => {
