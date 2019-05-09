@@ -1,5 +1,4 @@
 @import "@nomios/web-uikit/styles/colors";
-@import "@nomios/web-uikit/styles/mixins/typography";
 
 .contentWrapper {
     width: 100%;
@@ -26,16 +25,20 @@
         align-self: flex-end;
     }
 
-    & .bulletsIndicator {
-        position: absolute;
-        top: 50%;
-        right: 6rem;
-        transform: translateY(-50%);
+    & .typeGroup {
+        & > *:not(:last-child) {
+            margin-right: 9.5rem;
+        }
     }
-}
 
-.typeGroup {
-    & > *:not(:last-child) {
-        margin-right: 9.5rem;
+    & .deviceInfoWrapper {
+        display: flex;
+        align-items: center;
+
+        & .textInput {
+            width: 40.6rem;
+            margin-left: 6.8rem;
+            transform: translateY(-25%);
+        }
     }
 }

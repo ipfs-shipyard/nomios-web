@@ -6,12 +6,10 @@ import styles from './FaderContainer.css';
 
 class FaderContainer extends Component {
     static getDerivedStateFromProps(props, state) {
-        const isFirstRender = typeof state.children === 'undefined';
-
         // It means a change of active index has occurred
         if (props.activeIndex !== state.activeIndex) {
-            return isFirstRender ?
-                { activeIndex: props.activeIndex, children: React.Children.toArray(props.children) } :
+            return state.isFirstRender ?
+                { activeIndex: props.activeIndex, isFirstRender: false } :
                 { requestNextActiveIndex: props.activeIndex };
         }
 
@@ -21,13 +19,15 @@ class FaderContainer extends Component {
     contentRef = createRef();
 
     state = {
-        children: undefined,
+        isFirstRender: true,
         activeIndex: undefined,
         requestNextActiveIndex: false,
     };
 
     render() {
-        const { children, activeIndex, requestNextActiveIndex } = this.state;
+        const { activeIndex, requestNextActiveIndex } = this.state;
+        const { children } = this.props;
+
         const isVisible = typeof requestNextActiveIndex === 'boolean';
 
         return (
