@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 
-import { FlowModal } from '@nomios/web-uikit';
+import { FlowModal, FlowModalStep } from '@nomios/web-uikit';
 import GenericStep from './generic-step';
-import createIdentitySteps from './create-identity-steps';
+import { IdentityType, IdentityInfo } from './create-identity-steps';
 
 // import styles from './NewIdentityFlow.css';
 
@@ -18,13 +18,15 @@ class NewIdentityFlow extends Component {
 
         return (
             <FlowModal variant="advanced" step={ currentStepId } { ...this.props }>
-                <GenericStep id="generic" onNextStep={ this.handleChooseNextFlow } />
+                <FlowModalStep id="generic">
+                    <GenericStep onNextStep={ this.handleChooseNextFlow } />
+                </FlowModalStep>
                 { this.renderFlowSteps() }
             </FlowModal>
         );
     }
 
-    renderFlowSteps = () => {
+    renderFlowSteps() {
         const { currentFlow } = this.state;
 
         switch (currentFlow) {
@@ -35,20 +37,47 @@ class NewIdentityFlow extends Component {
 
         default: return null;
         }
-    };
+    }
 
-    renderCreateSteps = () => createIdentitySteps.map(({ component: Step, props }, index) => <Step key={ index } { ...props } />);
+    renderCreateSteps() {
+        const identityFirstName = this.state.data['create-identity-type'] && this.state.data['create-identity-type'].name.split(' ')[0];
+
+        console.log('identityFirstName1', identityFirstName);
+
+        return (
+            <Fragment>
+                <FlowModalStep id="create-identity-type">
+                    <IdentityType
+                        nextStepId="create-identity-info"
+                        onNextStep={ this.handleNextStep } />
+                </FlowModalStep>
+                <FlowModalStep id="create-identity-info">
+                    <IdentityInfo
+                        nextStepId="create-identity-feedback"
+                        onNextStep={ this.handleNextStep }
+                        identityFirstName={ identityFirstName } />
+                </FlowModalStep>
+                <FlowModalStep id="create-identity-feedback">
+                    <IdentityInfo
+                        nextStepId={ null }
+                        onNextStep={ this.handleNextStep } />
+                </FlowModalStep>
+            </Fragment>
+        );
+    }
 
     handleChooseNextFlow = (flow) => {
-        const createIdentityFirstStepId = createIdentitySteps[0].props.id;
-
-        console.log('createIdentityFirstStepId', createIdentityFirstStepId);
-        console.log('flow', flow);
+        const createIdentityFirstStepId = 'create-identity-type';
 
         this.setState({ currentFlow: flow, currentStepId: createIdentityFirstStepId });
     };
 
-    handleNextStep = (nextStep) => this.setState({ currentStepId: nextStep });
+    handleNextStep = (nextStepId, data) => {
+        this.setState((prevState) => ({
+            currentStepId: nextStepId,
+            data: { ...prevState.data, [prevState.currentStepId]: data },
+        }), () => console.log('this.state.data', this.state.data));
+    };
 }
 
 export default NewIdentityFlow;

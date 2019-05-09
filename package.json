@@ -34,6 +34,7 @@
     "memoize-one": "^5.0.4",
     "p-debounce": "^2.1.0",
     "react": "^16.8.4",
+    "react-device-detect": "^1.6.2",
     "react-dom": "^16.8.4",
     "react-final-form": "^4.1.0",
     "react-idm-wallet": "^0.1.0",
