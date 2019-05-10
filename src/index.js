@@ -1,13 +1,21 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
-import { setAppElement } from '@nomios/web-uikit';
 import './index.css';
+import React from 'react';
+import { render } from 'react-dom';
+import ReactModal from 'react-modal';
+import { setAppElement } from '@nomios/web-uikit';
+import App from './App';
+import Boot from './Boot';
+import * as serviceWorker from './serviceWorker';
 
+ReactModal.setAppElement('#root');
 setAppElement('#root');
 
-ReactDOM.render(<App />, document.getElementById('root'));
+render(
+    <Boot>
+        <App />
+    </Boot>,
+    document.getElementById('root')
+);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

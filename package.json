@@ -1,7 +1,6 @@
 {
   "name": "nomios-web",
   "description": "Codebase for the web version of Nomios, a reference implementation of the IDM Wallet UI",
-  "homepage": "https://github.com/ipfs-shipyard/nomios-web#readme",
   "author": "Pedro Santos <pedro.santos@moxy.studio>",
   "license": "MIT",
   "repository": {
@@ -36,9 +35,12 @@
     "p-debounce": "^2.1.0",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
-    "react-scripts": "^3.0.0",
     "react-final-form": "^4.1.0",
-    "react-promiseful": "^2.0.0"
+    "react-idm-wallet": "^0.1.0",
+    "react-modal": "^3.8.1",
+    "react-promiseful": "^2.0.0",
+    "react-router-dom": "^5.0.0",
+    "react-scripts": "^3.0.0"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^7.5.0",
@@ -53,7 +55,7 @@
     "react-transition-group": "^4.0.0",
     "standard-version": "^6.0.1",
     "stylelint": "^10.0.1",
-    "stylelint-config-moxy": "^6.0.0",
+    "stylelint-config-moxy": "^6.1.0",
     "svg-css-modules-loader": "^1.6.1",
     "svgo-loader": "^2.2.0"
   },

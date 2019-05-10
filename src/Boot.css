@@ -1,0 +1,7 @@
+.boot {
+    margin: auto auto;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+}

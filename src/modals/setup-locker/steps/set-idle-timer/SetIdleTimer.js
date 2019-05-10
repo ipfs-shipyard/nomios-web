@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { IdlePicker, Button } from '@nomios/web-uikit';
 import PropTypes from 'prop-types';
-import { ButtonPromiseState, getPromiseState } from '../../../../../shared/components/button-promise-state';
+import { ButtonPromiseState, getPromiseState } from '../../../../shared/components/button-promise-state';
 import styles from './SetIdleTimer.css';
 
 class SetIdleTimer extends Component {
