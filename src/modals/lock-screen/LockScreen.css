@@ -220,7 +220,7 @@
                     animation-name: loading;
                     animation-duration: 0.8s;
                     animation-iteration-count: infinite;
-                    animation-timing-function: ease;
+                    animation-timing-function: linear;
                 }
             }
 
@@ -297,7 +297,7 @@
     }
 
     50% {
-        opacity: 0.5;
+        opacity: 0.3;
     }
 
     100% {

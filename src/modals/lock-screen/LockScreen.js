@@ -10,6 +10,8 @@ import styles from './LockScreen.css';
 import unlockAnimationData from './unlock-animation.json';
 import backgroundPatternUrl from '../../shared/media/images/background-pattern-1440p.png';
 
+const MINIMUM_UNLOCK_ANIMATION_DURATION = 500;
+
 const lockScreenTimeout = {
     appear: 300,
     enter: 300,
@@ -78,7 +80,7 @@ class LockScreen extends Component {
                                 Enter your passphrase to unlock Nomios and get access to all your data
                             </p>
 
-                            <PromiseState promise={ promise }>
+                            <PromiseState promise={ promise } onSettle={ this.handlePromiseSettle }>
                                 { ({ status }) => (
                                     <Fragment>
                                         <input
@@ -109,6 +111,7 @@ class LockScreen extends Component {
         const passphraseLength = passphrase.length;
         const rejected = status === 'rejected';
         const loading = status === 'pending' || status === 'fulfilled';
+        const animationDelay = loading ? -0.1 : 0;
 
         return (
             <div className={ classNames(styles.passphraseDisplay, rejected && styles.error) }>
@@ -123,9 +126,7 @@ class LockScreen extends Component {
                                 exit={ !rejected }>
                                 <div
                                     className={ classNames(styles.passphraseDot, loading && styles.loading) }
-                                    style={ {
-                                        animationDelay: loading ? `${((0.1 * passphraseLength) - 0.1) - (i / 10)}s` : undefined,
-                                    } } />
+                                    style={ { animationDelay: `${animationDelay * i}s` } } />
                             </CSSTransition>
                         ))
                     }
@@ -154,10 +155,17 @@ class LockScreen extends Component {
             return;
         }
 
-        const promise = this.props.unlock('passphrase', this.state.passphrase);
+        const promise = Promise.all([
+            new Promise((resolve) => setTimeout(resolve, MINIMUM_UNLOCK_ANIMATION_DURATION)),
+            this.props.unlock('passphrase', this.state.passphrase),
+        ]);
 
         this.setState({ promise });
     }
+
+    handlePromiseSettle = () => {
+        this.props.onUnlock();
+    };
 
     handleInputChange = (event) => {
         const value = event.target.value;
@@ -209,8 +217,9 @@ class LockScreen extends Component {
 }
 
 LockScreen.propTypes = {
-    unlock: PropTypes.func.isRequired,
     in: PropTypes.bool,
+    unlock: PropTypes.func.isRequired,
+    onUnlock: PropTypes.func.isRequired,
 };
 
 export default connectIdmWallet((idmWallet) => {

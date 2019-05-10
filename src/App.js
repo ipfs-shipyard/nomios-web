@@ -12,23 +12,30 @@ import styles from './App.css';
 
 class App extends Component {
     state = {
+        lockScreenOpen: false,
         setupLockerOpen: false,
     };
 
     constructor(props) {
         super(props);
+        this.state.lockScreenOpen = props.locked;
         this.state.setupLockerOpen = props.pristine;
     }
 
+    componentDidUpdate(prevProps) {
+        if (this.props.locked && !prevProps.locked) {
+            this.setState({ lockScreenOpen: true });
+        }
+    }
+
     render() {
-        const { locked } = this.props;
-        const { setupLockerOpen } = this.state;
+        const { lockScreenOpen, setupLockerOpen } = this.state;
 
         return (
             <div className={ styles.app }>
                 <Router>
-                    <Transition in={ locked } timeout={ 2000 } mountOnEnter unmountOnExit>
-                        <LockScreen in={ locked } />
+                    <Transition in={ lockScreenOpen } timeout={ 2000 } mountOnEnter unmountOnExit>
+                        <LockScreen in={ lockScreenOpen } onUnlock={ this.handleLockScreenUnlock } />
                     </Transition>
 
                     <Transition in={ setupLockerOpen } timeout={ 2000 } mountOnEnter unmountOnExit>
@@ -43,6 +50,10 @@ class App extends Component {
             </div>
         );
     }
+
+    handleLockScreenUnlock = () => {
+        this.setState({ lockScreenOpen: this.props.locked });
+    };
 
     handleSetupLockerComplete = () => {
         this.setState({ setupLockerOpen: false });
