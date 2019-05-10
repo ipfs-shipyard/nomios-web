@@ -5,7 +5,7 @@ const defaultOptions = {
     thresholdMs: 300,
     onSettleDelayMs: {
         rejected: 2000,
-        fulfilled: 2000,
+        fulfilled: 1500,
         fulfilledWithinThreshold: 0,
     },
     statusMap: {

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { TextInput, Button, FeedbackMessage, WarningIcon, InfoIcon } from '@nomios/web-uikit';
-import { ButtonPromiseState } from '../../../button-promise-state';
+import { ButtonPromiseState } from '../../../../shared/components/button-promise-state';
 import { Form, Field } from 'react-final-form';
 import { FORM_ERROR } from 'final-form';
 import memoize from 'memoize-one';
