@@ -41,6 +41,8 @@ const unlockAnimationOptions = {
 
 class LockScreen extends Component {
     passphraseInputRef = undefined;
+    focusInterval = undefined;
+    focusTimeout = undefined;
 
     state = {
         passphrase: '',
@@ -50,6 +52,7 @@ class LockScreen extends Component {
 
     componentWillUnmount() {
         clearInterval(this.focusInterval);
+        clearTimeout(this.focusTimeout);
     }
 
     render() {
@@ -85,8 +88,7 @@ class LockScreen extends Component {
                                             value={ passphrase }
                                             onKeyDown={ this.handleInputKeyDown }
                                             onChange={ this.handleInputChange }
-                                            onBlur={ this.handleInputBlur }
-                                            disabled={ status === 'pending' } />
+                                            onBlur={ this.handleInputBlur } />
                                         { this.renderPasswordDots(status) }
                                         <p className={ classNames(styles.errorMessage, status === 'rejected' && styles.show) }>
                                             The passphrase you entered does not match the saved passphrase. Please try again.
@@ -105,10 +107,11 @@ class LockScreen extends Component {
         const { passphrase } = this.state;
 
         const passphraseLength = passphrase.length;
-        const addDelays = status === 'pending';
+        const rejected = status === 'rejected';
+        const loading = status === 'pending' || status === 'fulfilled';
 
         return (
-            <div className={ classNames(styles.passphraseDisplay, status === 'rejected' && styles.error) }>
+            <div className={ classNames(styles.passphraseDisplay, rejected && styles.error) }>
                 <TransitionGroup component={ null } appear>
                     {
                         Array(passphraseLength).fill(0)
@@ -117,11 +120,11 @@ class LockScreen extends Component {
                                 classNames={ passphraseDotsClassNames }
                                 key={ passphraseLength - i }
                                 timeout={ 50 }
-                                exit={ status !== 'rejected' }>
+                                exit={ !rejected }>
                                 <div
-                                    className={ classNames(styles.passphraseDot, status === 'pending' && styles.loading) }
+                                    className={ classNames(styles.passphraseDot, loading && styles.loading) }
                                     style={ {
-                                        animationDelay: addDelays ? `${((0.1 * passphraseLength) - 0.1) - (i / 10)}s` : undefined,
+                                        animationDelay: loading ? `${((0.1 * passphraseLength) - 0.1) - (i / 10)}s` : undefined,
                                     } } />
                             </CSSTransition>
                         ))
@@ -135,10 +138,13 @@ class LockScreen extends Component {
     storePassphraseInputRef = (ref) => {
         this.passphraseInputRef = ref;
         clearInterval(this.focusInterval);
+        clearTimeout(this.focusTimeout);
 
         if (ref) {
-            ref.focus();
-            this.focusInterval = setInterval(() => ref.focus(), 250);
+            this.focusTimeout = setTimeout(() => {
+                this.passphraseInputRef.focus();
+                this.focusInterval = setInterval(() => this.passphraseInputRef.focus(), 250);
+            }, lockScreenTimeout.enter + 100);
         }
     };
 
@@ -156,11 +162,25 @@ class LockScreen extends Component {
     handleInputChange = (event) => {
         const value = event.target.value;
 
-        this.setState(({ promise }) => ({
-            // Reset passphrase if there was error
-            passphrase: getPromiseState(promise).status === 'rejected' ? value.substr(-1, 1) : value,
-            promise: undefined,
-        }));
+        this.setState(({ promise }) => {
+            const { status } = getPromiseState(promise);
+
+            if (status === 'pending' || status === 'fulfilled') {
+                return;
+            }
+
+            if (status === 'rejected') {
+                return {
+                    passphrase: value.substring(value.length - 1),
+                    promise: undefined,
+                };
+            }
+
+            return {
+                passphrase: value,
+                promise: undefined,
+            };
+        });
     };
 
     handleInputKeyDown = (event) => {
