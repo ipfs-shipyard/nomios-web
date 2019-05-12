@@ -1,3 +1,227 @@
+@import "@nomios/web-uikit/styles/colors";
+@import "@nomios/web-uikit/styles/mixins/text";
+@import "@nomios/web-uikit/styles/mixins/typography";
+
+:root {
+    --sidebar-width: 8rem;
+    --sidebar-open-width: 28rem;
+    --sidebar-scale: 8;
+    --sidebar-open-scale: 28;
+    --top-height: 9.5rem;
+    --bottom-height: 12rem;
+}
+
+@define-mixin staggered-item {
+    will-change: opacity, transform;
+    transform: translateX(-0.8rem);
+    opacity: 0;
+    transition: opacity 0.125s ease 0.1s, transform 0.125s ease 0.1s;
+}
+
+@define-mixin staggered-item-open {
+    transform: translateX(0);
+    opacity: 1;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
 .sidebar {
     position: relative;
+    width: var(--sidebar-width);
+    overflow: hidden;
+
+    & a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    & .bg {
+        will-change: transform;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 1rem;
+        transform: scaleX(var(--sidebar-scale));
+        transform-origin: 0 0;
+        background-color: var(--color-white);
+        transition: transform 0.25s ease 0.1s;
+    }
+
+    & .wrapper {
+        position: relative;
+        width: var(--sidebar-open-width);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+
+        & .top {
+            width: 100%;
+            height: var(--top-height);
+            padding-left: calc((var(--sidebar-width) - 3.4rem) / 2);
+            display: flex;
+            flex: 0 0 auto;
+            align-items: center;
+
+            & a {
+                display: flex;
+                align-items: center;
+            }
+
+            & .symbol,
+            & .logotype {
+                font-size: 0.654rem;
+                fill: var(--color-tan);
+            }
+
+            & .symbol {
+                margin-right: calc((var(--sidebar-width) - 3.4rem) / 2);
+            }
+
+            & .logotype {
+                @mixin staggered-item;
+            }
+        }
+
+        & .middle {
+            height: 0;
+            flex: 1 1 auto;
+
+            & ul {
+                margin: 0;
+                padding: 1.3rem 0;
+                list-style: none;
+            }
+
+            & a {
+                margin-right: 2rem;
+                padding: 1.3rem 0 1.3rem calc((var(--sidebar-width) - 4rem) / 2);
+                display: flex;
+                align-items: center;
+
+                & .avatar {
+                    will-change: box-shadow;
+                    margin-right: calc((var(--sidebar-width) - 4rem) / 2);
+                    flex: 0 0 auto;
+                    font-size: 1rem;
+                    transition: box-shadow 0.2s ease;
+                }
+
+                & .name {
+                    position: relative;
+                    height: 4rem; /* height of avatar */
+                    flex: 1 1 auto;
+                    @mixin staggered-item;
+
+                    & .text {
+                        will-change: color, opacity;
+                        position: absolute;
+                        top: 50%;
+                        right: 0;
+                        left: 0;
+                        transform: translateY(-50%);
+                        display: block;
+                        @mixin text-ellipsis;
+                        @mixin typography-captions rem;
+                        opacity: 0.3;
+                        transition: opacity 0.2s ease, color 0.2s ease;
+                    }
+                }
+
+                &:hover .name .text {
+                    opacity: 1;
+                }
+
+                &.active {
+                    & .name .text {
+                        opacity: 1;
+                        color: var(--color-tan);
+                    }
+
+                    & .avatar {
+                        box-shadow: 0 0 0 0.3rem var(--color-tan);
+                    }
+                }
+            }
+        }
+
+        & .bottom {
+            height: var(--bottom-height);
+            margin: 0;
+            padding: 1.2rem 0;
+            flex: 0 0 auto;
+            list-style: none;
+
+            & li {
+                height: 4.8rem;
+                padding-left: calc((var(--sidebar-width) - 2.4rem) / 2);
+                padding-right: 1rem;
+                display: flex;
+                align-items: center;
+            }
+
+            & .icon {
+                margin-right: calc((var(--sidebar-width) - 2.4rem) / 2);
+                fill-opacity: 0.5;
+            }
+
+            & .name {
+                position: relative;
+                height: 2.4rem; /* height of icon */
+                flex: 1 1 auto;
+                @mixin staggered-item;
+
+                & .text {
+                    will-change: color, opacity;
+                    position: absolute;
+                    top: 50%;
+                    right: 0;
+                    left: 0;
+                    transform: translateY(-50%);
+                    display: block;
+                    @mixin text-ellipsis;
+                    @mixin typography-body-2 rem;
+                    opacity: 0.4;
+                    transition: opacity 0.2s, color 0.2s ease;
+                }
+            }
+        }
+    }
+
+    /* Safe area after to prevent someone interacting */
+    /* with the scrollbar to accidently close the sidebar */
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: var(--sidebar-width);
+    }
+
+    /* Open & close states */
+    &.open,
+    &.openDone {
+        overflow: visible;
+
+        &::before {
+            width: calc(var(--sidebar-open-width) + 3rem);
+        }
+
+        & .bg {
+            transform: scaleX(var(--sidebar-open-scale));
+            transition-delay: 0s;
+        }
+
+        & .wrapper {
+            & .top .logotype,
+            & .middle a .name,
+            & .bottom .name {
+                @mixin staggered-item-open;
+            }
+        }
+    }
+
+    &.close {
+        overflow: visible;
+    }
 }

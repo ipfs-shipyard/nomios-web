@@ -1,0 +1,92 @@
+@import "@nomios/web-uikit/styles/colors";
+
+:root {
+    --sidebar-width: 8rem;
+    --sidebar-scale: 8;
+    --sidebar-open-scale: 28;
+}
+
+.scrollbar {
+    position: relative;
+    height: 100%;
+
+    & :global(.simplebar-vertical) {
+        top: 0.5rem;
+        right: 0.5rem;
+        bottom: 0.5rem;
+    }
+
+    & :global(.simplebar-vertical .simplebar-scrollbar) {
+        width: 0.6rem;
+        opacity: 0;
+        transition: opacity 0.1s linear;
+
+        &::before {
+            background: color(var(--color-black) alpha(0.4));
+            border-radius: 0.6rem;
+        }
+    }
+
+    & :global(.simplebar-content) {
+        position: relative;
+    }
+
+    & .topEdgeDetector,
+    & .bottomEdgeDetector {
+        position: absolute;
+        left: 0;
+        width: 1px;
+        height: 1px;
+    }
+
+    & .topEdgeDetector {
+        top: 0;
+    }
+
+    & .bottomEdgeDetector {
+        bottom: 0;
+    }
+
+    &::before,
+    &::after {
+        content: "";
+        will-change: opacity, transform;
+        position: absolute;
+        width: 1rem;
+        height: 1px;
+        transform: scaleX(var(--sidebar-scale));
+        transform-origin: left center;
+        opacity: 0;
+        background-color: color(var(--color-black) alpha(0.1));
+        transition: opacity 0.15s ease, transform 0.25s ease;
+        transition-delay: 0s, 0.1s;
+    }
+
+    &::before {
+        top: 0;
+    }
+
+    &::after {
+        bottom: 0;
+    }
+
+    &.showTopEdge::before,
+    &.showBottomEdge::after {
+        opacity: 1;
+    }
+
+    /* Open state */
+    &.open {
+        & :global(.simplebar-vertical .simplebar-scrollbar) {
+            opacity: 1;
+            transition-duration: 0.25s;
+            transition-delay: 0.1s;
+        }
+
+        &::before,
+        &::after {
+            transform: scaleX(var(--sidebar-open-scale));
+            transition-delay: 0s;
+        }
+    }
+}
