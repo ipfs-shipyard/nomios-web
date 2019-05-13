@@ -1,7 +1,7 @@
 import React from 'react';
 import { ModalTrigger } from '@nomios/web-uikit';
 
-import NewIdentityFlow from '../../shared/components/new-identity-flow';
+import NewIdentityFlow from '../../modals/new-identity-flow';
 
 const Home = () => (
     <div>

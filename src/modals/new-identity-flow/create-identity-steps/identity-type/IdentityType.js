@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { Form, Field } from 'react-final-form';
 
 import { Button, TypeOption, AvatarPicker, TextInput } from '@nomios/web-uikit';
-import FaderContainer from '../../../fader-container';
-import { notEmpty } from '../../../../form-validators';
-import BulletsIndicator from '../../../bullets-indicator';
+import FaderContainer from '../../../../shared/components/fader-container';
+import { notEmpty } from '../../../../shared/form-validators';
+import BulletsIndicator from '../../../../shared/components/bullets-indicator';
 import identities from './identities';
 
 import styles from './IdentityType.css';
