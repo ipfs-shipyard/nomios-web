@@ -11,8 +11,6 @@ import Identity from './pages/identity';
 import styles from './App.css';
 import ActivityDetector from './shared/components/activity-detector';
 
-setAppElement('#root');
-
 class App extends Component {
     state = {
         lockScreenOpen: false,
