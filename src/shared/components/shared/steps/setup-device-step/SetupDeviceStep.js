@@ -4,6 +4,7 @@ import { Form, Field } from 'react-final-form';
 
 import { Button, TypeGroup, TypeOption, TextInput, EditIcon } from '@nomios/web-uikit';
 import FaderContainer from '../../../fader-container';
+import { notEmpty } from '../../../../form-validators';
 import { deviceInfo } from './deviceInfo';
 import devices from './devices';
 
@@ -108,7 +109,7 @@ class SetupDeviceStep extends Component {
                                         </TypeOption>
                                         <Field
                                             name="deviceName"
-                                            validate={ this.deviceNameValidator }
+                                            validate={ notEmpty }
                                             initialValue={ name }>
                                             { (data) => this.renderTextInput(data) }
                                         </Field>

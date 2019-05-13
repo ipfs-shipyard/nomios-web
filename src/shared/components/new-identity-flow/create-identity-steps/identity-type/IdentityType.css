@@ -1,6 +1,7 @@
 @import "@nomios/web-uikit/styles/colors";
 
 .contentWrapper {
+    position: relative;
     width: 100%;
     height: 100%;
     padding: 3rem 6rem;
@@ -20,9 +21,35 @@
         color: var(--color-armadillo);
     }
 
-    & .buttonWrapper {
-        margin-top: auto;
-        align-self: flex-end;
+    & form {
+        display: flex;
+        flex-grow: 1;
+
+        & .buttonWrapper {
+            margin-top: auto;
+            align-self: flex-end;
+        }
+
+        & .typeGroup {
+            & > *:not(:last-child) {
+                margin-right: 9.5rem;
+            }
+        }
+
+        & .identityInfoWrapper {
+            display: flex;
+            align-items: center;
+
+            & .textInput {
+                width: 40.6rem;
+                margin-left: 6.8rem;
+                transform: translateY(-25%);
+
+                & input {
+                    background-color: transparent;
+                }
+            }
+        }
     }
 
     & .bulletsIndicator {
@@ -30,22 +57,5 @@
         top: 50%;
         right: 6rem;
         transform: translateY(-50%);
-    }
-
-    & .typeGroup {
-        & > *:not(:last-child) {
-            margin-right: 9.5rem;
-        }
-    }
-
-    & .identityInfoWrapper {
-        display: flex;
-        align-items: center;
-
-        & .textInput {
-            width: 40.6rem;
-            margin-left: 6.8rem;
-            transform: translateY(-25%);
-        }
     }
 }

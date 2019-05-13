@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Form, Field } from 'react-final-form';
 
-import { Button, TypeGroup, TypeOption, AvatarPicker, TextInput } from '@nomios/web-uikit';
+import { Button, TypeOption, AvatarPicker, TextInput } from '@nomios/web-uikit';
 import FaderContainer from '../../../fader-container';
+import { notEmpty } from '../../../../form-validators';
 import BulletsIndicator from '../../../bullets-indicator';
 import identities from './identities';
 
@@ -13,12 +15,7 @@ const DEFAULT_SELECTED_IDENTITY = 'person';
 class IdentityType extends Component {
     state = {
         activeSubStepIndex: 0,
-        nextStepButtonDisabled: false,
-        identityData: {
-            type: DEFAULT_SELECTED_IDENTITY,
-            name: null,
-            image: null,
-        },
+        identityImage: null,
     };
 
     selectedIdentityInfo = this.getIdentityInfo(DEFAULT_SELECTED_IDENTITY);
@@ -27,13 +24,13 @@ class IdentityType extends Component {
         super();
 
         this.bulletCallbacks = [
-            this.handleBulletTypeClick,
-            this.handleBulletNameClick,
+            this.handleGoToIdentityType,
+            this.handleGoToIdentityName,
         ];
     }
 
     render() {
-        const { activeSubStepIndex, nextStepButtonDisabled, identityData: { type, name } } = this.state;
+        const { activeSubStepIndex } = this.state;
         const { icon, avatarLabel, inputLabel, inputPlaceholder } = this.selectedIdentityInfo;
 
         return (
@@ -43,30 +40,41 @@ class IdentityType extends Component {
                     Nomios will give you control over your fundamental digital rights:
                     Identity, data ownership, privacy and security.
                 </p>
-                <FaderContainer activeIndex={ activeSubStepIndex }>
-                    <TypeGroup
-                        selectedId={ type }
-                        className={ styles.typeGroup }
-                        name="identity-type"
-                        onSelect={ this.handleSelectIndentityType }>
-                        { this.renderIdentities() }
-                    </TypeGroup>
-                    <div className={ styles.identityInfoWrapper }>
-                        <AvatarPicker
-                            name={ name }
-                            icon={ icon }
-                            label={ avatarLabel }
-                            onChange={ this.handleAvatarInputChange } />
-                        <TextInput
-                            onChange={ this.handleTextInputChange }
-                            className={ styles.textInput }
-                            label={ inputLabel }
-                            placeholder={ inputPlaceholder } />
-                    </div>
-                </FaderContainer>
-                <div className={ styles.buttonWrapper }>
-                    <Button disabled={ nextStepButtonDisabled } onClick={ this.handleNextStep }>Continue</Button>
-                </div>
+
+                <Form onSubmit={ this.handleOnSubmit }>
+                    { ({ handleSubmit, invalid, values }) => (
+                        <form autoComplete="off" onSubmit={ handleSubmit }>
+                            <FaderContainer activeIndex={ activeSubStepIndex }>
+                                <div className={ styles.typeGroup }>
+                                    { this.renderIdentities() }
+                                </div>
+                                <div className={ styles.identityInfoWrapper }>
+                                    <AvatarPicker
+                                        name={ values.name }
+                                        icon={ icon }
+                                        label={ avatarLabel }
+                                        onChange={ this.handleAvatarInputChange } />
+                                    <Field
+                                        name="name"
+                                        validate={ notEmpty }>
+                                        { ({ input }) => (
+                                            <TextInput
+                                                { ...input }
+                                                className={ styles.textInput }
+                                                label={ inputLabel }
+                                                placeholder={ inputPlaceholder } />
+                                        ) }
+                                    </Field>
+                                </div>
+                            </FaderContainer>
+
+                            <div className={ styles.buttonWrapper }>
+                                <Button disabled={ invalid }>Continue</Button>
+                            </div>
+                        </form>
+                    ) }
+                </Form>
+
                 <BulletsIndicator
                     className={ styles.bulletsIndicator }
                     activeIndex={ activeSubStepIndex }
@@ -76,11 +84,38 @@ class IdentityType extends Component {
     }
 
     renderIdentities() {
+        const { id } = this.selectedIdentityInfo;
+
         return (
             identities.map((identity, index) => (
-                <TypeOption key={ index } id={ identity.id } label={ identity.label } badge={ identity.badge }>
-                    { identity.icon }
-                </TypeOption>
+                <Field
+                    key={ index }
+                    type="radio"
+                    name="identity-type"
+                    value={ identity.id }
+                    initialValue={ id }
+                    validate={ notEmpty }>
+                    { ({ input, meta }) => {
+                        if (!meta.data.handleOnChange) {
+                            meta.data.handleOnChange = (event) => {
+                                input.onChange(event);
+                                this.handleTypeOptionChange(event);
+                            };
+                        }
+
+                        return (
+                            <TypeOption
+                                { ...input }
+                                id={ identity.id }
+                                label={ identity.label }
+                                badge={ identity.badge }
+                                selected={ id === identity.id }
+                                onChange={ meta.data.handleOnChange }>
+                                { identity.icon }
+                            </TypeOption>
+                        );
+                    } }
+                </Field>
             ))
         );
     }
@@ -89,59 +124,42 @@ class IdentityType extends Component {
         return identities.filter((identity) => identity.id === id)[0];
     }
 
-    shouldDisableButton(substepId) {
-        const { type, name } = this.state.identityData;
-
-        switch (substepId) {
-        case 0:
-            return !type;
-        case 1:
-            return !name || name === '';
-        default:
-            return false;
-        }
-    }
+    handleTypeOptionChange = (event) => {
+        this.selectedIdentityInfo = this.getIdentityInfo(event.target.value);
+    };
 
     handleBulletClick(bulletIndex) {
-        const shouldDisable = this.shouldDisableButton(bulletIndex);
-
-        if (bulletIndex !== this.state.activeSubStepIndex || shouldDisable !== this.state.nextStepButtonDisabled) {
-            this.setState({ activeSubStepIndex: bulletIndex, nextStepButtonDisabled: shouldDisable });
+        if (bulletIndex !== this.state.activeSubStepIndex) {
+            this.setState({ activeSubStepIndex: bulletIndex });
         }
     }
 
-    handleBulletTypeClick = () => this.handleBulletClick(0);
-    handleBulletNameClick = () => this.handleBulletClick(1);
+    handleGoToIdentityType = () => this.handleBulletClick(0);
+    handleGoToIdentityName = () => this.handleBulletClick(1);
 
-    handleSelectIndentityType = (identityTypeId) => {
-        this.selectedIdentityInfo = this.getIdentityInfo(identityTypeId);
-        this.setState((prevState) => ({
-            identityData: { ...prevState.identityData, type: identityTypeId },
-        }));
-    };
-
+    // We are controlling this input manually to avoid installing third-party libs.
+    // Check this issue here: https://github.com/final-form/react-final-form/issues/92
     handleAvatarInputChange = (imageFile) => {
-        this.setState((prevState) => ({
-            identityData: { ...prevState.identityData, image: imageFile },
-        }));
+        this.setState({ identityImage: imageFile });
     };
 
-    handleTextInputChange = (event) => {
-        const shouldDisable = event.target.value === '';
-        const inputTextValue = event.target.value;
-
-        this.setState((prevState) => ({
-            nextStepButtonDisabled: shouldDisable,
-            identityData: { ...prevState.identityData, name: inputTextValue },
-        }));
-    };
-
-    handleNextStep = () => {
-        if (this.state.activeSubStepIndex === 0) {
-            this.handleBulletNameClick();
-        } else {
-            this.props.onNextStep && this.props.onNextStep(this.props.nextStepId, this.state.identityData);
+    handleOnSubmit = (formData) => {
+        switch (this.state.activeSubStepIndex) {
+        case 0:
+            this.handleGoToIdentityName();
+            break;
+        case 1:
+            this.handleNextStep(formData);
+            break;
+        default:
+            break;
         }
+    };
+
+    handleNextStep = (formData) => {
+        const finalData = { image: this.state.identityImage, ...formData };
+
+        this.props.onNextStep && this.props.onNextStep(this.props.nextStepId, finalData);
     };
 }
 
