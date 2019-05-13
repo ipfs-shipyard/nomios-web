@@ -1,5 +1,15 @@
 import React from 'react';
+import { ModalTrigger } from '@nomios/web-uikit';
 
-const Home = () => <div>This is the home page!</div>;
+import NewIdentityFlow from '../../shared/components/new-identity-flow';
+
+const Home = () => (
+    <div>
+        <h4>This is the home page!</h4>
+        <ModalTrigger modal={ <NewIdentityFlow /> }>
+            <button>Add new identity</button>
+        </ModalTrigger>
+    </div>
+);
 
 export default Home;
