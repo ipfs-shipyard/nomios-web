@@ -40,7 +40,7 @@ class NewIdentityFlow extends Component {
     }
 
     renderCreateSteps() {
-        const identityFirstName = this.state.data['create-identity-type'] && this.state.data['create-identity-type'].name.split(' ')[0];
+        const identityFirstName = this.state.data['create-identity-type'] && this.state.data['create-identity-type'].name && this.state.data['create-identity-type'].name.split(' ')[0];
 
         console.log('identityFirstName1', identityFirstName);
 
