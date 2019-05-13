@@ -4,8 +4,6 @@ import { FlowModal, FlowModalStep } from '@nomios/web-uikit';
 import GenericStep from './generic-step';
 import { IdentityType, IdentityInfo } from './create-identity-steps';
 
-// import styles from './NewIdentityFlow.css';
-
 class NewIdentityFlow extends Component {
     state = {
         currentStepId: 'generic',
@@ -40,7 +38,10 @@ class NewIdentityFlow extends Component {
     }
 
     renderCreateSteps() {
-        const identityFirstName = this.state.data['create-identity-type'] && this.state.data['create-identity-type'].name && this.state.data['create-identity-type'].name.split(' ')[0];
+        const identityFirstName =
+            this.state.data['create-identity-type'] &&
+            this.state.data['create-identity-type'].name &&
+            this.state.data['create-identity-type'].name.split(' ')[0];
 
         console.log('identityFirstName1', identityFirstName);
 

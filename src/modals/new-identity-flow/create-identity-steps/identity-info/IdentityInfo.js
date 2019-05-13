@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import SetupDeviceStep from '../../../shared/steps/setup-device-step';
+import SetupDeviceStep from '../../../../shared/steps/setup-device-step';
 
 const stepData = {
     title: '2. Setup your device',
