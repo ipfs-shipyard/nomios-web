@@ -1,0 +1,166 @@
+
+@import "@nomios/web-uikit/styles/colors";
+@import "@nomios/web-uikit/styles/mixins/text";
+@import "@nomios/web-uikit/styles/mixins/typography";
+@import "../common.css";
+
+.addIdentityItem {
+    margin-right: 2rem;
+    padding: 1.5rem 0 1.5rem calc((var(--sidebar-closed-width) - 4rem) / 2);
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    /* Add Circle
+       ============================================= */
+    & .addCircle {
+        position: relative;
+        width: 4rem;
+        height: 4rem;
+        margin-right: calc((var(--sidebar-closed-width) - 4rem) / 2);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        & .add {
+            position: relative;
+            width: 1.8rem;
+            height: 1.8rem;
+            z-index: 2;
+
+            &::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 50%;
+                width: 0.1rem;
+                transform: translateX(-50%);
+                background: color(var(--color-armadillo) alpha(0.8));
+            }
+
+            &::after {
+                content: "";
+                position: absolute;
+                top: 50%;
+                right: 0;
+                left: 0;
+                height: 0.1rem;
+                transform: translateY(-50%);
+                background: color(var(--color-armadillo) alpha(0.8));
+            }
+        }
+
+        & .circle {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            background: color(var(--color-armadillo) alpha(0.3));
+            border-radius: 100%;
+
+            &::after {
+                content: "";
+                position: absolute;
+                top: 0.1rem;
+                left: 0.1rem;
+                width: 3.8rem;
+                height: 3.8rem;
+                background: var(--color-white);
+                border-radius: 100%;
+            }
+
+            & span {
+                position: absolute;
+                width: 50%;
+                height: 100%;
+                overflow: hidden;
+
+                & em {
+                    will-change: transform;
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
+                    background: color(var(--color-armadillo) alpha(0.8));
+                    border-radius: 9.99rem;
+                    transition: transform 0.17s linear;
+                }
+
+                &:first-child {
+                    left: 0%;
+
+                    & em {
+                        left: 100%;
+                        transform-origin: 0% 50%;
+                        border-top-left-radius: 0;
+                        border-bottom-left-radius: 0;
+                    }
+                }
+
+                &:last-child {
+                    left: 50%;
+
+                    & em {
+                        left: -100%;
+                        transform-origin: 100% 50%;
+                        border-top-right-radius: 0;
+                        border-bottom-right-radius: 0;
+                        transition-delay: 0.17s;
+                    }
+                }
+            }
+        }
+    }
+
+    /* Hover state */
+    &:hover .addCircle {
+        & .circle span {
+            &:first-child em {
+                transform: rotate(180deg);
+                transition: transform 0.35s ease-out;
+                transition-delay: 0.175s;
+            }
+
+            &:last-child em {
+                transform: rotate(180deg);
+                transition: transform 0.175s linear;
+            }
+        }
+    }
+
+    /* Name
+       ============================================= */
+    & .name {
+        position: relative;
+        height: 2.4rem; /* height of icon */
+        flex: 1 1 auto;
+        @mixin staggered-item;
+
+        & .text {
+            will-change: opacity;
+            position: absolute;
+            top: 50%;
+            right: 0;
+            left: 0;
+            transform: translateY(-50%);
+            display: block;
+            @mixin text-ellipsis;
+            @mixin typography-captions rem;
+            opacity: 0.5;
+            color: var(--color-armadillo);
+            transition: opacity 0.17s ease;
+        }
+    }
+
+    /* In state */
+    &.in .name {
+        @mixin staggered-item-open;
+    }
+
+    /* Hover state */
+    &:hover .name .text {
+        opacity: 1;
+    }
+}

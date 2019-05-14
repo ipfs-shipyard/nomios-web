@@ -2,20 +2,19 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { CSSTransition } from 'react-transition-group';
-import { Link, NavLink } from 'react-router-dom';
-import { Logo, Avatar, SettingsIcon, HelpIcon } from '@nomios/web-uikit';
+import { SettingsIcon, BellIcon } from '@nomios/web-uikit';
 import Scrollbar from './scrollbar';
+import AddIdentityItem from './add-identity-item';
+import IdentityItem from './identity-item';
+import ActionItem from './action-item';
+import LogoItem from './logo-item';
 import styles from './Sidebar.css';
 
+const OPEN_DELAY_DURATION = 250;
 const OPEN_TRANSITION_DURATION = 300;
 const OPEN_TRANSITION_CLASSNAMES = { enter: styles.open, enterDone: styles.open, exit: styles.close };
 const STAGGER_FIXED_TRANSITION_DELAY = 50;
 const STAGGER_TRANSITION_DELAY = 30;
-
-const BOTTOM_ITEMS = [
-    { name: 'Settings', Icon: SettingsIcon },
-    { name: 'Help', Icon: HelpIcon },
-];
 
 const mockIdentities = [
     { id: 'a', name: 'Daenerys Targaryen Daenerys Targaryen', image: 'https://www.buro247.sg/thumb/300x300_5/images/beauty/Audio-review-Game-of-Thrones-best-hair-buro247.sg-CR-square.jpg' },
@@ -51,51 +50,48 @@ class Sidebar extends Component {
             <CSSTransition in={ open } classNames={ OPEN_TRANSITION_CLASSNAMES } timeout={ OPEN_TRANSITION_DURATION }>
                 <div
                     className={ classNames(styles.sidebar, className) }
-                    onMouseEnter={ this.handleMouseEnter }
+                    onMouseOver={ this.handleMouseOver }
                     onMouseLeave={ this.handleMouseLeave }>
                     <div className={ styles.bg } />
 
                     <div className={ styles.wrapper }>
                         <div className={ styles.top }>
-                            <Link to="/" onClick={ this.handleLinkClick }>
-                                <Logo variant="symbol" className={ styles.symbol } />
-                                <Logo
-                                    variant="logotype"
-                                    className={ styles.logotype }
-                                    style={ open ? { transitionDelay: `${STAGGER_FIXED_TRANSITION_DELAY}ms` } : undefined } />
-                            </Link>
+                            <LogoItem
+                                in={ open }
+                                staggerDelay={ STAGGER_FIXED_TRANSITION_DELAY }
+                                onClick={ this.handleLogoItemClick } />
                         </div>
 
                         <div className={ styles.middle }>
-                            <Scrollbar open={ open }>
+                            <Scrollbar in={ open }>
                                 <ul>
+                                    <AddIdentityItem
+                                        in={ open }
+                                        staggerDelay={ STAGGER_TRANSITION_DELAY + STAGGER_FIXED_TRANSITION_DELAY } />
+
                                     { mockIdentities.map((identity, index) => (
-                                        <li key={ identity.id }>
-                                            <NavLink to={ `/identity/${identity.id}` } onClick={ this.handleLinkClick } activeClassName={ styles.active }>
-                                                <Avatar image={ identity.image } name={ identity.name } className={ styles.avatar } />
-                                                <div
-                                                    className={ styles.name }
-                                                    style={ open ? { transitionDelay: `${((index + 1) * STAGGER_TRANSITION_DELAY) + STAGGER_FIXED_TRANSITION_DELAY}ms` } : undefined }>
-                                                    <span className={ styles.text }>{ identity.name }</span>
-                                                </div>
-                                            </NavLink>
-                                        </li>
+                                        <IdentityItem
+                                            key={ identity.id }
+                                            identity={ identity }
+                                            in={ open }
+                                            staggerDelay={ ((index + 2) * STAGGER_TRANSITION_DELAY) + STAGGER_FIXED_TRANSITION_DELAY }
+                                            onClick={ this.handleIdentityItemClick } />
                                     )) }
                                 </ul>
                             </Scrollbar>
                         </div>
 
                         <ul className={ styles.bottom }>
-                            { BOTTOM_ITEMS.map((item, index) => (
-                                <li key={ item.name }>
-                                    { <item.Icon className={ styles.icon } /> }
-                                    <div
-                                        className={ styles.name }
-                                        style={ open ? { transitionDelay: `${((mockIdentities.length + index + 1) * STAGGER_TRANSITION_DELAY) + STAGGER_FIXED_TRANSITION_DELAY}ms` } : undefined }>
-                                        <span className={ styles.text }>{ item.name }</span>
-                                    </div>
-                                </li>
-                            )) }
+                            <ActionItem
+                                name="Notifications"
+                                icon={ BellIcon }
+                                in={ open }
+                                staggerDelay={ ((mockIdentities.length + 2) * STAGGER_TRANSITION_DELAY) + STAGGER_FIXED_TRANSITION_DELAY } />
+                            <ActionItem
+                                name="Settings"
+                                icon={ SettingsIcon }
+                                in={ open }
+                                staggerDelay={ ((mockIdentities.length + 3) * STAGGER_TRANSITION_DELAY) + STAGGER_FIXED_TRANSITION_DELAY } />
                         </ul>
                     </div>
                 </div>
@@ -110,14 +106,19 @@ class Sidebar extends Component {
 
     open() {
         clearTimeout(this.enterTimeout);
-        this.enterTimeout = setTimeout(() => this.setState({ open: true }), 200);
+        this.enterTimeout = setTimeout(() => this.setState({ open: true }), OPEN_DELAY_DURATION);
     }
 
-    handleMouseEnter = () => this.open();
+    // We use onMouseOver instead of onMouseEnter because the user might click the avatar/links
+    // while still in the sidebar. This way, the sidebar will open again as soon as anotherelement
+    // is hovered
+    handleMouseOver = () => !this.state.open && this.open();
 
     handleMouseLeave = () => this.close();
 
-    handleLinkClick = () => this.close();
+    handleLogoItemClick = () => this.close();
+
+    handleIdentityItemClick = () => this.close();
 }
 
 Sidebar.propTypes = {

@@ -13,12 +13,12 @@ class Sidebar extends Component {
     };
 
     render() {
-        const { children, open } = this.props;
+        const { children, in: in_ } = this.props;
         const { topEdgeVisible, bottomEdgeVisible } = this.state;
 
         const finalClassName = classNames(
             styles.scrollbar,
-            open && styles.open,
+            in_ && styles.in,
             !topEdgeVisible && styles.showTopEdge,
             !bottomEdgeVisible && styles.showBottomEdge,
         );
@@ -38,7 +38,7 @@ class Sidebar extends Component {
 }
 
 Sidebar.propTypes = {
-    open: PropTypes.bool,
+    in: PropTypes.bool,
     className: PropTypes.string,
     children: PropTypes.node,
 };

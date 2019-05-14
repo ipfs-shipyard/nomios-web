@@ -1,29 +1,46 @@
 @import "@nomios/web-uikit/styles/colors";
+@import "../common.css";
 
 :root {
     --sidebar-width: 8rem;
-    --sidebar-scale: 8;
-    --sidebar-open-scale: 28;
+    --sidebar-closed-scale: 8;
+    --sidebar-opened-scale: 28;
 }
 
 .scrollbar {
     position: relative;
     height: 100%;
+    overflow-x: hidden;
 
-    & :global(.simplebar-vertical) {
+    /* Simplebar overrides
+       ============================================= */
+    & :global(.simplebar-track.simplebar-horizontal) {
+        display: none;
+    }
+
+    & :global(.simplebar-track.simplebar-vertical) {
         top: 0.5rem;
         right: 0.5rem;
         bottom: 0.5rem;
-    }
-
-    & :global(.simplebar-vertical .simplebar-scrollbar) {
         width: 0.6rem;
-        opacity: 0;
-        transition: opacity 0.1s linear;
 
-        &::before {
-            background: color(var(--color-black) alpha(0.4));
-            border-radius: 0.6rem;
+        & :global(.simplebar-scrollbar) {
+            will-change: opacity;
+            right: 0;
+            width: 100%;
+            opacity: 0;
+            transition: opacity 0.1s linear;
+
+            &::before {
+                will-change: opacity;
+                background: var(--color-armadillo);
+                border-radius: 0.6rem;
+            }
+
+            &:global(.simplebar-visible)::before {
+                opacity: 0.2;
+                transition: opacity 0.05s linear;
+            }
         }
     }
 
@@ -31,6 +48,15 @@
         position: relative;
     }
 
+    /* In state */
+    &.in :global(.simplebar-track.simplebar-vertical .simplebar-scrollbar) {
+        opacity: 1;
+        transition-duration: var(--sidebar-open-duration);
+        transition-delay: var(--sidebar-close-delay);
+    }
+
+    /* Top & bottom edge detectors
+       ============================================= */
     & .topEdgeDetector,
     & .bottomEdgeDetector {
         position: absolute;
@@ -47,6 +73,8 @@
         bottom: 0;
     }
 
+    /* Top & bottom edges
+       ============================================= */
     &::before,
     &::after {
         content: "";
@@ -54,12 +82,12 @@
         position: absolute;
         width: 1rem;
         height: 1px;
-        transform: scaleX(var(--sidebar-scale));
+        transform: scaleX(var(--sidebar-closed-scale));
         transform-origin: left center;
         opacity: 0;
-        background-color: color(var(--color-black) alpha(0.1));
-        transition: opacity 0.15s ease, transform 0.25s ease;
-        transition-delay: 0s, 0.1s;
+        background-color: color(var(--color-armadillo) alpha(0.15));
+        transition: opacity 0.15s ease, transform var(--sidebar-open-duration) ease;
+        transition-delay: 0s, var(--sidebar-close-delay);
     }
 
     &::before {
@@ -70,23 +98,16 @@
         bottom: 0;
     }
 
+    /* Show edges state */
     &.showTopEdge::before,
     &.showBottomEdge::after {
         opacity: 1;
     }
 
-    /* Open state */
-    &.open {
-        & :global(.simplebar-vertical .simplebar-scrollbar) {
-            opacity: 1;
-            transition-duration: 0.25s;
-            transition-delay: 0.1s;
-        }
-
-        &::before,
-        &::after {
-            transform: scaleX(var(--sidebar-open-scale));
-            transition-delay: 0s;
-        }
+    /* In state */
+    &.in::before,
+    &.in::after {
+        transform: scaleX(var(--sidebar-opened-scale));
+        transition-delay: 0s;
     }
 }
