@@ -1,8 +1,9 @@
+/* eslint-disable react/jsx-handler-names */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Form, Field } from 'react-final-form';
 
-import { Button, TypeOption, AvatarPicker, TextInput } from '@nomios/web-uikit';
+import { Button, TypeGroup, TypeOption, AvatarPicker, TextInput } from '@nomios/web-uikit';
 import FaderContainer from '../../../../shared/components/fader-container';
 import { notEmpty } from '../../../../shared/form-validators';
 import BulletsIndicator from '../../../../shared/components/bullets-indicator';
@@ -11,6 +12,9 @@ import identities from './identities';
 import styles from './IdentityType.css';
 
 const DEFAULT_SELECTED_IDENTITY = 'person';
+const FORM_INITIAL_VALUES = {
+    'identity-type': DEFAULT_SELECTED_IDENTITY,
+};
 
 class IdentityType extends Component {
     state = {
@@ -41,13 +45,23 @@ class IdentityType extends Component {
                     Identity, data ownership, privacy and security.
                 </p>
 
-                <Form onSubmit={ this.handleOnSubmit }>
+                <Form
+                    initialValues={ FORM_INITIAL_VALUES }
+                    onSubmit={ this.handleOnSubmit }>
                     { ({ handleSubmit, invalid, values }) => (
                         <form autoComplete="off" onSubmit={ handleSubmit }>
                             <FaderContainer activeIndex={ activeSubStepIndex }>
-                                <div className={ styles.typeGroup }>
-                                    { this.renderIdentities() }
-                                </div>
+                                <Field name="identity-type">
+                                    { ({ input }) => (
+                                        <TypeGroup
+                                            selectedId={ input.value }
+                                            className={ styles.typeGroup }
+                                            name={ input.name }
+                                            onSelect={ input.onChange }>
+                                            { this.renderIdentities() }
+                                        </TypeGroup>
+                                    ) }
+                                </Field>
                                 <div className={ styles.identityInfoWrapper }>
                                     <AvatarPicker
                                         name={ values.name }
@@ -83,50 +97,17 @@ class IdentityType extends Component {
         );
     }
 
-    renderIdentities() {
-        const { id } = this.selectedIdentityInfo;
-
-        return (
-            identities.map((identity, index) => (
-                <Field
-                    key={ index }
-                    type="radio"
-                    name="identity-type"
-                    value={ identity.id }
-                    initialValue={ id }
-                    validate={ notEmpty }>
-                    { ({ input, meta }) => {
-                        if (!meta.data.handleOnChange) {
-                            meta.data.handleOnChange = (event) => {
-                                input.onChange(event);
-                                this.handleTypeOptionChange(event);
-                            };
-                        }
-
-                        return (
-                            <TypeOption
-                                { ...input }
-                                id={ identity.id }
-                                label={ identity.label }
-                                badge={ identity.badge }
-                                selected={ id === identity.id }
-                                onChange={ meta.data.handleOnChange }>
-                                { identity.icon }
-                            </TypeOption>
-                        );
-                    } }
-                </Field>
-            ))
-        );
-    }
+    renderIdentities = () => (
+        identities.map((identity, index) => (
+            <TypeOption key={ index } id={ identity.id } label={ identity.label } badge={ identity.badge }>
+                { identity.icon }
+            </TypeOption>
+        ))
+    );
 
     getIdentityInfo(id) {
         return identities.filter((identity) => identity.id === id)[0];
     }
-
-    handleTypeOptionChange = (event) => {
-        this.selectedIdentityInfo = this.getIdentityInfo(event.target.value);
-    };
 
     handleBulletClick(bulletIndex) {
         if (bulletIndex !== this.state.activeSubStepIndex) {
@@ -135,7 +116,10 @@ class IdentityType extends Component {
     }
 
     handleGoToIdentityType = () => this.handleBulletClick(0);
-    handleGoToIdentityName = () => this.handleBulletClick(1);
+    handleGoToIdentityName = (formData) => {
+        this.selectedIdentityInfo = this.getIdentityInfo(formData['identity-type']);
+        this.handleBulletClick(1);
+    };
 
     // We are controlling this input manually to avoid installing third-party libs.
     // Check this issue here: https://github.com/final-form/react-final-form/issues/92
@@ -146,7 +130,7 @@ class IdentityType extends Component {
     handleOnSubmit = (formData) => {
         switch (this.state.activeSubStepIndex) {
         case 0:
-            this.handleGoToIdentityName();
+            this.handleGoToIdentityName(formData);
             break;
         case 1:
             this.handleNextStep(formData);
