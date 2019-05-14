@@ -110,7 +110,7 @@ class Sidebar extends Component {
     }
 
     // We use onMouseOver instead of onMouseEnter because the user might click the avatar/links
-    // while still in the sidebar. This way, the sidebar will open again as soon as anotherelement
+    // while still in the sidebar. This way, the sidebar will open again as soon as another element
     // is hovered
     handleMouseOver = () => !this.state.open && this.open();
 

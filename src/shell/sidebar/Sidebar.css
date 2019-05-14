@@ -109,7 +109,8 @@
     }
 
     /* Safe area
-       Prevents someone interacting with the scrollbar to accidently close the sidebar
+       Outside area from the sidebar that prevents it from closing on accidental mouse leave.
+       As an example: while scrolling fast, the mouse might leave by mistake.
        ============================================= */
     &::before {
         content: "";
