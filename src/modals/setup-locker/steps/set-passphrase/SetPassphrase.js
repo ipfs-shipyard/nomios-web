@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { findDOMNode } from 'react-dom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { TextInput, Button, FeedbackMessage, WarningIcon, InfoIcon } from '@nomios/web-uikit';
@@ -93,6 +94,12 @@ class SetPassphrase extends Component {
     state = {
         promise: undefined,
     };
+
+    componentDidMount() {
+        findDOMNode(this)
+        .querySelector('input')
+        .focus();
+    }
 
     render() {
         const { promise } = this.state;
