@@ -9,6 +9,7 @@ import LockScreen from './modals/lock-screen';
 import Home from './pages/home';
 import Identity from './pages/identity';
 import styles from './App.css';
+import ActivityDetector from './shared/components/activity-detector';
 
 class App extends Component {
     state = {
@@ -33,6 +34,8 @@ class App extends Component {
 
         return (
             <div className={ styles.app }>
+                <ActivityDetector onDetect={ this.handleActivityDetect } />
+
                 <Router>
                     <Transition in={ lockScreenOpen } timeout={ 2000 } mountOnEnter unmountOnExit>
                         <LockScreen in={ lockScreenOpen } onUnlock={ this.handleLockScreenUnlock } />
@@ -51,6 +54,8 @@ class App extends Component {
         );
     }
 
+    handleActivityDetect = () => this.props.restartIdleTimer();
+
     handleLockScreenUnlock = () => {
         this.setState({ lockScreenOpen: this.props.locked });
     };
@@ -63,9 +68,15 @@ class App extends Component {
 App.propTypes = {
     locked: PropTypes.bool,
     pristine: PropTypes.bool,
+    restartIdleTimer: PropTypes.func.isRequired,
 };
 
-export default connectIdmWallet((idmWallet) => () => ({
-    locked: idmWallet.locker.isLocked(),
-    pristine: idmWallet.locker.isPristine(),
-}))(App);
+export default connectIdmWallet((idmWallet) => {
+    const restartIdleTimer = () => idmWallet.locker.idleTimer.restart();
+
+    return () => ({
+        locked: idmWallet.locker.isLocked(),
+        pristine: idmWallet.locker.isPristine(),
+        restartIdleTimer,
+    });
+})(App);
