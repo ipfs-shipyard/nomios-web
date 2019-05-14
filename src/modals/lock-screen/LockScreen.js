@@ -193,6 +193,7 @@ class LockScreen extends Component {
 
     handleInputKeyDown = (event) => {
         switch (event.key) {
+        // Disallow carret change & selection
         case 'ArrowLeft':
         case 'ArrowRight':
         case 'ArrowUp':
@@ -201,6 +202,13 @@ class LockScreen extends Component {
         case 'Tab':
             event.preventDefault();
             break;
+        // Disallow selection of all text
+        case 'a':
+            if (event.metaKey || event.ctrlKey) {
+                event.preventDefault();
+            }
+            break;
+        // Submit!
         case 'Enter':
             event.preventDefault();
             this.submit();
