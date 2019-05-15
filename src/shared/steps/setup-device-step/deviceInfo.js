@@ -4,22 +4,22 @@ let deviceInfo;
 
 const getDeviceType = async () => {
     if (!navigator.getBattery) {
-        return 'Desktop';
+        return 'desktop';
     }
 
     const battery = await navigator.getBattery();
 
     if (battery.charging && battery.chargingTime === 0) {
-        return 'Desktop';
+        return 'desktop';
     }
 
-    return 'Laptop';
+    return 'laptop';
 };
 
 const getDeviceInfo = async () => {
     // isMobile returns true if device type is mobile or tablet
     if (isMobile) {
-        const type = isMobileOnly ? 'Mobile' : 'Tablet';
+        const type = isMobileOnly ? 'mobile' : 'tablet';
         const mobileName = mobileVendor !== 'none' ? mobileVendor : type;
 
         return {

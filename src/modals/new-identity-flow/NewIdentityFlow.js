@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 
 import { FlowModal, FlowModalStep } from '@nomios/web-uikit';
 import GenericStep from './generic-step';
-import { IdentityType, IdentityInfo } from './create-identity-steps';
+import { IdentityType, IdentityInfo, Feedback } from './create-identity-steps';
 
 class NewIdentityFlow extends Component {
     state = {
@@ -43,8 +43,6 @@ class NewIdentityFlow extends Component {
             this.state.data['create-identity-type'].name &&
             this.state.data['create-identity-type'].name.split(' ')[0];
 
-        console.log('identityFirstName1', identityFirstName);
-
         return (
             <Fragment>
                 <FlowModalStep id="create-identity-type">
@@ -59,7 +57,7 @@ class NewIdentityFlow extends Component {
                         identityFirstName={ identityFirstName } />
                 </FlowModalStep>
                 <FlowModalStep id="create-identity-feedback">
-                    <IdentityInfo
+                    <Feedback
                         nextStepId={ null }
                         onNextStep={ this.handleNextStep } />
                 </FlowModalStep>
@@ -77,7 +75,7 @@ class NewIdentityFlow extends Component {
         this.setState((prevState) => ({
             currentStepId: nextStepId,
             data: { ...prevState.data, [prevState.currentStepId]: data },
-        }), () => console.log('this.state.data', this.state.data));
+        }), () => console.log('MY NEW STATE DATA:', this.state.data));
     };
 }
 

@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-handler-names */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Form, Field } from 'react-final-form';
+import { Form, Field, FormSpy } from 'react-final-form';
 
 import { Button, TypeGroup, TypeOption, AvatarPicker, TextInput } from '@nomios/web-uikit';
 import FaderContainer from '../../../../shared/components/fader-container';
@@ -50,6 +50,7 @@ class IdentityType extends Component {
                     onSubmit={ this.handleOnSubmit }>
                     { ({ handleSubmit, invalid, values }) => (
                         <form autoComplete="off" onSubmit={ handleSubmit }>
+                            <FormSpy onChange={ this.handleFormChange } />
                             <FaderContainer activeIndex={ activeSubStepIndex }>
                                 <Field name="identity-type">
                                     { ({ input }) => (
@@ -81,7 +82,6 @@ class IdentityType extends Component {
                                     </Field>
                                 </div>
                             </FaderContainer>
-
                             <div className={ styles.buttonWrapper }>
                                 <Button disabled={ invalid }>Continue</Button>
                             </div>
@@ -117,7 +117,10 @@ class IdentityType extends Component {
 
     handleGoToIdentityType = () => this.handleBulletClick(0);
     handleGoToIdentityName = (formData) => {
-        this.selectedIdentityInfo = this.getIdentityInfo(formData['identity-type']);
+        this.selectedIdentityInfo = formData['identity-type'] ?
+            this.getIdentityInfo(formData['identity-type']) :
+            this.selectedIdentityInfo;
+
         this.handleBulletClick(1);
     };
 
@@ -125,6 +128,12 @@ class IdentityType extends Component {
     // Check this issue here: https://github.com/final-form/react-final-form/issues/92
     handleAvatarInputChange = (imageFile) => {
         this.setState({ identityImage: imageFile });
+    };
+
+    handleFormChange = ({ modified, values }) => {
+        if (modified['identity-type']) {
+            this.selectedIdentityInfo = this.getIdentityInfo(values['identity-type']);
+        }
     };
 
     handleOnSubmit = (formData) => {
