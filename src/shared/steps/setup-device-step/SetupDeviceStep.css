@@ -30,12 +30,6 @@
             align-self: flex-end;
         }
 
-        & .typeGroup {
-            & > *:not(:last-child) {
-                margin-right: 9.5rem;
-            }
-        }
-
         & .deviceInfoWrapper {
             display: flex;
             align-items: center;

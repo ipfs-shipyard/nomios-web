@@ -31,12 +31,6 @@
             align-self: flex-end;
         }
 
-        & .typeGroup {
-            & > *:not(:last-child) {
-                margin-right: 9.5rem;
-            }
-        }
-
         & .identityInfoWrapper {
             display: flex;
             align-items: center;
