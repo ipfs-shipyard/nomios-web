@@ -1,0 +1,21 @@
+:root {
+    --sidebar-closed-width: 8rem;
+    --sidebar-opened-width: 28rem;
+    --sidebar-closed-scale: 8;
+    --sidebar-opened-scale: 28;
+    --sidebar-open-duration: 0.25s;
+    --sidebar-close-delay: 0.1s;
+}
+
+@define-mixin staggered-item {
+    will-change: opacity, transform;
+    transform: translateX(-0.8rem);
+    opacity: 0;
+    transition: opacity 0.125s ease var(--sidebar-close-delay), transform 0.125s ease var(--sidebar-close-delay);
+}
+
+@define-mixin staggered-item-open {
+    transform: translateX(0);
+    opacity: 1;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}

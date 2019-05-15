@@ -37,10 +37,13 @@
     "react-dom": "^16.8.4",
     "react-final-form": "^4.1.0",
     "react-idm-wallet": "^0.1.0",
+    "react-intersection-observer": "^8.23.0",
     "react-modal": "^3.8.1",
     "react-promiseful": "^2.0.0",
     "react-router-dom": "^5.0.0",
-    "react-scripts": "^3.0.0"
+    "react-scripts": "^3.0.0",
+    "react-scrollbar-size": "^2.1.0",
+    "simplebar-react": "^1.0.0-alpha.9"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^7.5.0",

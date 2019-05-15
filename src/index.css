@@ -4,36 +4,25 @@
    Document
    ========================================================================== */
 
-/*
-   1. Stretch <html> to fill our screen height
-   2. Make children of html (body) occupy at least 100% of the screen
-*/
-
 html {
-    min-height: 100%; /* 1 */
-    display: flex; /* 2 */
-    flex-direction: column; /* 2 */
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 /* ==========================================================================
    Body & #root
    ========================================================================== */
 
-/*
-   1. Force scroll always to prevent scrollbars to appear/disappear based on the page contents
-   2. Make sure that we occupy 100% of our parent and allow our child elements to do the same
-   3. Needed for IE11 otherwise flex wouldn't grow vertically, see https://stackoverflow.com/a/42930574
-*/
-
 body {
-    overflow-y: scroll;  /* 1 */
-    display: flex; /* 2 */
-    flex: 1 0 auto;  /* 2 */
-    flex-direction: column;  /* 2 */
+    overflow-y: scroll;
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
 }
 
 :global(#root) {
-    display: flex;  /* 2 */
-    flex: 1 0 auto; /* 2 */
-    flex-direction: column;  /* 2 */
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
 }

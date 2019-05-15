@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import createIdmWallet from 'idm-wallet';
 import { IdmWalletProvider } from 'react-idm-wallet';
@@ -31,18 +31,22 @@ class Boot extends Component {
     }
 
     renderLoading() {
-        return <p>Loading...</p>;
+        return (
+            <div className={ styles.loading }>
+                <p>Loading...</p>
+            </div>
+        );
     }
 
     renderError(error) {
         console.error(error);
 
         return (
-            <Fragment>
+            <div className={ styles.error }>
                 <p>Oops, an error occurred while initializing the wallet.</p>
 
                 <Button onClick={ this.handleRetry }>Retry</Button>
-            </Fragment>
+            </div>
         );
     }
 

@@ -1,0 +1,60 @@
+
+@import "@nomios/web-uikit/styles/colors";
+@import "@nomios/web-uikit/styles/mixins/text";
+@import "@nomios/web-uikit/styles/mixins/typography";
+@import "../common.css";
+
+.actionItem {
+    padding: 1.2rem 2rem 1.2rem calc((var(--sidebar-closed-width) - 2.4rem) / 2);
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    /* Icon
+       ============================================= */
+    & .icon {
+        will-change: opacity;
+        margin-right: calc((var(--sidebar-closed-width) - 2.4rem) / 2);
+        opacity: 0.4;
+        transition: opacity 0.2s ease;
+    }
+
+    /* Hover state */
+    &:hover .icon {
+        opacity: 0.8;
+    }
+
+    /* Name
+       ============================================= */
+    & .name {
+        position: relative;
+        height: 2.4rem; /* height of icon */
+        flex: 1 1 auto;
+        @mixin staggered-item;
+
+        & .text {
+            will-change: opacity;
+            position: absolute;
+            top: 50%;
+            right: 0;
+            left: 0;
+            transform: translateY(-50%);
+            display: block;
+            @mixin text-ellipsis;
+            @mixin typography-body-2 rem;
+            opacity: 0.5;
+            color: var(--color-armadillo);
+            transition: opacity 0.2s ease;
+        }
+    }
+
+    /* In state */
+    &.in .name {
+        @mixin staggered-item-open;
+    }
+
+    /* Hover state */
+    &:hover .name .text {
+        opacity: 1;
+    }
+}

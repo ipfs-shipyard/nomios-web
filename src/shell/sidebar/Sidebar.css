@@ -1,3 +1,128 @@
+@import "@nomios/web-uikit/styles/colors";
+@import "@nomios/web-uikit/styles/mixins/text";
+@import "@nomios/web-uikit/styles/mixins/typography";
+@import "./common.css";
+
+:root {
+    --top-height: 10.5rem;
+    --bottom-height: 12rem;
+}
+
 .sidebar {
     position: relative;
+    width: var(--sidebar-closed-width);
+    overflow: hidden;
+
+    /* Open & close states */
+    &.open,
+    &.openDone,
+    &.close {
+        overflow: visible;
+    }
+
+    & a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    /* Background
+       ============================================= */
+    & .bg {
+        will-change: transform;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 1rem;
+        transform: scaleX(var(--sidebar-closed-scale));
+        transform-origin: 0 0;
+        background-color: var(--color-white);
+        transition: transform var(--sidebar-open-duration) ease var(--sidebar-close-delay);
+    }
+
+    /* Open states */
+    &.open .bg,
+    &.openDone .bg {
+        transform: scaleX(var(--sidebar-opened-scale));
+        transition-delay: 0s;
+    }
+
+    & .wrapper {
+        position: relative;
+        width: var(--sidebar-opened-width);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+
+        /* Top (logo)
+           ============================================= */
+        & .top {
+            width: 100%;
+            height: var(--top-height);
+            padding-left: calc((var(--sidebar-closed-width) - 3.4rem) / 2);
+            display: flex;
+            flex: 0 0 auto;
+            align-items: center;
+
+            & a {
+                display: flex;
+                align-items: center;
+            }
+
+            & .symbol,
+            & .logotype {
+                font-size: 0.654rem;
+                fill: var(--color-tan);
+            }
+
+            & .symbol {
+                margin-right: calc((var(--sidebar-closed-width) - 3.4rem) / 2);
+            }
+
+            & .logotype {
+                @mixin staggered-item;
+            }
+        }
+
+        /* Middle (identities)
+           ============================================= */
+        & .middle {
+            height: 0;
+            flex: 1 1 auto;
+
+            & ul {
+                margin: 0;
+                padding: 1.5rem 0;
+                list-style: none;
+            }
+        }
+
+        /* Bottom (actions)
+           ============================================= */
+        & .bottom {
+            height: var(--bottom-height);
+            margin: 0;
+            padding: 1.2rem 0;
+            flex: 0 0 auto;
+            list-style: none;
+        }
+    }
+
+    /* Safe area
+       Outside area from the sidebar that prevents it from closing on accidental mouse leave.
+       As an example: while scrolling fast, the mouse might leave by mistake.
+       ============================================= */
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: var(--sidebar-closed-width);
+    }
+
+    /* Open states */
+    &.open::before {
+        width: calc(var(--sidebar-opened-width) + 3rem);
+    }
 }

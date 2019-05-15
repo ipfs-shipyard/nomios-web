@@ -1,0 +1,28 @@
+
+@import "@nomios/web-uikit/styles/colors";
+@import "@nomios/web-uikit/styles/mixins/typography";
+@import "../common.css";
+
+.logoItem {
+    display: flex;
+    align-items: center;
+
+    & .symbol,
+    & .logotype {
+        font-size: 0.654rem;
+        fill: var(--color-tan);
+    }
+
+    & .symbol {
+        margin-right: calc((var(--sidebar-closed-width) - 3.4rem) / 2);
+    }
+
+    & .logotype {
+        @mixin staggered-item;
+    }
+
+    /* In state */
+    &.in .logotype {
+        @mixin staggered-item-open;
+    }
+}
