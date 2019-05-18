@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { CSSTransition } from 'react-transition-group';
-import { SettingsIcon, BellIcon } from '@nomios/web-uikit';
+import { SettingsIcon, BellIcon, ModalTrigger } from '@nomios/web-uikit';
+import NewIdentityFlow from '../../modals/new-identity-flow';
 import Scrollbar from './scrollbar';
 import AddIdentityItem from './add-identity-item';
 import IdentityItem from './identity-item';
@@ -65,9 +66,11 @@ class Sidebar extends Component {
                         <div className={ styles.middle }>
                             <Scrollbar in={ open }>
                                 <ul>
-                                    <AddIdentityItem
-                                        in={ open }
-                                        staggerDelay={ STAGGER_TRANSITION_DELAY + STAGGER_FIXED_TRANSITION_DELAY } />
+                                    <ModalTrigger modal={ <NewIdentityFlow /> } onChange={ this.handleModalTriggerChange }>
+                                        <AddIdentityItem
+                                            in={ open }
+                                            staggerDelay={ STAGGER_TRANSITION_DELAY + STAGGER_FIXED_TRANSITION_DELAY } />
+                                    </ModalTrigger>
 
                                     { mockIdentities.map((identity, index) => (
                                         <IdentityItem
@@ -112,13 +115,24 @@ class Sidebar extends Component {
     // We use onMouseOver instead of onMouseEnter because the user might click the avatar/links
     // while still in the sidebar. This way, the sidebar will open again as soon as another element
     // is hovered
-    handleMouseOver = () => !this.state.open && this.open();
+    handleMouseOver = (event) => {
+        // This is needed because of event bubbling. Events inside a portal will be propagated
+        // to its ancestors in the React tree (event though those elements are not ancestors in the DOM tree).
+        // You can read more about it here: https://reactjs.org/docs/portals.html#event-bubbling-through-portals
+        const fromModal = !!event.target.closest('[role="dialog"]');
+
+        if (!fromModal && !this.state.open) {
+            this.open();
+        }
+    };
 
     handleMouseLeave = () => this.close();
 
     handleLogoItemClick = () => this.close();
 
     handleIdentityItemClick = () => this.close();
+
+    handleModalTriggerChange = (state) => !state && this.close();
 }
 
 Sidebar.propTypes = {

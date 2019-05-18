@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
-import FaderContainer from '../../components/fader-container';
-
+import FadeContainer from '../../components/fade-container';
 import styles from './FeedbackStep.css';
 
 class FeedbackStep extends Component {
@@ -33,7 +31,7 @@ class FeedbackStep extends Component {
         const { stepData: { loadingText } } = this.props;
 
         return (
-            <FaderContainer activeIndex={ activeSubStepIndex }>
+            <FadeContainer activeIndex={ activeSubStepIndex }>
                 <div className={ styles.loadingContainer }>
                     <h2>{ loadingText }</h2>
                 </div>
@@ -46,7 +44,7 @@ class FeedbackStep extends Component {
                         { actions }
                     </div>
                 </div>
-            </FaderContainer>
+            </FadeContainer>
         );
     }
 }

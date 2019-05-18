@@ -1,15 +1,13 @@
 /* eslint-disable react/jsx-handler-names */
 import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
+import { startCase } from 'lodash';
 import { Form, Field, FormSpy } from 'react-final-form';
-
 import { Button, TypeGroup, TypeOption, TextInput, EditIcon } from '@nomios/web-uikit';
-import FaderContainer from '../../components/fader-container';
+import FadeContainer from '../../components/fade-container';
 import { notEmpty } from '../../form-validators';
 import { deviceInfo } from './deviceInfo';
 import devices from './devices';
-import { capitalize } from '../../utils';
-
 import styles from './SetupDeviceStep.css';
 
 const SUBSTEP_TRANSITION_DELAY = 300;
@@ -32,7 +30,7 @@ class SetupDeviceStep extends Component {
         this.detectedDeviceInfo = deviceInfo ? deviceInfo : DEVICE_INFO_FALLBACK;
         this.selectedDeviceInfo = this.getSelectedDeviceInfo(this.detectedDeviceInfo.type);
         this.formInitialValues = {
-            'identity-device': this.selectedDeviceInfo.id,
+            type: this.selectedDeviceInfo.id,
         };
     }
 
@@ -44,7 +42,7 @@ class SetupDeviceStep extends Component {
         if (prevProps.identityFirstName !== this.props.identityFirstName) {
             const sufix = !this.state.selectedOption ? this.detectedDeviceInfo.nameSufix : this.selectedDeviceInfo.label;
             const prevDeviceName = this.getDefaultDeviceName(prevProps.identityFirstName, sufix);
-            const currentDeviceName = this.formRef.current.form.getFieldState('device-name').value;
+            const currentDeviceName = this.formRef.current.form.getFieldState('name').value;
 
             if (prevDeviceName === currentDeviceName) {
                 this.setTextInputValue(this.props.identityFirstName, this.selectedDeviceInfo.label);
@@ -73,7 +71,7 @@ class SetupDeviceStep extends Component {
                     { ({ handleSubmit, invalid }) => (
                         <form autoComplete="off" onSubmit={ handleSubmit }>
                             <FormSpy onChange={ this.handleFormChange } />
-                            <FaderContainer activeIndex={ activeSubStepIndex }>
+                            <FadeContainer activeIndex={ activeSubStepIndex }>
                                 { this.renderTypeGroupField() }
                                 <div className={ styles.deviceInfoWrapper }>
                                     <TypeOption
@@ -84,7 +82,7 @@ class SetupDeviceStep extends Component {
                                         { icon }
                                     </TypeOption>
                                     <Field
-                                        name="device-name"
+                                        name="name"
                                         validate={ notEmpty }>
                                         { ({ input }) => (
                                             <TextInput
@@ -95,7 +93,7 @@ class SetupDeviceStep extends Component {
                                         ) }
                                     </Field>
                                 </div>
-                            </FaderContainer>
+                            </FadeContainer>
                             <div className={ styles.buttonWrapper }>
                                 <Button disabled={ activeSubStepIndex === 0 || invalid }>
                                     { buttonText }
@@ -122,7 +120,7 @@ class SetupDeviceStep extends Component {
         const { selectedOption } = this.state;
 
         return (
-            <Field name="identity-device">
+            <Field name="type">
                 { ({ input, meta }) => {
                     if (!meta.data.handleOnChange) {
                         meta.data.handleOnChange = (selectedId) => {
@@ -150,13 +148,13 @@ class SetupDeviceStep extends Component {
     }
 
     getDefaultDeviceName(name, sufix) {
-        return `${name}'s ${capitalize(sufix)}`;
+        return `${name}'s ${startCase(sufix)}`;
     }
 
     setTextInputValue(name, sufix) {
         const deviceName = this.getDefaultDeviceName(name, sufix);
 
-        this.formRef.current.form.change('device-name', deviceName);
+        this.formRef.current.form.change('name', deviceName);
     }
 
     handleTypeOptionClick = () => {
@@ -174,12 +172,12 @@ class SetupDeviceStep extends Component {
     };
 
     handleFormChange = ({ modified, values }) => {
-        if (modified['identity-device']) {
+        if (modified.type) {
             const prevDeviceName = this.getDefaultDeviceName(this.props.identityFirstName, this.selectedDeviceInfo.label);
-            const currentDeviceName = values['device-name'];
+            const currentDeviceName = values.name;
 
             if (prevDeviceName === currentDeviceName) {
-                this.selectedDeviceInfo = this.getSelectedDeviceInfo(values['identity-device']);
+                this.selectedDeviceInfo = this.getSelectedDeviceInfo(values.type);
 
                 this.setTextInputValue(this.props.identityFirstName, this.selectedDeviceInfo.label);
             }

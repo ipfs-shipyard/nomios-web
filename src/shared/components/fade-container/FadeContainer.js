@@ -2,9 +2,9 @@ import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import styles from './FaderContainer.css';
+import styles from './FadeContainer.css';
 
-class FaderContainer extends Component {
+class FadeContainer extends Component {
     static getDerivedStateFromProps(props, state) {
         // It means a change of active index has occurred
         if (props.activeIndex !== state.activeIndex) {
@@ -54,13 +54,13 @@ class FaderContainer extends Component {
     };
 }
 
-FaderContainer.propTypes = {
+FadeContainer.propTypes = {
     activeIndex: PropTypes.number,
     children: PropTypes.node.isRequired,
 };
 
-FaderContainer.defaultProps = {
+FadeContainer.defaultProps = {
     activeIndex: 0,
 };
 
-export default FaderContainer;
+export default FadeContainer;

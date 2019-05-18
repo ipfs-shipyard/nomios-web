@@ -21,9 +21,18 @@
     }
 
     & .bottomContent {
+        position: relative;
         width: 100%;
         margin-top: auto;
         display: flex;
+
+        & .illustration {
+            position: absolute;
+            bottom: -5rem;
+            left: -7rem;
+            width: 40rem;
+            fill: var(--color-tan);
+        }
 
         & .buttonsWrapper {
             width: 24rem;

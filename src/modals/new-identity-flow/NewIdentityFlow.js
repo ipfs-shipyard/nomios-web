@@ -1,10 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { PromiseState, getPromiseState } from 'react-promiseful';
-
 import { FlowModal, FlowModalStep, Button, TextButton } from '@nomios/web-uikit';
 import GenericStep from './generic-step';
-import { IdentityType, IdentityInfo, Feedback } from './create-identity-steps';
+import { IdentityInfo, IdentityDevice, Feedback } from './create-identity-steps';
 
 class NewIdentityFlow extends Component {
     state = {
@@ -18,7 +17,7 @@ class NewIdentityFlow extends Component {
         const { currentStepId } = this.state;
 
         return (
-            <FlowModal variant="advanced" step={ currentStepId } { ...this.props }>
+            <FlowModal { ...this.props } variant="advanced" step={ currentStepId }>
                 <FlowModalStep id="generic">
                     <GenericStep onNextStep={ this.handleChooseNextFlow } />
                 </FlowModalStep>
@@ -44,30 +43,30 @@ class NewIdentityFlow extends Component {
         const { promise } = this.state;
 
         const identityFirstName =
-            this.state.data['create-identity-type'] &&
-            this.state.data['create-identity-type'].name &&
-            this.state.data['create-identity-type'].name.split(' ')[0];
+            this.state.data['create-identity-info'] &&
+            this.state.data['create-identity-info'].name &&
+            this.state.data['create-identity-info'].name.split(' ')[0];
 
         return (
             <Fragment>
-                <FlowModalStep id="create-identity-type">
-                    <IdentityType
-                        nextStepId="create-identity-info"
-                        onNextStep={ this.handleNextStep } />
-                </FlowModalStep>
                 <FlowModalStep id="create-identity-info">
                     <IdentityInfo
+                        nextStepId="create-identity-device"
+                        onNextStep={ this.handleNextStep } />
+                </FlowModalStep>
+                <FlowModalStep id="create-identity-device">
+                    <IdentityDevice
                         nextStepId="create-identity-feedback"
-                        onNextStep={ this.handleSubmitForm }
+                        onNextStep={ this.handleCreateSubmitForm }
                         identityFirstName={ identityFirstName } />
                 </FlowModalStep>
                 <FlowModalStep id="create-identity-feedback">
-                    <PromiseState promise={ promise } onSettle={ this.handlePromiseSettle }>
+                    <PromiseState promise={ promise } onSettle={ this.handleCreatePromiseSettle }>
                         { ({ status }) => (
                             <Feedback
                                 status={ status }
-                                successActions={ this.renderFeedbackSuccessActions() }
-                                errorActions={ this.renderFeedbackErrorActions() } />
+                                successActions={ this.renderCreateFeedbackActions() }
+                                errorActions={ this.renderCreateFeedbackErrorActions() } />
                         ) }
                     </PromiseState>
                 </FlowModalStep>
@@ -75,7 +74,7 @@ class NewIdentityFlow extends Component {
         );
     }
 
-    renderFeedbackSuccessActions() {
+    renderCreateFeedbackActions() {
         return (
             <Fragment>
                 <Button variant="primary" onClick={ this.handleChooseBackupFlow }>Backup my identity</Button>
@@ -84,7 +83,7 @@ class NewIdentityFlow extends Component {
         );
     }
 
-    renderFeedbackErrorActions() {
+    renderCreateFeedbackErrorActions() {
         return (
             <Fragment>
                 <Button variant="primary" onClick={ this.handleRetrySubmit }>Retry</Button>
@@ -94,7 +93,7 @@ class NewIdentityFlow extends Component {
     }
 
     handleChooseNextFlow = (flow) => {
-        const createIdentityFirstStepId = 'create-identity-type';
+        const createIdentityFirstStepId = 'create-identity-info';
 
         this.setState({ currentFlow: flow, currentStepId: createIdentityFirstStepId });
     };
@@ -114,13 +113,13 @@ class NewIdentityFlow extends Component {
         }));
     };
 
-    handleSubmitForm = (nextStepId, data) => {
+    handleCreateSubmitForm = (nextStepId, data) => {
         // Skip if there's a ongoing promise
         if (getPromiseState(this.state.promise).status !== 'none') {
             return;
         }
 
-        const promise = new Promise((resolve, reject) => setTimeout(reject, 5000));
+        const promise = new Promise((resolve) => setTimeout(resolve, 5000));
         const finalData = { ...this.state.data, [this.state.currentStepId]: data };
 
         this.setState({
@@ -130,10 +129,7 @@ class NewIdentityFlow extends Component {
         });
     };
 
-    handlePromiseSettle = ({ status }) => {
-        console.log('PROMISE SETTLED WITH STATUS', status);
-        console.log('MY FINAL DATA', this.state.data);
-    };
+    handleCreatePromiseSettle = ({ status }) => status;
 }
 
 NewIdentityFlow.propTypes = {

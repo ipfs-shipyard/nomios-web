@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
-import { Button } from '@nomios/web-uikit';
-
+import { Button, Svg } from '@nomios/web-uikit';
 import styles from './GenericStep.css';
+
+const helmet = import(/* webpackChunkName: "svg-illustrations-sprite" */ '../../../shared/media/illustrations/helmet.svg');
 
 class GenericStep extends Component {
     render() {
@@ -15,7 +15,7 @@ class GenericStep extends Component {
                     Identity, data ownership, privacy and security.
                 </p>
                 <div className={ styles.bottomContent }>
-                    <div>ILLUSTRATION</div>
+                    <Svg svg={ helmet } className={ styles.illustration } />
                     <div className={ styles.buttonsWrapper }>
                         <Button variant="negative" fullWidth onClick={ this.handleCreateIdentity }>Create ID</Button>
                         <Button variant="tertiary" fullWidth onClick={ this.handleImportIdentity }>Import ID</Button>

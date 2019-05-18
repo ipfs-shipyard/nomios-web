@@ -7,7 +7,13 @@ const getDeviceType = async () => {
         return 'desktop';
     }
 
-    const battery = await navigator.getBattery();
+    let battery;
+
+    try {
+        battery = await navigator.getBattery();
+    } catch (err) {
+        return 'desktop';
+    }
 
     if (battery.charging && battery.chargingTime === 0) {
         return 'desktop';
