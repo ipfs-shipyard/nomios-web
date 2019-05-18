@@ -6,7 +6,12 @@ import { readAsArrayBuffer } from 'promise-file-reader';
 import { FlowModal, FlowModalStep, Button, TextButton } from '@nomios/web-uikit';
 import GenericStep from './generic-step';
 import { IdentityInfo, IdentityDevice as CreateIdentityDevice, Feedback } from './create-identity-steps';
-import { ImportManualRecovery, ImportConfirmIdentity, IdentityDevice as ImportIdentityDevice, ImportFeedback } from './import-identity-steps';
+import {
+    ImportManualRecovery,
+    ImportConfirmIdentity,
+    IdentityDevice as ImportIdentityDevice,
+    ImportFeedback,
+} from './import-identity-steps';
 
 const initialState = {
     currentStepId: 'generic',

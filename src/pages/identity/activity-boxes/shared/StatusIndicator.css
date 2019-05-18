@@ -1,0 +1,43 @@
+@import "@nomios/web-uikit/styles/colors";
+@import "@nomios/web-uikit/styles/mixins/typography";
+
+.statusIndicator {
+    @mixin typography-body-2 rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    & .current,
+    & .approved {
+        color: var(--color-ocean-green);
+    }
+
+    & .offline,
+    & .pending {
+        color: color(var(--color-armadillo) alpha(0.35));
+    }
+
+    & .revoked,
+    & .invalid {
+        color: var(--color-monza);
+    }
+
+    & .statusDot {
+        width: 0.6rem;
+        height: 0.6rem;
+        background-color: currentColor;
+        border-radius: 50%;
+
+        &.left {
+            margin-right: 1rem;
+        }
+
+        &.right {
+            margin-left: 1rem;
+        }
+    }
+
+    & .statusText.right {
+        text-align: align-right;
+    }
+}

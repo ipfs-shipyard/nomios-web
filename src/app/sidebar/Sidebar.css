@@ -9,8 +9,12 @@
 }
 
 .sidebar {
-    position: relative;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
     width: var(--sidebar-closed-width);
+    z-index: 1;
     overflow: hidden;
 
     /* Open & close states */

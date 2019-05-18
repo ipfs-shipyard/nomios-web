@@ -1,0 +1,89 @@
+@import "@nomios/web-uikit/styles/colors";
+
+.item {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    & .left {
+        margin-right: 3rem;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        & .icon {
+            margin-right: 2rem;
+            font-size: 2.5rem;
+            fill: var(--color-armadillo);
+        }
+
+        & .name {
+            color: var(--color-armadillo);
+        }
+    }
+
+    & .right {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        & .statusText {
+            text-align: right;
+        }
+
+        & .statusIndicator {
+            margin-left: 1rem;
+        }
+    }
+}
+
+.singleItem {
+    margin-bottom: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    & .iconWrapper {
+        width: 6rem;
+        height: 6rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: var(--color-white);
+        border-radius: 1.6rem;
+
+        & .icon {
+            font-size: 2.5rem;
+            fill: var(--color-armadillo);
+        }
+    }
+
+    & .name {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
+
+        & .status {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+
+            & .statusIndicator {
+                margin-right: 1rem;
+            }
+        }
+    }
+}
+
+& .name {
+    color: var(--color-armadillo);
+}
+
+@media (max-width: 1280px) {
+    .optional {
+        display: none;
+    }
+}
