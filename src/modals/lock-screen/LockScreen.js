@@ -8,7 +8,7 @@ import { PromiseState, getPromiseState } from 'react-promiseful';
 import { connectIdmWallet } from 'react-idm-wallet';
 import styles from './LockScreen.css';
 import unlockAnimationData from './unlock-animation.json';
-import backgroundPatternUrl from '../../shared/media/images/background-pattern-1440p.png';
+import backgroundPatternUrl from '../../shared/media/backgrounds/background-pattern-1440p.png';
 
 const MINIMUM_UNLOCK_ANIMATION_DURATION = 500;
 
