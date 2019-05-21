@@ -9,9 +9,8 @@ import BulletsIndicator from '../../../../shared/components/bullets-indicator';
 import identities from './identities';
 import styles from './IdentityInfo.css';
 
-const DEFAULT_SELECTED_IDENTITY = 'person';
 const FORM_INITIAL_VALUES = {
-    type: DEFAULT_SELECTED_IDENTITY,
+    type: 'Person',
 };
 
 class IdentityInfo extends Component {
@@ -20,7 +19,7 @@ class IdentityInfo extends Component {
         identityImage: null,
     };
 
-    selectedIdentityInfo = this.getIdentityInfo(DEFAULT_SELECTED_IDENTITY);
+    selectedIdentityInfo = this.getIdentityInfo(FORM_INITIAL_VALUES.type);
 
     constructor() {
         super();

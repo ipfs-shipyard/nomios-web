@@ -3,7 +3,7 @@ import { UserIcon, EntityIcon, OtherIcon, CheckmarkIcon } from '@nomios/web-uiki
 
 export default [
     {
-        id: 'person',
+        id: 'Person',
         label: 'Person',
         badge: <CheckmarkIcon />,
         icon: <UserIcon />,
@@ -12,7 +12,7 @@ export default [
         inputPlaceholder: 'Enter your name',
     },
     {
-        id: 'organization',
+        id: 'Organization',
         label: 'Organization',
         badge: <CheckmarkIcon />,
         icon: <EntityIcon />,
@@ -21,7 +21,7 @@ export default [
         inputPlaceholder: 'Enter organization name',
     },
     {
-        id: 'other',
+        id: 'Thing',
         label: 'Other',
         badge: <CheckmarkIcon />,
         icon: <OtherIcon />,
