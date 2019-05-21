@@ -10,6 +10,17 @@ module.exports = {
         },
     },
     plugins: [
+        // Setup aliases
+        {
+            plugin: {
+                overrideWebpackConfig: ({ webpackConfig }) => {
+                    // Make react hooks work when libraries are linked: https://github.com/webpack/webpack/issues/8607
+                    webpackConfig.resolve.alias.react = require.resolve('react');
+
+                    return webpackConfig;
+                },
+            },
+        },
         // Setup babel-loader to use babel.config.js
         {
             plugin: {
