@@ -95,16 +95,26 @@ class IdentityInfo extends Component {
         );
     }
 
-    renderIdentities = () => (
-        identities.map((identity, index) => (
-            <TypeOption key={ index } id={ identity.id } label={ identity.label } badge={ identity.badge }>
-                { identity.icon }
-            </TypeOption>
-        ))
-    );
+    renderIdentities() {
+        return (
+            identities.map((identity, index) => (
+                <TypeOption key={ index } id={ identity.id } label={ identity.label } badge={ identity.badge }>
+                    { identity.icon }
+                </TypeOption>
+            ))
+        );
+    }
 
     getIdentityInfo(id) {
         return identities.filter((identity) => identity.id === id)[0];
+    }
+
+    goToIdentityName(formData) {
+        this.selectedIdentityInfo = formData && formData.type ?
+            this.getIdentityInfo(formData.type) :
+            this.selectedIdentityInfo;
+
+        this.handleBulletClick(1);
     }
 
     handleBulletClick(bulletIndex) {
@@ -114,13 +124,7 @@ class IdentityInfo extends Component {
     }
 
     handleGoToIdentityType = () => this.handleBulletClick(0);
-    handleGoToIdentityName = (formData) => {
-        this.selectedIdentityInfo = formData.type ?
-            this.getIdentityInfo(formData.type) :
-            this.selectedIdentityInfo;
-
-        this.handleBulletClick(1);
-    };
+    handleGoToIdentityName = () => this.goToIdentityName();
 
     // We are controlling this input manually to avoid installing third-party libs.
     // Check this issue here: https://github.com/final-form/react-final-form/issues/92
@@ -137,7 +141,7 @@ class IdentityInfo extends Component {
     handleOnSubmit = (formData) => {
         switch (this.state.activeSubStepIndex) {
         case 0:
-            this.handleGoToIdentityName(formData);
+            this.goToIdentityName(formData);
             break;
         case 1:
             this.handleNextStep(formData);
