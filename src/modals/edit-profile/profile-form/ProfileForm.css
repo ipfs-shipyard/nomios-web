@@ -1,0 +1,66 @@
+@import "@nomios/web-uikit/styles/colors";
+@import "@nomios/web-uikit/styles/mixins/typography";
+
+.form {
+    display: flex;
+    flex-direction: column;
+
+    & .inputsContainer {
+        display: flex;
+        justify-content: space-between;
+
+        & .leftContent,
+        & .rightContent {
+            & > *:not(:last-child) {
+                margin-bottom: 3.4rem;
+            }
+
+            & .field {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+                &.name {
+                    height: 8rem;
+                }
+
+                &.nationality {
+                    margin-bottom: 6.3rem;
+                }
+
+                &.location {
+                    & .label {
+                        margin-top: 1.1rem;
+                        align-self: flex-start;
+                    }
+                }
+
+                & .label {
+                    @mixin typography-captions rem;
+                    margin-right: 3rem;
+                    color: var(--color-tan);
+                }
+
+                & .genderWrapper,
+                & .avatarPickerWrapper {
+                    min-width: 28rem;
+                    max-width: 65rem;
+                    display: flex;
+                }
+
+                & .genderWrapper {
+                    justify-content: space-between;
+                }
+
+                & .avatarPickerWrapper {
+                    justify-content: flex-start;
+                }
+            }
+        }
+    }
+
+    & .buttonContainer {
+        margin-top: 3.8rem;
+        align-self: flex-end;
+    }
+}

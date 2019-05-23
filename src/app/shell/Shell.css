@@ -9,6 +9,6 @@
 
     & .content {
         flex: 1 0 auto;
-        background: yellow;
+        background: rgba(225, 225, 225);
     }
 }

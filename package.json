@@ -33,6 +33,8 @@
     "idm-wallet": "^0.3.4",
     "lottie-react-web": "^2.1.4",
     "memoize-one": "^5.0.4",
+    "ms-nationalities": "^1.0.1",
+    "node-geocoder": "^3.22.0",
     "p-debounce": "^2.1.0",
     "promise-file-reader": "^1.0.2",
     "react": "^16.8.4",
