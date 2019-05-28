@@ -2,23 +2,30 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connectIdmWallet } from 'react-idm-wallet';
 import { PromiseState } from 'react-promiseful';
+import { readAsArrayBuffer } from 'promise-file-reader';
 import { FlowModal, FlowModalStep, Button, TextButton } from '@nomios/web-uikit';
 import GenericStep from './generic-step';
 import { IdentityInfo, IdentityDevice, Feedback } from './create-identity-steps';
 
+const initialState = {
+    currentStepId: 'generic',
+    currentFlow: undefined,
+    promise: undefined,
+    data: {},
+};
+
 class NewIdentityFlow extends Component {
-    state = {
-        currentStepId: 'generic',
-        currentFlow: undefined,
-        promise: undefined,
-        data: {},
-    };
+    state = initialState;
 
     render() {
         const { currentStepId } = this.state;
 
         return (
-            <FlowModal { ...this.props } variant="advanced" step={ currentStepId }>
+            <FlowModal
+                { ...this.props }
+                variant="advanced"
+                step={ currentStepId }
+                onExited={ this.handleExited }>
                 <FlowModalStep id="generic">
                     <GenericStep onNextStep={ this.handleChooseFlow } />
                 </FlowModalStep>
@@ -75,6 +82,10 @@ class NewIdentityFlow extends Component {
         );
     }
 
+    renderImportSteps() {
+        throw new Error('Not implemented');
+    }
+
     renderCreateFeedbackActions() {
         return (
             <Fragment>
@@ -93,24 +104,29 @@ class NewIdentityFlow extends Component {
         );
     }
 
-    createIdentity(data) {
+    async createIdentity(data) {
         const { createIdentity } = this.props;
 
         const identityInfo = data['create-identity-info'];
         const deviceInfo = data['create-identity-device'];
-        const { type, ...schema } = identityInfo;
+
+        const profileDetails = {
+            '@context': 'https://schema.org',
+            '@type': identityInfo.type,
+            name: identityInfo.name,
+        };
+
+        // Read image from File object to an ArrayBuffer
+        if (identityInfo.image) {
+            profileDetails.image = {
+                type: identityInfo.image.type,
+                data: await readAsArrayBuffer(identityInfo.image),
+            };
+        }
 
         return createIdentity({
-            schema: {
-                '@context': 'https://schema.org',
-                '@type': type,
-                ...schema,
-            },
+            profileDetails,
             deviceInfo,
-        })
-        .catch((err) => {
-            console.error('Failed to create identity', err);
-            throw err;
         });
     }
 
@@ -120,6 +136,26 @@ class NewIdentityFlow extends Component {
         return Promise.reject(new Error('Not implemented'));
     }
 
+    createFlowPromise = (currentStepId, data) => {
+        const { currentFlow } = this.state;
+        const isLastCreateStep = currentFlow === 'create' && currentStepId === 'create-identity-feedback';
+
+        if (isLastCreateStep) {
+            return this.createIdentity(data);
+        }
+
+        const isLastImportStep = currentFlow === 'import' && currentStepId === 'import-identity-feedback';
+
+        if (isLastImportStep) {
+            return this.importIdentity(data);
+        }
+    };
+
+    handleExited = () => {
+        this.setState(initialState);
+        this.props.onExited && this.props.onExited();
+    };
+
     handleChooseFlow = (flow) => {
         const createIdentityFirstStepId = flow === 'create' ? 'create-identity-info' : 'import-identity-mnemonic';
 
@@ -127,20 +163,10 @@ class NewIdentityFlow extends Component {
     };
 
     handleNextStep = (nextStepId, currentStepData) => {
-        const { currentFlow } = this.state;
-        const isLastCreateStep = currentFlow === 'create' && nextStepId === 'create-identity-feedback';
-        const isLastImportStep = currentFlow === 'import' && nextStepId === 'import-identity-feedback';
-
         this.setState((prevState) => {
             const data = { ...prevState.data, [prevState.currentStepId]: currentStepData };
             const currentStepId = nextStepId;
-            let promise;
-
-            if (isLastCreateStep) {
-                promise = this.createIdentity(data);
-            } else if (isLastImportStep) {
-                promise = this.importIdentity(data);
-            }
+            const promise = this.createFlowPromise(currentStepId, data);
 
             return {
                 currentStepId,
@@ -152,13 +178,13 @@ class NewIdentityFlow extends Component {
 
     handleRetryCreateClick = () => {
         this.setState((state) => ({
-            promise: this.createIdentity(state.date),
+            promise: this.createIdentity(state.data),
         }));
     };
 
     handleRetryImportClick = () => {
         this.setState((state) => ({
-            promise: this.importIdentity(state.date),
+            promise: this.importIdentity(state.data),
         }));
     };
 
@@ -171,11 +197,12 @@ NewIdentityFlow.propTypes = {
     createIdentity: PropTypes.func.isRequired,
     importIdentity: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func,
+    onExited: PropTypes.func,
 };
 
 export default connectIdmWallet((idmWallet) => {
-    const createIdentity = (parameters) => idmWallet.identities.create('ipid', parameters);
-    const importIdentity = (parameters) => idmWallet.identities.import('ipid', parameters);
+    const createIdentity = (params) => idmWallet.identities.create('ipid', params);
+    const importIdentity = (params) => idmWallet.identities.import('ipid', params);
 
     return () => ({
         createIdentity,

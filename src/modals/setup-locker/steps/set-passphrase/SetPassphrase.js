@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import { TextInput, Button, FeedbackMessage, WarningIcon, InfoIcon } from '@nomios/web-uikit';
-import { ButtonPromiseState } from '../../../../shared/components/button-promise-state';
 import { Form, Field } from 'react-final-form';
 import { FORM_ERROR } from 'final-form';
 import memoize from 'memoize-one';
 import pDebounce from 'p-debounce';
+import { TextInput, Button, FeedbackMessage, WarningIcon, InfoIcon } from '@nomios/web-uikit';
+import { ButtonPromiseState } from '../../../../shared/components/button-promise-state';
 import styles from './SetPassphrase.css';
 
 const createValidatePassphrase = (validatePassphrase) => {

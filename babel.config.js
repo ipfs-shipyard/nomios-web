@@ -6,6 +6,7 @@ module.exports = (api) => {
     return require('babel-preset-moxy/end-project')(api, {
         modules: false,
         react: true,
+        loose: false, // Need this to be false, otherwise bip39 library fails
         targets: ['browsers'],
     });
 };

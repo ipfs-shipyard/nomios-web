@@ -1,5 +1,5 @@
 import React from 'react';
-import SetupDeviceStep from '../../../../shared/steps/setup-device-step';
+import { SetupDeviceStep } from '../../common-steps';
 
 const stepData = {
     title: '2. Setup your device',

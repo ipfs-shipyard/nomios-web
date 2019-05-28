@@ -1,6 +1,5 @@
 import React from 'react';
-
-import FeedbackStep from '../../../../shared/steps/feedback-step';
+import { FeedbackStep } from '../../common-steps';
 
 const stepData = {
     loadingText: 'Please wait while we create your identity...',
