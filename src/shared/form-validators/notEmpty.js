@@ -1,3 +1,3 @@
-const notEmpty = (value) => !value ? 'This field is mandatory' : undefined;
+const notEmpty = (value) => !value ? 'Required' : undefined;
 
 export default notEmpty;

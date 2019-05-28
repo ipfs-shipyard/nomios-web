@@ -45,7 +45,7 @@ class IdentityInfo extends Component {
                 <Form
                     initialValues={ FORM_INITIAL_VALUES }
                     onSubmit={ this.handleOnSubmit }>
-                    { ({ handleSubmit, invalid, values }) => (
+                    { ({ handleSubmit, values }) => (
                         <form autoComplete="off" onSubmit={ handleSubmit }>
                             <FormSpy onChange={ this.handleFormChange } />
                             <FadeContainer activeIndex={ activeSubStepIndex }>
@@ -69,18 +69,25 @@ class IdentityInfo extends Component {
                                     <Field
                                         name="name"
                                         validate={ notEmpty }>
-                                        { ({ input }) => (
-                                            <TextInput
-                                                { ...input }
-                                                className={ styles.textInput }
-                                                label={ inputLabel }
-                                                placeholder={ inputPlaceholder } />
-                                        ) }
+                                        { ({ input, meta }) => {
+                                            const lineStrength = meta.touched && meta.error ? 0 : undefined;
+                                            const feedback = meta.touched && meta.error ? { message: meta.error, type: 'error' } : undefined;
+
+                                            return (
+                                                <TextInput
+                                                    { ...input }
+                                                    className={ styles.textInput }
+                                                    label={ inputLabel }
+                                                    placeholder={ inputPlaceholder }
+                                                    lineStrength={ lineStrength }
+                                                    feedback={ feedback } />
+                                            );
+                                        } }
                                     </Field>
                                 </div>
                             </FadeContainer>
                             <div className={ styles.buttonWrapper }>
-                                <Button disabled={ invalid }>Continue</Button>
+                                <Button>Continue</Button>
                             </div>
                         </form>
                     ) }
