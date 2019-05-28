@@ -5,23 +5,24 @@ import { NavLink } from 'react-router-dom';
 import { Avatar } from '@nomios/web-uikit';
 import styles from './IdentityItem.css';
 
-const IdentityItem = ({ identity, in: in_, staggerDelay, className, ...rest }) => (
+const IdentityItem = ({ id, details, in: in_, staggerDelay, className, ...rest }) => (
     <li { ...rest } className={ classNames(styles.identityItem, in_ && styles.in, className) }>
         <NavLink
-            to={ `/identity/${identity.id}` }
+            to={ `/identity/${id}` }
             activeClassName={ styles.active }>
-            <Avatar image={ identity.image } name={ identity.name } className={ styles.avatar } />
+            <Avatar image={ details.image } name={ details.name } className={ styles.avatar } />
             <div
                 style={ in_ && staggerDelay ? { transitionDelay: `${staggerDelay}ms` } : undefined }
                 className={ styles.name }>
-                <span className={ styles.text }>{ identity.name }</span>
+                <span className={ styles.text }>{ details.name }</span>
             </div>
         </NavLink>
     </li>
 );
 
 IdentityItem.propTypes = {
-    identity: PropTypes.object.isRequired,
+    id: PropTypes.string.isRequired,
+    details: PropTypes.object.isRequired,
     in: PropTypes.bool,
     staggerDelay: PropTypes.number,
     className: PropTypes.string,

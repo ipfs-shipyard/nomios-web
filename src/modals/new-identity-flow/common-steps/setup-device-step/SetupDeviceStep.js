@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import { startCase } from 'lodash';
 import { Form, Field, FormSpy } from 'react-final-form';
 import { Button, TypeGroup, TypeOption, TextInput, EditIcon } from '@nomios/web-uikit';
-import FadeContainer from '../../components/fade-container';
-import { notEmpty } from '../../form-validators';
+import FadeContainer from '../../../../shared/components/fade-container';
+import { notEmpty } from '../../../../shared/form-validators';
 import { deviceInfo } from './deviceInfo';
 import devices from './devices';
 import styles from './SetupDeviceStep.css';
@@ -68,7 +68,7 @@ class SetupDeviceStep extends Component {
                     ref={ this.formRef }
                     initialValues={ this.formInitialValues }
                     onSubmit={ this.handleOnSubmit }>
-                    { ({ handleSubmit, invalid }) => (
+                    { ({ handleSubmit }) => (
                         <form autoComplete="off" onSubmit={ handleSubmit }>
                             <FormSpy onChange={ this.handleFormChange } />
                             <FadeContainer activeIndex={ activeSubStepIndex }>
@@ -84,20 +84,25 @@ class SetupDeviceStep extends Component {
                                     <Field
                                         name="name"
                                         validate={ notEmpty }>
-                                        { ({ input }) => (
-                                            <TextInput
-                                                { ...input }
-                                                className={ styles.textInput }
-                                                label="Device name"
-                                                placeholder="Enter device name" />
-                                        ) }
+                                        { ({ input, meta }) => {
+                                            const lineStrength = meta.touched && meta.error ? 0 : undefined;
+                                            const feedback = meta.touched && meta.error ? { message: meta.error, type: 'error' } : undefined;
+
+                                            return (
+                                                <TextInput
+                                                    { ...input }
+                                                    className={ styles.textInput }
+                                                    label="Device name"
+                                                    placeholder="Enter device name"
+                                                    lineStrength={ lineStrength }
+                                                    feedback={ feedback } />
+                                            );
+                                        } }
                                     </Field>
                                 </div>
                             </FadeContainer>
                             <div className={ styles.buttonWrapper }>
-                                <Button disabled={ activeSubStepIndex === 0 || invalid }>
-                                    { buttonText }
-                                </Button>
+                                <Button disabled={ activeSubStepIndex === 0 }>{ buttonText }</Button>
                             </div>
                         </form>
                     ) }
@@ -185,14 +190,14 @@ class SetupDeviceStep extends Component {
     };
 
     handleOnSubmit = (formData) => {
-        this.props.onNextStep && this.props.onNextStep(this.props.nextStepId, formData);
+        this.props.onNextStep(this.props.nextStepId, formData);
     };
 }
 
 SetupDeviceStep.propTypes = {
     identityFirstName: PropTypes.string,
-    nextStepId: PropTypes.string,
-    onNextStep: PropTypes.func,
+    nextStepId: PropTypes.string.isRequired,
+    onNextStep: PropTypes.func.isRequired,
     stepData: PropTypes.shape({
         description: PropTypes.string,
         buttonText: PropTypes.string,

@@ -2,56 +2,53 @@ import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import { TextInput, Button, FeedbackMessage, WarningIcon, InfoIcon } from '@nomios/web-uikit';
-import { ButtonPromiseState } from '../../../../shared/components/button-promise-state';
 import { Form, Field } from 'react-final-form';
 import { FORM_ERROR } from 'final-form';
 import memoize from 'memoize-one';
 import pDebounce from 'p-debounce';
+import { TextInput, Button, FeedbackMessage, WarningIcon, InfoIcon } from '@nomios/web-uikit';
+import { ButtonPromiseState } from '../../../../shared/components/button-promise-state';
+import { notEmpty } from '../../../../shared/form-validators';
 import styles from './SetPassphrase.css';
 
 const createValidatePassphrase = (validatePassphrase) => {
-    validatePassphrase = pDebounce(validatePassphrase, 200);
+    const debouncedValidatePassphrase = pDebounce(validatePassphrase, 200);
 
     return async (passphrase, _, meta) => {
         try {
-            meta.data.validationResult = await validatePassphrase(passphrase);
+            meta.data.validationResult = await (passphrase ? debouncedValidatePassphrase(passphrase) : validatePassphrase(''));
         } catch (err) {
             meta.data.validationResult = err;
 
             return err.message;
+        } finally {
+            meta.data.validatedOnceNonEmpty = meta.data.validatedOnceNonEmpty || !!passphrase;
         }
     };
 };
 
-const createValidatePassphraseConfirmation = () => {
-    const validatePassphraseConfirmation = pDebounce(async (passphraseConfirmation, passphrase) => {
-        if (passphraseConfirmation !== passphrase) {
-            return 'Passphrases do not match';
-        }
-    }, 400);
+const validatePassphraseConfirmation = (passphraseConfirmation, allValues) => {
+    const error = notEmpty(passphraseConfirmation);
 
-    return async (passphraseConfirmation, allValues, meta) => {
-        if (!passphraseConfirmation) {
-            return;
-        }
-
-        const error = await validatePassphraseConfirmation(passphraseConfirmation, allValues.passphrase);
-
-        meta.data.error = error;
-        meta.data.validatedOnce = true;
-
+    if (error) {
         return error;
-    };
+    }
+
+    if (passphraseConfirmation !== allValues.passphrase) {
+        return 'Passphrases do not match';
+    }
 };
 
 const getPassphraseFeedback = (validationResult) => {
     const { score: strength, warning, suggestions } = validationResult;
 
-    const normalizedStrength = Math.ceil(4 * strength);
-    let feedback = null;
+    const normalizedStrength = Math.ceil(5 * strength);
+    let feedback;
 
     switch (normalizedStrength) {
+    case 0:
+        feedback = { message: 'Required', type: 'error' };
+        break;
     case 1:
         feedback = { message: 'Poor', type: 'info' };
         break;
@@ -65,6 +62,10 @@ const getPassphraseFeedback = (validationResult) => {
         feedback = { message: 'Strong' };
         break;
     default:
+        feedback = null;
+    }
+
+    if (!feedback) {
         return null;
     }
 
@@ -88,7 +89,6 @@ const getPassphraseFeedback = (validationResult) => {
 
 class SetPassphrase extends Component {
     createValidatePassphrase = memoize(createValidatePassphrase);
-    validatePassphraseConfirmation = createValidatePassphraseConfirmation();
     getPassphraseFeedback = memoize(getPassphraseFeedback);
 
     state = {
@@ -111,31 +111,33 @@ class SetPassphrase extends Component {
                 <p>Please define a passphrase which will be used to encrypt all the data stored in this app.</p>
 
                 <Form onSubmit={ this.handleSubmit }>
-                    { ({ handleSubmit, hasValidationErrors, validating, submitting, submitError }) => (
+                    { ({ handleSubmit, submitError }) => (
                         <form autoComplete="off" onSubmit={ handleSubmit }>
                             <Field name="passphrase" validate={ this.createValidatePassphrase(validatePassphrase) }>
-                                { ({ input, meta }) => (
-                                    <TextInput
-                                        { ...input }
-                                        label="Enter Passphrase"
-                                        placeholder="Enter your passphrase"
-                                        helperText="You may use any characters, including spaces"
-                                        lineType="dashed"
-                                        lineStrength={ meta.data.validationResult && meta.data.validationResult.score }
-                                        feedback={ meta.data.validationResult && this.getPassphraseFeedback(meta.data.validationResult) }
-                                        className={ styles.passphraseInput } />
-                                ) }
+                                { ({ input, meta }) => {
+                                    const showFeedback = (meta.modified && meta.data.validatedOnceNonEmpty) || meta.touched;
+
+                                    const lineStrength = showFeedback && meta.data.validationResult ? meta.data.validationResult.score : undefined;
+                                    const feedback = showFeedback && meta.data.validationResult ? this.getPassphraseFeedback(meta.data.validationResult) : undefined;
+
+                                    return (
+                                        <TextInput
+                                            { ...input }
+                                            label="Enter Passphrase"
+                                            placeholder="Enter your passphrase"
+                                            helperText="You may use any characters, including spaces"
+                                            lineType="dashed"
+                                            lineStrength={ lineStrength }
+                                            feedback={ feedback }
+                                            className={ styles.passphraseInput } />
+                                    );
+                                } }
                             </Field>
 
-                            <Field name="confirmPassphrase" validate={ this.validatePassphraseConfirmation }>
+                            <Field name="confirmPassphrase" validate={ validatePassphraseConfirmation }>
                                 { ({ input, meta }) => {
-                                    let lineStrength;
-                                    let feedback;
-
-                                    if (meta.data.validatedOnce) {
-                                        lineStrength = meta.data.error ? 0 : 1;
-                                        feedback = meta.data.error && { message: 'Passphrases don\'t match.', type: 'error' };
-                                    }
+                                    const lineStrength = meta.touched ? Number(!meta.error) : undefined;
+                                    const feedback = meta.touched && meta.error ? { message: meta.error, type: 'error' } : undefined;
 
                                     return (
                                         <TextInput
@@ -161,11 +163,7 @@ class SetPassphrase extends Component {
                                 <div className={ styles.continueButton }>
                                     <ButtonPromiseState promise={ promise } onSettle={ this.handleSettle }>
                                         { ({ status }) => (
-                                            <Button
-                                                disabled={ hasValidationErrors || validating || submitting }
-                                                feedback={ status }>
-                                                Continue
-                                            </Button>
+                                            <Button feedback={ status }>Continue</Button>
                                         ) }
                                     </ButtonPromiseState>
                                 </div>

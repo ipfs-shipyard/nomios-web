@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import FadeContainer from '../../components/fade-container';
+import FadeContainer from '../../../../shared/components/fade-container';
 import styles from './FeedbackStep.css';
 
 class FeedbackStep extends Component {

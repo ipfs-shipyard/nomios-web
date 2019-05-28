@@ -1,25 +1,33 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { PromiseState, getPromiseState } from 'react-promiseful';
+import { connectIdmWallet } from 'react-idm-wallet';
+import { PromiseState } from 'react-promiseful';
+import { readAsArrayBuffer } from 'promise-file-reader';
 import { FlowModal, FlowModalStep, Button, TextButton } from '@nomios/web-uikit';
 import GenericStep from './generic-step';
 import { IdentityInfo, IdentityDevice, Feedback } from './create-identity-steps';
 
+const initialState = {
+    currentStepId: 'generic',
+    currentFlow: undefined,
+    promise: undefined,
+    data: {},
+};
+
 class NewIdentityFlow extends Component {
-    state = {
-        currentStepId: 'generic',
-        currentFlow: undefined,
-        promise: undefined,
-        data: {},
-    };
+    state = initialState;
 
     render() {
         const { currentStepId } = this.state;
 
         return (
-            <FlowModal { ...this.props } variant="advanced" step={ currentStepId }>
+            <FlowModal
+                { ...this.props }
+                variant="advanced"
+                step={ currentStepId }
+                onExited={ this.handleExited }>
                 <FlowModalStep id="generic">
-                    <GenericStep onNextStep={ this.handleChooseNextFlow } />
+                    <GenericStep onNextStep={ this.handleChooseFlow } />
                 </FlowModalStep>
                 { this.renderFlowSteps() }
             </FlowModal>
@@ -57,11 +65,11 @@ class NewIdentityFlow extends Component {
                 <FlowModalStep id="create-identity-device">
                     <IdentityDevice
                         nextStepId="create-identity-feedback"
-                        onNextStep={ this.handleCreateSubmitForm }
+                        onNextStep={ this.handleNextStep }
                         identityFirstName={ identityFirstName } />
                 </FlowModalStep>
                 <FlowModalStep id="create-identity-feedback">
-                    <PromiseState promise={ promise } onSettle={ this.handleCreatePromiseSettle }>
+                    <PromiseState promise={ promise }>
                         { ({ status }) => (
                             <Feedback
                                 status={ status }
@@ -74,10 +82,14 @@ class NewIdentityFlow extends Component {
         );
     }
 
+    renderImportSteps() {
+        throw new Error('Not implemented');
+    }
+
     renderCreateFeedbackActions() {
         return (
             <Fragment>
-                <Button variant="primary" onClick={ this.handleChooseBackupFlow }>Backup my identity</Button>
+                <Button variant="primary" onClick={ this.handleGoToBackupFlow }>Backup my identity</Button>
                 <TextButton onClick={ this.props.onRequestClose }>Skip, for now</TextButton>
             </Fragment>
         );
@@ -86,54 +98,114 @@ class NewIdentityFlow extends Component {
     renderCreateFeedbackErrorActions() {
         return (
             <Fragment>
-                <Button variant="primary" onClick={ this.handleRetrySubmit }>Retry</Button>
+                <Button variant="primary" onClick={ this.handleRetryCreateClick }>Retry</Button>
                 <TextButton onClick={ this.props.onRequestClose }>Skip this step</TextButton>
             </Fragment>
         );
     }
 
-    handleChooseNextFlow = (flow) => {
-        const createIdentityFirstStepId = 'create-identity-info';
+    async createIdentity(data) {
+        const { createIdentity } = this.props;
+
+        const identityInfo = data['create-identity-info'];
+        const deviceInfo = data['create-identity-device'];
+
+        const profileDetails = {
+            '@context': 'https://schema.org',
+            '@type': identityInfo.type,
+            name: identityInfo.name,
+        };
+
+        // Read image from File object to an ArrayBuffer
+        if (identityInfo.image) {
+            profileDetails.image = {
+                type: identityInfo.image.type,
+                data: await readAsArrayBuffer(identityInfo.image),
+            };
+        }
+
+        return createIdentity({
+            profileDetails,
+            deviceInfo,
+        });
+    }
+
+    importIdentity(data) {
+        console.log('data', data);
+
+        return Promise.reject(new Error('Not implemented'));
+    }
+
+    createFlowPromise = (currentStepId, data) => {
+        const { currentFlow } = this.state;
+        const isLastCreateStep = currentFlow === 'create' && currentStepId === 'create-identity-feedback';
+
+        if (isLastCreateStep) {
+            return this.createIdentity(data);
+        }
+
+        const isLastImportStep = currentFlow === 'import' && currentStepId === 'import-identity-feedback';
+
+        if (isLastImportStep) {
+            return this.importIdentity(data);
+        }
+    };
+
+    handleExited = () => {
+        this.setState(initialState);
+        this.props.onExited && this.props.onExited();
+    };
+
+    handleChooseFlow = (flow) => {
+        const createIdentityFirstStepId = flow === 'create' ? 'create-identity-info' : 'import-identity-mnemonic';
 
         this.setState({ currentFlow: flow, currentStepId: createIdentityFirstStepId });
     };
 
-    handleChooseBackupFlow = () => {
-        console.log('Go to Backup Identity Flow');
-    };
+    handleNextStep = (nextStepId, currentStepData) => {
+        this.setState((prevState) => {
+            const data = { ...prevState.data, [prevState.currentStepId]: currentStepData };
+            const currentStepId = nextStepId;
+            const promise = this.createFlowPromise(currentStepId, data);
 
-    handleRetrySubmit = () => {
-        console.log('Retry form submission');
-    };
-
-    handleNextStep = (nextStepId, data) => {
-        this.setState((prevState) => ({
-            currentStepId: nextStepId,
-            data: { ...prevState.data, [prevState.currentStepId]: data },
-        }));
-    };
-
-    handleCreateSubmitForm = (nextStepId, data) => {
-        // Skip if there's a ongoing promise
-        if (getPromiseState(this.state.promise).status !== 'none') {
-            return;
-        }
-
-        const promise = new Promise((resolve) => setTimeout(resolve, 5000));
-        const finalData = { ...this.state.data, [this.state.currentStepId]: data };
-
-        this.setState({
-            currentStepId: nextStepId,
-            data: finalData,
-            promise,
+            return {
+                currentStepId,
+                data,
+                promise,
+            };
         });
     };
 
-    handleCreatePromiseSettle = ({ status }) => status;
+    handleRetryCreateClick = () => {
+        this.setState((state) => ({
+            promise: this.createIdentity(state.data),
+        }));
+    };
+
+    handleRetryImportClick = () => {
+        this.setState((state) => ({
+            promise: this.importIdentity(state.data),
+        }));
+    };
+
+    handleGoToBackupFlow = () => {
+        alert('Not yet implemented');
+    };
 }
 
 NewIdentityFlow.propTypes = {
+    createIdentity: PropTypes.func.isRequired,
+    importIdentity: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func,
+    onExited: PropTypes.func,
 };
 
-export default NewIdentityFlow;
+export default connectIdmWallet((idmWallet) => {
+    const createIdentity = (params) => idmWallet.identities.create('ipid', params);
+    const importIdentity = (params) => idmWallet.identities.import('ipid', params);
+
+    return () => ({
+        createIdentity,
+        importIdentity,
+    });
+})(NewIdentityFlow);

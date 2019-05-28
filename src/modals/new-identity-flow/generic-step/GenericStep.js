@@ -31,7 +31,7 @@ class GenericStep extends Component {
 }
 
 GenericStep.propTypes = {
-    onNextStep: PropTypes.func,
+    onNextStep: PropTypes.func.isRequired,
 };
 
 export default GenericStep;

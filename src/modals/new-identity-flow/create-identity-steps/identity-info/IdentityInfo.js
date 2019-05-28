@@ -9,9 +9,8 @@ import BulletsIndicator from '../../../../shared/components/bullets-indicator';
 import identities from './identities';
 import styles from './IdentityInfo.css';
 
-const DEFAULT_SELECTED_IDENTITY = 'person';
 const FORM_INITIAL_VALUES = {
-    type: DEFAULT_SELECTED_IDENTITY,
+    type: 'Person',
 };
 
 class IdentityInfo extends Component {
@@ -20,7 +19,7 @@ class IdentityInfo extends Component {
         identityImage: null,
     };
 
-    selectedIdentityInfo = this.getIdentityInfo(DEFAULT_SELECTED_IDENTITY);
+    selectedIdentityInfo = this.getIdentityInfo(FORM_INITIAL_VALUES.type);
 
     constructor() {
         super();
@@ -46,7 +45,7 @@ class IdentityInfo extends Component {
                 <Form
                     initialValues={ FORM_INITIAL_VALUES }
                     onSubmit={ this.handleOnSubmit }>
-                    { ({ handleSubmit, invalid, values }) => (
+                    { ({ handleSubmit, values }) => (
                         <form autoComplete="off" onSubmit={ handleSubmit }>
                             <FormSpy onChange={ this.handleFormChange } />
                             <FadeContainer activeIndex={ activeSubStepIndex }>
@@ -70,18 +69,25 @@ class IdentityInfo extends Component {
                                     <Field
                                         name="name"
                                         validate={ notEmpty }>
-                                        { ({ input }) => (
-                                            <TextInput
-                                                { ...input }
-                                                className={ styles.textInput }
-                                                label={ inputLabel }
-                                                placeholder={ inputPlaceholder } />
-                                        ) }
+                                        { ({ input, meta }) => {
+                                            const lineStrength = meta.touched && meta.error ? 0 : undefined;
+                                            const feedback = meta.touched && meta.error ? { message: meta.error, type: 'error' } : undefined;
+
+                                            return (
+                                                <TextInput
+                                                    { ...input }
+                                                    className={ styles.textInput }
+                                                    label={ inputLabel }
+                                                    placeholder={ inputPlaceholder }
+                                                    lineStrength={ lineStrength }
+                                                    feedback={ feedback } />
+                                            );
+                                        } }
                                     </Field>
                                 </div>
                             </FadeContainer>
                             <div className={ styles.buttonWrapper }>
-                                <Button disabled={ invalid }>Continue</Button>
+                                <Button>Continue</Button>
                             </div>
                         </form>
                     ) }
@@ -154,13 +160,13 @@ class IdentityInfo extends Component {
     handleNextStep = (formData) => {
         const finalData = { image: this.state.identityImage, ...formData };
 
-        this.props.onNextStep && this.props.onNextStep(this.props.nextStepId, finalData);
+        this.props.onNextStep(this.props.nextStepId, finalData);
     };
 }
 
 IdentityInfo.propTypes = {
-    nextStepId: PropTypes.string,
-    onNextStep: PropTypes.func,
+    nextStepId: PropTypes.string.isRequired,
+    onNextStep: PropTypes.func.isRequired,
 };
 
 export default IdentityInfo;
