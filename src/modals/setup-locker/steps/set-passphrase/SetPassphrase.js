@@ -32,14 +32,10 @@ const createValidatePassphraseConfirmation = () => {
     }, 400);
 
     return async (passphraseConfirmation, allValues, meta) => {
-        if (!passphraseConfirmation) {
-            return;
-        }
-
         const error = await validatePassphraseConfirmation(passphraseConfirmation, allValues.passphrase);
 
         meta.data.error = error;
-        meta.data.validatedOnce = true;
+        meta.data.validatedOnce = meta.data.validatedOnce || !!passphraseConfirmation;
 
         return error;
     };

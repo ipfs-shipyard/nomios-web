@@ -185,14 +185,14 @@ class SetupDeviceStep extends Component {
     };
 
     handleOnSubmit = (formData) => {
-        this.props.onNextStep && this.props.onNextStep(this.props.nextStepId, formData);
+        this.props.onNextStep(this.props.nextStepId, formData);
     };
 }
 
 SetupDeviceStep.propTypes = {
     identityFirstName: PropTypes.string,
-    nextStepId: PropTypes.string,
-    onNextStep: PropTypes.func,
+    nextStepId: PropTypes.string.isRequired,
+    onNextStep: PropTypes.func.isRequired,
     stepData: PropTypes.shape({
         description: PropTypes.string,
         buttonText: PropTypes.string,

@@ -153,13 +153,13 @@ class IdentityInfo extends Component {
     handleNextStep = (formData) => {
         const finalData = { image: this.state.identityImage, ...formData };
 
-        this.props.onNextStep && this.props.onNextStep(this.props.nextStepId, finalData);
+        this.props.onNextStep(this.props.nextStepId, finalData);
     };
 }
 
 IdentityInfo.propTypes = {
-    nextStepId: PropTypes.string,
-    onNextStep: PropTypes.func,
+    nextStepId: PropTypes.string.isRequired,
+    onNextStep: PropTypes.func.isRequired,
 };
 
 export default IdentityInfo;
