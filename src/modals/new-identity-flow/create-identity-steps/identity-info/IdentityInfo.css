@@ -38,7 +38,6 @@
             & .textInput {
                 width: 40.6rem;
                 margin-left: 6.8rem;
-                transform: translateY(-25%);
 
                 & input {
                     background-color: transparent;
