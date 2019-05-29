@@ -52,11 +52,6 @@ class LockScreen extends Component {
         startLogoAnimation: false,
     };
 
-    componentWillUnmount() {
-        clearInterval(this.focusInterval);
-        clearTimeout(this.focusTimeout);
-    }
-
     render() {
         const { promise, passphrase, startLogoAnimation } = this.state;
         const { in: in_ } = this.props;
@@ -157,7 +152,7 @@ class LockScreen extends Component {
 
         const promise = Promise.all([
             new Promise((resolve) => setTimeout(resolve, MINIMUM_UNLOCK_ANIMATION_DURATION)),
-            this.props.unlock('passphrase', this.state.passphrase),
+            this.props.unlock('passphrase', this.state.passphrase).then(() => this.props.load()),
         ]);
 
         this.setState({ promise });
@@ -227,13 +222,16 @@ class LockScreen extends Component {
 LockScreen.propTypes = {
     in: PropTypes.bool,
     unlock: PropTypes.func.isRequired,
+    load: PropTypes.func.isRequired,
     onUnlock: PropTypes.func.isRequired,
 };
 
 export default connectIdmWallet((idmWallet) => {
     const unlock = (type, input) => idmWallet.locker.getLock(type).unlock(input);
+    const load = () => idmWallet.identities.load().catch(() => {}); // Error is being displayed underneath
 
     return () => ({
         unlock,
+        load,
     });
 })(LockScreen);
