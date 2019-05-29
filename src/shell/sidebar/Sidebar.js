@@ -83,12 +83,14 @@ class Sidebar extends PureComponent {
                                 name="Notifications"
                                 icon={ BellIcon }
                                 in={ open }
-                                staggerDelay={ ((identitiesCount + 2) * STAGGER_TRANSITION_DELAY) + STAGGER_FIXED_TRANSITION_DELAY } />
+                                staggerDelay={ ((identitiesCount + 2) * STAGGER_TRANSITION_DELAY) + STAGGER_FIXED_TRANSITION_DELAY }
+                                onClick={ this.handleNotificationsItemClick } />
                             <ActionItem
                                 name="Settings"
                                 icon={ SettingsIcon }
                                 in={ open }
-                                staggerDelay={ ((identitiesCount + 3) * STAGGER_TRANSITION_DELAY) + STAGGER_FIXED_TRANSITION_DELAY } />
+                                staggerDelay={ ((identitiesCount + 3) * STAGGER_TRANSITION_DELAY) + STAGGER_FIXED_TRANSITION_DELAY }
+                                onClick={ this.handleSettingsItemClick } />
                         </ul>
                     </div>
                 </div>
@@ -120,11 +122,19 @@ class Sidebar extends PureComponent {
 
     handleMouseLeave = () => this.close();
 
+    handleModalTriggerChange = (open) => !open && this.close();
+
     handleLogoItemClick = () => this.close();
 
     handleIdentityItemClick = () => this.close();
 
-    handleModalTriggerChange = (open) => !open && this.close();
+    handleNotificationsItemClick = () => {
+        alert('Not implemented');
+    };
+
+    handleSettingsItemClick = () => {
+        alert('Not implemented');
+    };
 }
 
 Sidebar.propTypes = {
@@ -132,12 +142,6 @@ Sidebar.propTypes = {
     className: PropTypes.string,
 };
 
-export default connectIdmWallet((idmWallet) => {
-    // Trigger load of identities, ignoring the error
-    // The error will be handled by the app itself
-    idmWallet.identities.load().catch(() => {});
-
-    return () => ({
-        identities: idmWallet.identities.isLoaded() ? idmWallet.identities.list() : undefined,
-    });
-})(Sidebar);
+export default connectIdmWallet((idmWallet) => () => ({
+    identities: idmWallet.identities.isLoaded() ? idmWallet.identities.list() : undefined,
+}))(Sidebar);
