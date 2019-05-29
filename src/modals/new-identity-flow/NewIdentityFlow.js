@@ -5,7 +5,8 @@ import { PromiseState } from 'react-promiseful';
 import { readAsArrayBuffer } from 'promise-file-reader';
 import { FlowModal, FlowModalStep, Button, TextButton } from '@nomios/web-uikit';
 import GenericStep from './generic-step';
-import { IdentityInfo, IdentityDevice, Feedback } from './create-identity-steps';
+import { IdentityInfo, IdentityDevice as CreateIdentityDevice, Feedback } from './create-identity-steps';
+import { ImportManualRecovery, ImportConfirmIdentity, IdentityDevice as ImportIdentityDevice, ImportFeedback } from './import-identity-steps';
 
 const initialState = {
     currentStepId: 'generic',
@@ -63,7 +64,7 @@ class NewIdentityFlow extends Component {
                         onNextStep={ this.handleNextStep } />
                 </FlowModalStep>
                 <FlowModalStep id="create-identity-device">
-                    <IdentityDevice
+                    <CreateIdentityDevice
                         nextStepId="create-identity-feedback"
                         onNextStep={ this.handleNextStep }
                         identityFirstName={ identityFirstName } />
@@ -73,7 +74,7 @@ class NewIdentityFlow extends Component {
                         { ({ status }) => (
                             <Feedback
                                 status={ status }
-                                successActions={ this.renderCreateFeedbackActions() }
+                                successActions={ this.renderCreateFeedbackSuccessActions() }
                                 errorActions={ this.renderCreateFeedbackErrorActions() } />
                         ) }
                     </PromiseState>
@@ -83,10 +84,52 @@ class NewIdentityFlow extends Component {
     }
 
     renderImportSteps() {
-        throw new Error('Not implemented');
+        const { promise } = this.state;
+        const identityFirstName =
+            this.state.data['import-manual-recovery'] &&
+            this.state.data['import-manual-recovery'].profileDetails &&
+            this.state.data['import-manual-recovery'].profileDetails.name &&
+            this.state.data['import-manual-recovery'].profileDetails.name.split(' ')[0];
+
+        const profileDetails = this.state.data['import-manual-recovery'] &&
+            this.state.data['import-manual-recovery'].profileDetails;
+
+        return (
+            <Fragment>
+                <FlowModalStep id="import-manual-recovery">
+                    <ImportManualRecovery
+                        nextStepId="import-identity-confirm"
+                        onNextStep={ this.handleNextStep }
+                        peekIdentity={ this.props.peekIdentity } />
+                </FlowModalStep>
+                <FlowModalStep id="import-identity-confirm">
+                    <ImportConfirmIdentity
+                        nextStepId="import-identity-device"
+                        previousStepId="import-manual-recovery"
+                        identityData={ profileDetails }
+                        onNextStep={ this.handleNextStep } />
+                </FlowModalStep>
+                <FlowModalStep id="import-identity-device">
+                    <ImportIdentityDevice
+                        nextStepId="import-identity-feedback"
+                        onNextStep={ this.handleNextStep }
+                        identityFirstName={ identityFirstName } />
+                </FlowModalStep>
+                <FlowModalStep id="import-identity-feedback">
+                    <PromiseState promise={ promise }>
+                        { ({ status }) => (
+                            <ImportFeedback
+                                status={ status }
+                                successActions={ this.renderImportFeedbackSuccessActions() }
+                                errorActions={ this.renderImportFeedbackErrorActions() } />
+                        ) }
+                    </PromiseState>
+                </FlowModalStep>
+            </Fragment>
+        );
     }
 
-    renderCreateFeedbackActions() {
+    renderCreateFeedbackSuccessActions() {
         return (
             <Fragment>
                 <Button variant="primary" onClick={ this.handleGoToBackupFlow }>Backup my identity</Button>
@@ -100,6 +143,23 @@ class NewIdentityFlow extends Component {
             <Fragment>
                 <Button variant="primary" onClick={ this.handleRetryCreateClick }>Retry</Button>
                 <TextButton onClick={ this.props.onRequestClose }>Skip this step</TextButton>
+            </Fragment>
+        );
+    }
+
+    renderImportFeedbackSuccessActions() {
+        return (
+            <Fragment>
+                <Button variant="primary" onClick={ this.props.onRequestClose }>Go to Homepage</Button>
+            </Fragment>
+        );
+    }
+
+    renderImportFeedbackErrorActions() {
+        return (
+            <Fragment>
+                <Button variant="primary" onClick={ this.handleRetryImport }>Retry</Button>
+                <TextButton onClick={ this.props.onRequestClose }>Close</TextButton>
             </Fragment>
         );
     }
@@ -130,10 +190,16 @@ class NewIdentityFlow extends Component {
         });
     }
 
-    importIdentity(data) {
-        console.log('data', data);
+    async importIdentity(data) {
+        const { importIdentity } = this.props;
 
-        return Promise.reject(new Error('Not implemented'));
+        const mnemonic = this.state.data['import-manual-recovery'].mnemonic;
+        const deviceInfo = data['import-identity-device'];
+
+        return importIdentity({
+            mnemonic,
+            deviceInfo,
+        });
     }
 
     createFlowPromise = (currentStepId, data) => {
@@ -151,13 +217,8 @@ class NewIdentityFlow extends Component {
         }
     };
 
-    handleExited = () => {
-        this.setState(initialState);
-        this.props.onExited && this.props.onExited();
-    };
-
     handleChooseFlow = (flow) => {
-        const createIdentityFirstStepId = flow === 'create' ? 'create-identity-info' : 'import-identity-mnemonic';
+        const createIdentityFirstStepId = flow === 'create' ? 'create-identity-info' : 'import-manual-recovery';
 
         this.setState({ currentFlow: flow, currentStepId: createIdentityFirstStepId });
     };
@@ -191,10 +252,16 @@ class NewIdentityFlow extends Component {
     handleGoToBackupFlow = () => {
         alert('Not yet implemented');
     };
+
+    handleExited = () => {
+        this.setState(initialState);
+        this.props.onExited && this.props.onExited();
+    };
 }
 
 NewIdentityFlow.propTypes = {
     createIdentity: PropTypes.func.isRequired,
+    peekIdentity: PropTypes.func.isRequired,
     importIdentity: PropTypes.func.isRequired,
     onRequestClose: PropTypes.func,
     onExited: PropTypes.func,
@@ -202,10 +269,12 @@ NewIdentityFlow.propTypes = {
 
 export default connectIdmWallet((idmWallet) => {
     const createIdentity = (params) => idmWallet.identities.create('ipid', params);
+    const peekIdentity = (params) => idmWallet.identities.peek('ipid', params);
     const importIdentity = (params) => idmWallet.identities.import('ipid', params);
 
     return () => ({
         createIdentity,
+        peekIdentity,
         importIdentity,
     });
 })(NewIdentityFlow);

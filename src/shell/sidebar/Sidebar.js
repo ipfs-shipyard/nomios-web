@@ -142,6 +142,12 @@ Sidebar.propTypes = {
     className: PropTypes.string,
 };
 
-export default connectIdmWallet((idmWallet) => () => ({
-    identities: idmWallet.identities.isLoaded() ? idmWallet.identities.list() : undefined,
-}))(Sidebar);
+export default connectIdmWallet((idmWallet) => {
+    // Trigger load of identities, ignoring the error
+    // The error will be handled by the app itself
+    idmWallet.identities.load().catch(() => {});
+
+    return () => ({
+        identities: idmWallet.identities.isLoaded() ? idmWallet.identities.list() : undefined,
+    });
+})(Sidebar);

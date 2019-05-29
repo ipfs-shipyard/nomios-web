@@ -8,7 +8,7 @@
     align-items: center;
 
     & > h2 {
-        max-width: 45.2rem;
+        max-width: 46.5rem;
         color: var(--color-tan);
     }
 
@@ -39,7 +39,7 @@
         }
 
         & > h2 {
-            max-width: 78rem;
+            max-width: 80rem;
             margin-bottom: 0;
             color: var(--color-mineral-green);
         }
@@ -57,6 +57,10 @@
         margin-bottom: 6rem;
         display: flex;
         flex-direction: column;
+
+        & > *:only-child {
+            margin-bottom: 5.2rem;
+        }
 
         & > *:not(:last-child) {
             margin-bottom: 2.8rem;

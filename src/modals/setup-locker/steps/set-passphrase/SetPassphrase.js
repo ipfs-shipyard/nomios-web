@@ -180,13 +180,9 @@ class SetPassphrase extends Component {
 
         this.setState({ promise });
 
-        return promise.catch((err) => {
-            console.error(err);
-
-            return {
-                [FORM_ERROR]: err.message,
-            };
-        });
+        return promise.catch((err) => ({
+            [FORM_ERROR]: err.message,
+        }));
     };
 
     handleSettle = (state) => {
