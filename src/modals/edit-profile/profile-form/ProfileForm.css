@@ -22,6 +22,10 @@
 
                 &.name {
                     height: 8rem;
+
+                    & input {
+                        transform: translateY(2.4rem);
+                    }
                 }
 
                 &.nationality {
