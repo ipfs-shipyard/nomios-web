@@ -37,7 +37,7 @@ class ImportManualRecovery extends Component {
                             <div className={ styles.advance }>
                                 { submitError &&
                                     <FeedbackMessage className={ styles.error } type="error" variant="large">
-                                        Oops, seems that recovery key is not valid, please try again.
+                                        { this.errorMessage(submitError.code) }
                                     </FeedbackMessage>
                                 }
                                 <ButtonPromiseState
@@ -58,6 +58,17 @@ class ImportManualRecovery extends Component {
         );
     }
 
+    errorMessage(errorCode) {
+        switch (errorCode) {
+        case 'INVALID_DID':
+            return 'Oops, seems that recovery key is not valid, please try again.';
+        case 'PROFILE_REPLICATION_TIMEOUT':
+            return 'Operation took too long to complete, please try again.';
+        default:
+            return 'An unexpected error has occurred, please try again.';
+        }
+    }
+
     handleSubmit = (data) => {
         const { mnemonic } = data;
 
@@ -70,7 +81,7 @@ class ImportManualRecovery extends Component {
             console.error(err);
 
             return {
-                [FORM_ERROR]: err.message,
+                [FORM_ERROR]: err,
             };
         });
     };
