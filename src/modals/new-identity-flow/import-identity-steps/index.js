@@ -1,9 +1,4 @@
-import ImportManualRecovery from './manual-recovery/ImportManualRecovery';
-import ImportConfirmIdentity from './confirm-identity/ImportConfirmIdentity';
-import ImportFeedback from './feedback/ImportFeedback';
-
-export {
-    ImportManualRecovery,
-    ImportConfirmIdentity,
-    ImportFeedback,
-};
+export { default as ImportManualRecovery } from './manual-recovery';
+export { default as ImportConfirmIdentity } from './confirm-identity';
+export { default as IdentityDevice } from './identity-device';
+export { default as ImportFeedback } from './feedback';

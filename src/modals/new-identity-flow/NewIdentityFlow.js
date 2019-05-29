@@ -5,9 +5,8 @@ import { PromiseState } from 'react-promiseful';
 import { readAsArrayBuffer } from 'promise-file-reader';
 import { FlowModal, FlowModalStep, Button, TextButton } from '@nomios/web-uikit';
 import GenericStep from './generic-step';
-import { IdentityInfo, IdentityDevice, Feedback } from './create-identity-steps';
-import { ImportManualRecovery, ImportConfirmIdentity, ImportFeedback } from './import-identity-steps';
-import SetupDeviceStep from '../../shared/steps/setup-device-step';
+import { IdentityInfo, IdentityDevice as CreateIdentityDevice, Feedback } from './create-identity-steps';
+import { ImportManualRecovery, ImportConfirmIdentity, IdentityDevice as ImportIdentityDevice, ImportFeedback } from './import-identity-steps';
 
 const initialState = {
     currentStepId: 'generic',
@@ -65,7 +64,7 @@ class NewIdentityFlow extends Component {
                         onNextStep={ this.handleNextStep } />
                 </FlowModalStep>
                 <FlowModalStep id="create-identity-device">
-                    <IdentityDevice
+                    <CreateIdentityDevice
                         nextStepId="create-identity-feedback"
                         onNextStep={ this.handleNextStep }
                         identityFirstName={ identityFirstName } />
@@ -95,21 +94,15 @@ class NewIdentityFlow extends Component {
         const profileDetails = this.state.data['import-manual-recovery'] &&
             this.state.data['import-manual-recovery'].profileDetails;
 
-        const setupDeviceText = {
-            title: '2. Your Device Details',
-            description: 'You will be importing this identity to this device.',
-            buttonText: 'Continue',
-        };
-
         return (
             <Fragment>
                 <FlowModalStep id="import-manual-recovery">
                     <ImportManualRecovery
-                        nextStepId="import-confirm-identity"
+                        nextStepId="import-identity-confirm"
                         onNextStep={ this.handleNextStep }
                         peekIdentity={ this.props.peekIdentity } />
                 </FlowModalStep>
-                <FlowModalStep id="import-confirm-identity">
+                <FlowModalStep id="import-identity-confirm">
                     <ImportConfirmIdentity
                         nextStepId="import-identity-device"
                         previousStepId="import-manual-recovery"
@@ -117,13 +110,12 @@ class NewIdentityFlow extends Component {
                         onNextStep={ this.handleNextStep } />
                 </FlowModalStep>
                 <FlowModalStep id="import-identity-device">
-                    <SetupDeviceStep
-                        nextStepId="import-success-feedback"
-                        onNextStep={ this.handleImportSubmitForm }
-                        identityFirstName={ identityFirstName }
-                        stepData={ setupDeviceText } />
+                    <ImportIdentityDevice
+                        nextStepId="import-identity-feedback"
+                        onNextStep={ this.handleNextStep }
+                        identityFirstName={ identityFirstName } />
                 </FlowModalStep>
-                <FlowModalStep id="import-success-feedback">
+                <FlowModalStep id="import-identity-feedback">
                     <PromiseState promise={ promise }>
                         { ({ status }) => (
                             <ImportFeedback
@@ -204,9 +196,6 @@ class NewIdentityFlow extends Component {
         const mnemonic = this.state.data['import-manual-recovery'].mnemonic;
         const deviceInfo = data['import-identity-device'];
 
-        console.log('deviceInfo', deviceInfo);
-        console.log('mnemonic', mnemonic);
-
         return importIdentity({
             mnemonic,
             deviceInfo,
@@ -229,7 +218,7 @@ class NewIdentityFlow extends Component {
     };
 
     handleChooseFlow = (flow) => {
-        const createIdentityFirstStepId = flow === 'create' ? 'create-identity-info' : 'import-identity-mnemonic';
+        const createIdentityFirstStepId = flow === 'create' ? 'create-identity-info' : 'import-manual-recovery';
 
         this.setState({ currentFlow: flow, currentStepId: createIdentityFirstStepId });
     };
