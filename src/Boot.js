@@ -38,9 +38,7 @@ class Boot extends Component {
         );
     }
 
-    renderError(error) {
-        console.error(error);
-
+    renderError() {
         return (
             <div className={ styles.error }>
                 <p>Oops, an error occurred while initializing the wallet.</p>

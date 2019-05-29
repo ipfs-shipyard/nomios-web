@@ -37,7 +37,7 @@ class ImportManualRecovery extends Component {
                             <div className={ styles.advance }>
                                 { submitError &&
                                     <FeedbackMessage className={ styles.error } type="error" variant="large">
-                                        { this.errorMessage(submitError.code) }
+                                        { this.getErrorMessage(submitError.code) }
                                     </FeedbackMessage>
                                 }
                                 <ButtonPromiseState
@@ -58,10 +58,10 @@ class ImportManualRecovery extends Component {
         );
     }
 
-    errorMessage(errorCode) {
+    getErrorMessage(errorCode) {
         switch (errorCode) {
         case 'INVALID_DID':
-            return 'Oops, seems that recovery key is not valid, please try again.';
+            return 'The recovery key is not valid, make sure you\'re using the right one.';
         case 'PROFILE_REPLICATION_TIMEOUT':
             return 'Operation took too long to complete, please try again.';
         default:
@@ -77,13 +77,9 @@ class ImportManualRecovery extends Component {
 
         this.setState({ promise });
 
-        return promise.catch((err) => {
-            console.error(err);
-
-            return {
-                [FORM_ERROR]: err,
-            };
-        });
+        return promise.catch((err) => ({
+            [FORM_ERROR]: err,
+        }));
     };
 
     handleSettle = (state) => {
