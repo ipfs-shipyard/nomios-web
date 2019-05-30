@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Form, Field } from 'react-final-form';
 import { ButtonPromiseState } from '../../../shared/components/button-promise-state';
+import { readAsArrayBuffer } from 'promise-file-reader';
 import nationalities from 'ms-nationalities';
 import { TextInput, Button, AutocompleteSelect, Radio, AvatarPicker, UserIcon } from '@nomios/web-uikit';
 import { notEmpty } from '../../../shared/form-validators';
@@ -74,7 +75,7 @@ class ProfileForm extends Component {
                                     <div className={ styles.avatarPickerWrapper }>
                                         <AvatarPicker
                                             image={ profileInfo.image }
-                                            name="Pedro Santos"
+                                            name={ profileInfo.name }
                                             icon={ <UserIcon /> }
                                             label="Change photo"
                                             labelAlignment="right"
@@ -108,6 +109,24 @@ class ProfileForm extends Component {
         );
     }
 
+    async updateIdentity(data) {
+        const { setProperty } = this.props;
+
+        const image = this.state.image &&
+            {
+                type: this.state.image.type,
+                data: await readAsArrayBuffer(this.state.image),
+            };
+
+        return Promise.all([
+            // setProperty('nationality', data.nationality),
+            // setProperty('location', data.location),
+            // setProperty('gender', data.gender),
+            setProperty('name', data.name),
+            image && setProperty('image', image),
+        ]);
+    }
+
     // We are controlling this input manually to avoid installing third-party libs.
     // Check this issue here: https://github.com/final-form/react-final-form/issues/92
     handleAvatarInputChange = (imageFile) => {
@@ -115,11 +134,7 @@ class ProfileForm extends Component {
     };
 
     handleSubmit = (data) => {
-        console.log('Submitted data', data);
-        console.log('Uploaded image', this.state.image);
-        const promise = new Promise((resolve) => setTimeout(resolve, 500));
-
-        this.setState({ promise });
+        this.setState({ promise: this.updateIdentity(data) });
     };
 
     handleSettle = ({ status }) => {
@@ -139,6 +154,7 @@ class ProfileForm extends Component {
 ProfileForm.propTypes = {
     onRequestClose: PropTypes.func.isRequired,
     profileInfo: PropTypes.object.isRequired,
+    setProperty: PropTypes.func.isRequired,
 };
 
 export default ProfileForm;

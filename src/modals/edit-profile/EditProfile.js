@@ -1,29 +1,36 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connectIdmWallet } from 'react-idm-wallet';
+import memoizeOne from 'memoize-one';
 import { StandardModal } from '@nomios/web-uikit';
 import ProfileForm from './profile-form';
 import styles from './EditProfile.css';
 
-const mockedInfo = {
-    type: 'person',
-    name: 'Pedro Santos',
-    image: 'https://en.gravatar.com/userimage/82191959/d19ac0b9d69bd38f1451cc524b77f290.jpg?size=200',
-    nationality: 'Portuguese',
-    gender: 'male',
-    location: 'Lisbon, Portugal',
-};
+const EditProfile = (props) => {
+    const { info, setProperty } = props;
 
-const EditProfile = (props) => (
-    <StandardModal { ...props } className={ styles.modal } contentClassName={ styles.modalContent }>
-        <h2 className={ styles.heading }>
+    return (
+        <StandardModal { ...props } className={ styles.modal } contentClassName={ styles.modalContent }>
+            <h2 className={ styles.heading }>
                 Edit Profile
-        </h2>
-        <ProfileForm onRequestClose={ props.onRequestClose } profileInfo={ mockedInfo } />
-    </StandardModal>
-);
+            </h2>
+            <ProfileForm onRequestClose={ props.onRequestClose } profileInfo={ info } setProperty={ setProperty } />
+        </StandardModal>
+    );
+};
 
 EditProfile.propTypes = {
+    id: PropTypes.string.isRequired,
     onRequestClose: PropTypes.func,
+    setProperty: PropTypes.func,
+    info: PropTypes.object,
 };
 
-export default EditProfile;
+export default connectIdmWallet((idmWallet) => {
+    const setProperty = memoizeOne((id) => (key, value) => idmWallet.identities.get(id).profile.setProperty(key, value));
+
+    return ({ id }) => ({
+        info: idmWallet.identities.get(id).profile.getDetails(),
+        setProperty: setProperty(id),
+    });
+})(EditProfile);
