@@ -46,7 +46,7 @@
     "react-scripts": "^3.0.0",
     "react-scrollbar-size": "^2.1.0",
     "react-textarea-autosize": "^7.1.0",
-    "simplebar-react": "^1.0.0-alpha.9"
+    "simplebar-react": "^1.0.0"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^7.5.0",
