@@ -1,24 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connectIdmWallet } from 'react-idm-wallet';
-import { DesktopIcon, LaptopIcon, TabletIcon, MobileIcon } from '@nomios/Web-uikit';
 import StatusIndicator from './shared/StatusIndicator';
 import GenericItem from './shared/GenericItem';
 import GenericList from './shared/GenericList';
+import devices from '../../../shared/data/devices';
 
-function iconFromDevicetype(type) {
-    switch (type) {
-    case 'desktop':
-        return <DesktopIcon />;
-    case 'laptop':
-        return <LaptopIcon />;
-    case 'tablet':
-        return <TabletIcon />;
-    case 'mobile':
-        return <MobileIcon />;
-    default:
-        return null;
-    }
+function deviceDataFromId(id) {
+    return devices.filter((device) => device.id === id)[0];
 }
 
 function statusFromDeviceStatus(device) {
@@ -45,7 +34,7 @@ function statusFromDeviceStatus(device) {
 const DeviceItem = (props) => {
     const { device, ...rest } = props;
 
-    const deviceIcon = iconFromDevicetype(device.type);
+    const deviceIcon = deviceDataFromId(device.type).icon;
     const deviceStatus = statusFromDeviceStatus(device);
 
     const status = <StatusIndicator text={ deviceStatus.text } status={ deviceStatus.class } dotSide="right" />;
@@ -64,9 +53,7 @@ DeviceItem.propTypes = {
 };
 
 const DevicesBox = (props) => {
-    const { getDevices, matchId } = props;
-
-    const devices = getDevices(matchId);
+    const { devices } = props;
 
     return (
         <GenericList>
@@ -78,14 +65,10 @@ const DevicesBox = (props) => {
 };
 
 DevicesBox.propTypes = {
-    matchId: PropTypes.string.isRequired,
-    getDevices: PropTypes.func.isRequired,
+    id: PropTypes.string.isRequired,
+    devices: PropTypes.array.isRequired,
 };
 
-export default connectIdmWallet((idmWallet) => {
-    const getDevices = (params) => idmWallet.identities.get(params).devices.list();
-
-    return () => ({
-        getDevices,
-    });
-})(DevicesBox);
+export default connectIdmWallet((idmWallet) => (ownProps) => ({
+    devices: idmWallet.identities.get(ownProps.id).devices.list(),
+}))(DevicesBox);

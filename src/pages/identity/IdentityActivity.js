@@ -37,12 +37,12 @@ ActivityBox.propTypes = {
 
 class IdentityActivity extends Component {
     render() {
-        const { matchId } = this.props;
+        const { id } = this.props;
 
         return (
             <div className={ styles.activitiesWrapper }>
                 <ActivityBox title="My Devices" onClick={ this.handleMyDevices }>
-                    <DevicesBox matchId={ matchId } />
+                    <DevicesBox id={ id } />
                 </ActivityBox>
                 <ActivityBox title="My Social Proofs" onClick={ this.handleMySocialProofs }>
                     <SocialProofsBox />
@@ -68,7 +68,7 @@ class IdentityActivity extends Component {
 }
 
 IdentityActivity.propTypes = {
-    matchId: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
 };
 
 export default IdentityActivity;

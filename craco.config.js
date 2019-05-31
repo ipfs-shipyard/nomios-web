@@ -127,9 +127,10 @@ module.exports = {
                             // Uniquify classnames and ids so that they are unique and
                             // don't conflict with each other
                             {
-                                loader: require.resolve('svg-css-modules-loader'),
+                                loader: 'svg-css-modules-loader',
                                 options: {
                                     transformId: true,
+                                    localIdentName: '[name]__[local]',
                                 },
                             },
                         ],

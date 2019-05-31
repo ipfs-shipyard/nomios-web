@@ -34,7 +34,7 @@ AppItem.propTypes = {
 const AppsBox = (props) => {
     const { apps } = props;
 
-    if (!apps.length) {
+    if (!apps || !apps.length) {
         return (
             <div className={ styles.appsWrapper }>
                 <h3 className={ styles.noApps }>
@@ -58,18 +58,18 @@ AppsBox.propTypes = {
     apps: PropTypes.array,
 };
 
-AppsBox.defaultProps = {
-    apps: [
-        {
-            name: 'Facebook',
-        },
-        {
-            name: 'Twitter',
-        },
-        {
-            name: 'Facebook',
-        },
-    ],
-};
+// AppsBox.defaultProps = {
+//     apps: [
+//         {
+//             name: 'Facebook',
+//         },
+//         {
+//             name: 'Twitter',
+//         },
+//         {
+//             name: 'Facebook',
+//         },
+//     ],
+// };
 
 export default AppsBox;

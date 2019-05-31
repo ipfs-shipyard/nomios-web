@@ -21,7 +21,7 @@
         align-self: flex-end;
         fill: var(--color-armadillo);
 
-        & :global path.globe_orbs {
+        & :global path.globe__globe_orbs {
             fill: var(--color-ocean-green);
         }
     }

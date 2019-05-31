@@ -7,7 +7,7 @@ import { Button, TypeGroup, TypeOption, TextInput, EditIcon } from '@nomios/web-
 import FadeContainer from '../../../../shared/components/fade-container';
 import { notEmpty } from '../../../../shared/form-validators';
 import { deviceInfo } from './deviceInfo';
-import devices from './devices';
+import devices from '../../../../shared/data/devices';
 import styles from './SetupDeviceStep.css';
 
 const SUBSTEP_TRANSITION_DELAY = 300;

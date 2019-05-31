@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connectIdmWallet } from 'react-idm-wallet';
 import { Avatar, Button, EditIcon } from '@nomios/web-uikit';
@@ -20,7 +20,7 @@ IdentityAttribute.propTypes = {
     value: PropTypes.string,
 };
 
-class IdentityDetails extends Component {
+class IdentityDetails extends PureComponent {
     render() {
         const { name,
             image,
@@ -56,12 +56,14 @@ class IdentityDetails extends Component {
     }
 
     buildDetailsObject() {
-        const { getProfileDetails, matchId } = this.props;
+        const { profileDetails, id } = this.props;
 
-        const details = getProfileDetails(matchId);
+        const details = {
+            didMethod: 'ipid',
+            documentId: id,
+        };
 
-        details.didMethod = 'ipid';
-        details.documentId = matchId;
+        Object.assign(details, profileDetails);
 
         return details;
     }
@@ -72,14 +74,10 @@ class IdentityDetails extends Component {
 }
 
 IdentityDetails.propTypes = {
-    matchId: PropTypes.string.isRequired,
-    getProfileDetails: PropTypes.func.isRequired,
+    id: PropTypes.string.isRequired,
+    profileDetails: PropTypes.object.isRequired,
 };
 
-export default connectIdmWallet((idmWallet) => {
-    const getProfileDetails = (params) => idmWallet.identities.get(params).profile.getDetails();
-
-    return () => ({
-        getProfileDetails,
-    });
-})(IdentityDetails);
+export default connectIdmWallet((idmWallet) => (ownProps) => ({
+    profileDetails: idmWallet.identities.get(ownProps.id).profile.getDetails(),
+}))(IdentityDetails);

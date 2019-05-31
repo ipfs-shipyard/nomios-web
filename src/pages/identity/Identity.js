@@ -11,7 +11,7 @@ class Identity extends Component {
     render() {
         const { id } = this.props.match.params;
 
-        if (!this.props.isLoaded()) {
+        if (!this.props.hasIdentity(id)) {
             return null;
         }
 
@@ -21,10 +21,10 @@ class Identity extends Component {
                     <div className={ styles.background } style={ { backgroundImage: `url(${backgroundPatternUrl})` } } />
                     <PageLayout>
                         <div className={ styles.top }>
-                            <IdentityDetails matchId={ id } />
+                            <IdentityDetails id={ id } />
                         </div>
                         <div className={ styles.bottom }>
-                            <IdentityActivity matchId={ id } />
+                            <IdentityActivity id={ id } />
                         </div>
                     </PageLayout>
                 </div>
@@ -35,13 +35,13 @@ class Identity extends Component {
 
 Identity.propTypes = {
     match: PropTypes.object.isRequired,
-    isLoaded: PropTypes.func.isRequired,
+    hasIdentity: PropTypes.func.isRequired,
 };
 
 export default connectIdmWallet((idmWallet) => {
-    const isLoaded = () => idmWallet.identities.isLoaded();
+    const hasIdentity = (id) => idmWallet.identities.has(id);
 
     return () => ({
-        isLoaded,
+        hasIdentity,
     });
 })(Identity);
