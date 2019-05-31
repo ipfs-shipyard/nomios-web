@@ -66,9 +66,9 @@ class Sidebar extends PureComponent {
 
                                         { identities.map((identity, index) => (
                                             <IdentityItem
-                                                key={ identity.getId() }
-                                                id={ identity.getId() }
-                                                details={ identity.profile.getDetails() }
+                                                key={ identity.id }
+                                                id={ identity.id }
+                                                details={ identity.details }
                                                 in={ open }
                                                 staggerDelay={ ((index + 2) * STAGGER_TRANSITION_DELAY) + STAGGER_FIXED_TRANSITION_DELAY }
                                                 onClick={ this.handleIdentityItemClick } />
@@ -143,5 +143,8 @@ Sidebar.propTypes = {
 };
 
 export default connectIdmWallet((idmWallet) => () => ({
-    identities: idmWallet.identities.list(),
+    identities: idmWallet.identities.list().map((identity) => ({
+        id: identity.getId(),
+        details: identity.profile.getDetails(),
+    })),
 }))(Sidebar);
