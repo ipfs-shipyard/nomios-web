@@ -1,8 +1,16 @@
 import pTimeout from 'p-timeout';
 import pify from 'pify';
-import geocoder from './nodeGeocoder';
+import nodeGeocoder from 'node-geocoder';
 
 const GET_GEOLOCATION_TIMEOUT = 10000;
+
+const geocoder = nodeGeocoder({
+    provider: 'openstreetmap',
+    format: 'json',
+    zoom: 18,
+    addressdetails: 1,
+    'accept-language': 'en-US',
+});
 
 const getLocation = async () => {
     const position = await new Promise((resolve, reject) => {

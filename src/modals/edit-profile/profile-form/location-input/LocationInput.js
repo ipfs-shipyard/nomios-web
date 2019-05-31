@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { PromiseState, getPromiseState } from 'react-promiseful';
 import { TextInput, LocationIcon } from '@nomios/web-uikit';
-import getLocation from './getLocation';
+import getLocation from './get-location';
 import styles from './LocationInput.css';
 
 const FEEDBACK = {
