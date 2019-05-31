@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { CSSTransition } from 'react-transition-group';
 import { connectIdmWallet } from 'react-idm-wallet';
 import { SettingsIcon, BellIcon, ModalTrigger } from '@nomios/web-uikit';
-import NewIdentityFlow from '../../modals/new-identity-flow';
+import NewIdentityFlow from '../../../modals/new-identity-flow';
 import Scrollbar from './scrollbar';
 import AddIdentityItem from './add-identity-item';
 import IdentityItem from './identity-item';
@@ -142,12 +142,6 @@ Sidebar.propTypes = {
     className: PropTypes.string,
 };
 
-export default connectIdmWallet((idmWallet) => {
-    // Trigger load of identities, ignoring the error
-    // The error will be handled by the app itself
-    idmWallet.identities.load().catch(() => {});
-
-    return () => ({
-        identities: idmWallet.identities.isLoaded() ? idmWallet.identities.list() : undefined,
-    });
-})(Sidebar);
+export default connectIdmWallet((idmWallet) => () => ({
+    identities: idmWallet.identities.list(),
+}))(Sidebar);

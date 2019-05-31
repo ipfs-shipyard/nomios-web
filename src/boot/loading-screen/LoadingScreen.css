@@ -1,0 +1,24 @@
+@import "@nomios/web-uikit/styles/colors";
+
+.loadingScreen {
+    width: 100%;
+    height: 100%;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--color-white);
+
+    & [aria-label="animation"] {
+        height: auto !important;
+        display: flex;
+        justify-content: center;
+
+        & svg {
+            width: 93.5rem !important;
+            height: 12rem !important;
+            flex: 0 0 auto;
+        }
+    }
+}

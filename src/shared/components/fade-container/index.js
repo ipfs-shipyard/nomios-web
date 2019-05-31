@@ -1,3 +1,1 @@
-import FadeContainer from './FadeContainer';
-
-export default FadeContainer;
+export { default } from './FadeContainer';
