@@ -36,6 +36,8 @@
     "ms-nationalities": "^1.0.1",
     "node-geocoder": "^3.22.0",
     "p-debounce": "^2.1.0",
+    "p-timeout": "^3.1.0",
+    "pify": "^4.0.1",
     "promise-file-reader": "^1.0.2",
     "react": "^16.8.4",
     "react-device-detect": "^1.6.2",

@@ -91,13 +91,12 @@ class ProfileForm extends Component {
                                         { ({ input }) => (
                                             <LocationInput
                                                 { ...input }
-                                                onLocationInfered={ form.change }
+                                                onLocationInferred={ form.change }
                                                 placeholder={ PLACEHOLDER.location } />
                                         ) }
                                     </Field>
                                 </div>
                             </div>
-
                         </div>
                         <div className={ styles.buttonContainer }>
                             <ButtonPromiseState promise={ promise } onSettle={ this.handleSettle }>
