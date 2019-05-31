@@ -22,11 +22,17 @@ class ProfileForm extends Component {
     state = {
         image: null,
         promise: undefined,
+        profileDetails: undefined,
     };
 
+    constructor(props) {
+        super(props);
+
+        this.state.profileDetails = props.profileDetails;
+    }
+
     render() {
-        const { profileDetails } = this.props;
-        const { promise, image } = this.state;
+        const { promise, image, profileDetails } = this.state;
 
         const initialValues = omit(profileDetails, '@context', '@type', 'image');
 
