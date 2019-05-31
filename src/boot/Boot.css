@@ -1,0 +1,45 @@
+.boot {
+    will-change: opacity;
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
+    transition: opacity 0.3s ease;
+
+    &.enter {
+        opacity: 0;
+    }
+
+    &.enterActive,
+    &.enterDone {
+        opacity: 1;
+    }
+
+    &.exit,
+    &.exitActive,
+    &.exitDone {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+
+    &.exit {
+        opacity: 1;
+    }
+
+    &.exitActive,
+    &.exitDone {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        opacity: 0;
+    }
+
+    & .loadingScreen,
+    & .errorScreen {
+        flex: 1 0 auto;
+    }
+}

@@ -1,3 +1,1 @@
-import BulletsIndicator from './BulletsIndicator';
-
-export default BulletsIndicator;
+export { default } from './BulletsIndicator';

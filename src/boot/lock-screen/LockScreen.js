@@ -1,14 +1,15 @@
 import React, { Component, Fragment } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import pDelay from 'delay';
 import Lottie from 'lottie-react-web';
 import ReactModal from 'react-modal';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { PromiseState, getPromiseState } from 'react-promiseful';
 import { connectIdmWallet } from 'react-idm-wallet';
-import styles from './LockScreen.css';
-import unlockAnimationData from './unlock-animation.json';
 import backgroundPatternUrl from '../../shared/media/backgrounds/background-pattern-1440p.png';
+import unlockAnimationData from './unlock-animation.json';
+import styles from './LockScreen.css';
 
 const MINIMUM_UNLOCK_ANIMATION_DURATION = 500;
 
@@ -42,40 +43,50 @@ const unlockAnimationOptions = {
 };
 
 class LockScreen extends Component {
+    static getDerivedStateFromProps(props, state) {
+        return {
+            in: props.locked ? true : state.in,
+        };
+    }
+
     passphraseInputRef = undefined;
     focusInterval = undefined;
     focusTimeout = undefined;
 
     state = {
+        in: false,
         passphrase: '',
         promise: undefined,
         startLogoAnimation: false,
     };
 
     render() {
-        const { promise, passphrase, startLogoAnimation } = this.state;
-        const { in: in_ } = this.props;
+        const { in: in_, promise, passphrase, startLogoAnimation } = this.state;
 
         return (
             <ReactModal
                 isOpen={ in_ }
                 closeTimeoutMS={ lockScreenTimeout.exit }
                 className={ styles.modal }
+                onAfterClose={ this.handleModalClose }
                 overlayClassName={ styles.modalOverlay }
+                portalClassName={ styles.modalPortal }
                 bodyOpenClassName={ styles.modalBodyOpen }>
                 <CSSTransition classNames={ lockScreenTransitionClassNames } in={ in_ } appear timeout={ lockScreenTimeout }>
                     <div className={ styles.lockScreen } onClick={ this.handleMouseClick }>
                         <div className={ styles.background } style={ { backgroundImage: `url(${backgroundPatternUrl})` } } />
                         <div className={ styles.content }>
                             <div className={ styles.logo }>
-                                <Lottie options={ unlockAnimationOptions } className={ styles.svg } isStopped={ !startLogoAnimation } />
+                                <Lottie options={ unlockAnimationOptions } isStopped={ !startLogoAnimation } />
                             </div>
                             <h2 className={ styles.unlockTitle }>Unlock Nomios</h2>
                             <p className={ styles.unlockHint } onTransitionEnd={ this.handleTransitionEnd }>
                                 Enter your passphrase to unlock Nomios and get access to all your data
                             </p>
 
-                            <PromiseState promise={ promise } onSettle={ this.handlePromiseSettle }>
+                            <PromiseState
+                                promise={ promise }
+                                onSettle={ this.handlePromiseSettle }>
                                 { ({ status }) => (
                                     <Fragment>
                                         <input
@@ -151,15 +162,27 @@ class LockScreen extends Component {
         }
 
         const promise = Promise.all([
-            new Promise((resolve) => setTimeout(resolve, MINIMUM_UNLOCK_ANIMATION_DURATION)),
+            pDelay(MINIMUM_UNLOCK_ANIMATION_DURATION),
             this.props.unlock('passphrase', this.state.passphrase).then(() => this.props.load()),
         ]);
 
         this.setState({ promise });
     }
 
-    handlePromiseSettle = () => {
-        this.props.onUnlock();
+    handleModalClose = () => {
+        this.setState({
+            passphrase: '',
+            promise: undefined,
+            startLogoAnimation: false,
+        });
+    };
+
+    handlePromiseSettle = ({ status }) => {
+        if (status === 'fulfilled') {
+            this.setState({
+                in: this.props.locked,
+            });
+        }
     };
 
     handleInputChange = (event) => {
@@ -220,10 +243,9 @@ class LockScreen extends Component {
 }
 
 LockScreen.propTypes = {
-    in: PropTypes.bool,
+    locked: PropTypes.bool,
     unlock: PropTypes.func.isRequired,
     load: PropTypes.func.isRequired,
-    onUnlock: PropTypes.func.isRequired,
 };
 
 export default connectIdmWallet((idmWallet) => {
@@ -231,6 +253,7 @@ export default connectIdmWallet((idmWallet) => {
     const load = () => idmWallet.identities.load().catch(() => {}); // Error is being displayed underneath
 
     return () => ({
+        locked: idmWallet.locker.isLocked(),
         unlock,
         load,
     });

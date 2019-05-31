@@ -3,8 +3,8 @@ import React from 'react';
 import { render } from 'react-dom';
 import ReactModal from 'react-modal';
 import { setAppElement } from '@nomios/web-uikit';
-import App from './App';
-import Boot from './Boot';
+import App from './app';
+import Boot from './boot';
 import * as serviceWorker from './serviceWorker';
 
 ReactModal.setAppElement('#root');
