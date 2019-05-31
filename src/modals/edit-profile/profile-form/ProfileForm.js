@@ -2,11 +2,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { omit } from 'lodash';
 import { Form, Field } from 'react-final-form';
-import { ButtonPromiseState } from '../../../shared/components/button-promise-state';
-import { readAsArrayBuffer } from 'promise-file-reader';
 import nationalities from 'ms-nationalities';
+import { readAsArrayBuffer } from 'promise-file-reader';
 import { TextInput, Button, AutocompleteSelect, Radio, AvatarPicker, UserIcon } from '@nomios/web-uikit';
+import { ButtonPromiseState } from '../../../shared/components/button-promise-state';
 import { notEmpty } from '../../../shared/form-validators';
 import LocationInput from './location-input';
 import styles from './ProfileForm.css';
@@ -24,12 +25,14 @@ class ProfileForm extends Component {
     };
 
     render() {
-        const { profileInfo } = this.props;
+        const { profileDetails } = this.props;
         const { promise, image } = this.state;
+
+        const initialValues = omit(profileDetails, '@context', '@type', 'image');
 
         return (
             <Form
-                initialValues={ profileInfo }
+                initialValues={ initialValues }
                 onSubmit={ this.handleSubmit }>
                 { ({ handleSubmit, invalid, dirty, form }) => (
                     <form className={ styles.form } autoComplete="off" onSubmit={ handleSubmit }>
@@ -56,13 +59,13 @@ class ProfileForm extends Component {
                                 <div className={ styles.field }>
                                     <label className={ styles.label }>Gender</label>
                                     <div className={ styles.genderWrapper }>
-                                        <Field name="gender" type="radio" value="male">
+                                        <Field name="gender" type="radio" value="Male">
                                             { ({ input }) => <Radio { ...input } label="Male" /> }
                                         </Field>
-                                        <Field name="gender" type="radio" value="female">
+                                        <Field name="gender" type="radio" value="Female">
                                             { ({ input }) => <Radio { ...input } label="Female" /> }
                                         </Field>
-                                        <Field name="gender" type="radio" value="other">
+                                        <Field name="gender" type="radio" value="Other">
                                             { ({ input }) => <Radio { ...input } label="Other" /> }
                                         </Field>
                                     </div>
@@ -74,8 +77,8 @@ class ProfileForm extends Component {
                                     <label className={ styles.label }>Photo</label>
                                     <div className={ styles.avatarPickerWrapper }>
                                         <AvatarPicker
-                                            image={ profileInfo.image }
-                                            name={ profileInfo.name }
+                                            image={ profileDetails.image }
+                                            name={ profileDetails.name }
                                             icon={ <UserIcon /> }
                                             label="Change photo"
                                             labelAlignment="right"
@@ -84,7 +87,7 @@ class ProfileForm extends Component {
                                 </div>
                                 <div className={ classNames(styles.field, styles.location) }>
                                     <label className={ styles.label }>Location</label>
-                                    <Field name="location">
+                                    <Field name="address">
                                         { ({ input }) => (
                                             <LocationInput
                                                 { ...input }
@@ -110,21 +113,18 @@ class ProfileForm extends Component {
     }
 
     async updateIdentity(data) {
-        const { setProperty } = this.props;
+        const { saveProfile } = this.props;
 
-        const image = this.state.image &&
-            {
+        const properties = { ...data };
+
+        if (this.state.image) {
+            properties.image = {
                 type: this.state.image.type,
                 data: await readAsArrayBuffer(this.state.image),
             };
+        }
 
-        return Promise.all([
-            // setProperty('nationality', data.nationality),
-            // setProperty('location', data.location),
-            // setProperty('gender', data.gender),
-            setProperty('name', data.name),
-            image && setProperty('image', image),
-        ]);
+        return saveProfile(properties);
     }
 
     // We are controlling this input manually to avoid installing third-party libs.
@@ -153,8 +153,8 @@ class ProfileForm extends Component {
 
 ProfileForm.propTypes = {
     onRequestClose: PropTypes.func.isRequired,
-    profileInfo: PropTypes.object.isRequired,
-    setProperty: PropTypes.func.isRequired,
+    profileDetails: PropTypes.object.isRequired,
+    saveProfile: PropTypes.func.isRequired,
 };
 
 export default ProfileForm;
