@@ -7,7 +7,6 @@ import ReactModal from 'react-modal';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { PromiseState, getPromiseState } from 'react-promiseful';
 import { connectIdmWallet } from 'react-idm-wallet';
-import backgroundPatternUrl from '../../shared/media/backgrounds/background-pattern-1440p.png';
 import unlockAnimationData from './unlock-animation.json';
 import styles from './LockScreen.css';
 
@@ -74,7 +73,7 @@ class LockScreen extends Component {
                 bodyOpenClassName={ styles.modalBodyOpen }>
                 <CSSTransition classNames={ lockScreenTransitionClassNames } in={ in_ } appear timeout={ lockScreenTimeout }>
                     <div className={ styles.lockScreen } onClick={ this.handleMouseClick }>
-                        <div className={ styles.background } style={ { backgroundImage: `url(${backgroundPatternUrl})` } } />
+                        <div className={ styles.background } />
                         <div className={ styles.content }>
                             <div className={ styles.logo }>
                                 <Lottie options={ unlockAnimationOptions } isStopped={ !startLogoAnimation } />
