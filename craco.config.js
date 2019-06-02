@@ -111,7 +111,7 @@ module.exports = {
                         test: /\.svg$/,
                         use: [
                             {
-                                loader: 'raw-loader',
+                                loader: require.resolve('raw-loader'),
                             },
                             {
                                 loader: require.resolve('svgo-loader'),
@@ -127,7 +127,7 @@ module.exports = {
                             // Uniquify classnames and ids so that they are unique and
                             // don't conflict with each other
                             {
-                                loader: 'svg-css-modules-loader',
+                                loader: require.resolve('svg-css-modules-loader'),
                                 options: {
                                     transformId: true,
                                 },
