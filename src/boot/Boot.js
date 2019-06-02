@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import pDelay from 'delay';
+import pTimeout from 'p-timeout';
 import PropTypes from 'prop-types';
 import { IdmWalletProvider } from 'react-idm-wallet';
 import { PromiseState } from 'react-promiseful';
@@ -28,7 +29,10 @@ const CSS_TRANSITION_PROPS = {
 };
 
 const createIdmWallet = async () => {
-    const createIdmWallet = await import(/* webpackChunkName: "idm-wallet" */ 'idm-wallet');
+    const createIdmWallet = await pTimeout(
+        import(/* webpackChunkName: "idm-wallet" */ 'idm-wallet'),
+        6000,
+    );
 
     return createIdmWallet.default();
 };
