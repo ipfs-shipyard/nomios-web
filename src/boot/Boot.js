@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component, Fragment, cloneElement } from 'react';
 import pDelay from 'delay';
 import pTimeout from 'p-timeout';
 import PropTypes from 'prop-types';
@@ -40,7 +40,7 @@ const createIdmWallet = async () => {
 class Boot extends Component {
     state = {
         createWalletPromise: createIdmWallet(),
-        loadWalletPromise: undefined,
+        loadAppPromise: undefined,
     };
 
     render() {
@@ -87,10 +87,10 @@ class Boot extends Component {
                 <LockScreen />
                 <ActivityDetector />
 
-                <PromiseState promise={ this.state.loadWalletPromise }>
+                <PromiseState promise={ this.state.loadAppPromise }>
                     { ({ status, value }) => {
                         switch (status) {
-                        case 'fulfilled': return this.props.children;
+                        case 'fulfilled': return cloneElement(value, { className: styles.successScreen });
                         case 'rejected': return this.renderError(value);
                         default: return null;
                         }
@@ -102,7 +102,10 @@ class Boot extends Component {
 
     handleBuildPromiseSettle = async ({ status, value: idmWallet }) => {
         if (status === 'fulfilled') {
-            this.setState({ loadWalletPromise: idmWallet.identities.load() });
+            const loadAppPromise = idmWallet.identities.load()
+            .then(() => this.props.children);
+
+            this.setState({ loadAppPromise });
         }
     };
 
@@ -114,7 +117,10 @@ class Boot extends Component {
 }
 
 Boot.propTypes = {
-    children: PropTypes.node,
+    children: PropTypes.oneOfType([
+        PropTypes.node,
+        PropTypes.shape({ then: PropTypes.func.isRequired }),
+    ]).isRequired,
 };
 
 export default Boot;

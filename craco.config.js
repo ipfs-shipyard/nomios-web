@@ -21,6 +21,27 @@ module.exports = {
                 },
             },
         },
+        // Improve optimization
+        {
+            plugin: {
+                overrideWebpackConfig: ({ webpackConfig }) => {
+                    webpackConfig.optimization.runtimeChunk = false;
+                    webpackConfig.optimization.splitChunks = {
+                        cacheGroups: {
+                            chunks: 'all',
+                            vendors: false,
+                            default: {
+                                minChunks: 2,
+                                priority: -20,
+                                reuseExistingChunk: false,
+                            },
+                        },
+                    };
+
+                    return webpackConfig;
+                },
+            },
+        },
         // Setup babel-loader to use babel.config.js
         {
             plugin: {
