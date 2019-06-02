@@ -26,22 +26,22 @@ module.exports = {
             plugin: {
                 overrideWebpackConfig: ({ webpackConfig }) => {
                     // Search for all instances of babel-loader
-                    const { hasFoundAny, matches } = getLoaders(
+                    const { matches } = getLoaders(
                         webpackConfig,
                         loaderByName('babel-loader'),
                     );
 
-                    // If we can't find the loader then throw an error.
-                    if (!hasFoundAny) {
-                        throw new Error('Could not find babel-loader');
+                    const rules = matches.map((match) => match.loader);
+                    const appRule = rules.find((rule) => rule.include === path.resolve('src'));
+
+                    // If we can't find the loader then throw an error
+                    if (!appRule) {
+                        throw new Error('Could not find babel-loader entry for src/');
                     }
 
-                    // Loop through each match, enabling babelrc and clearing any presets
-                    matches.forEach(({ loader }) => {
-                        loader.options = loader.options || {};
-                        loader.options.configFile = true;
-                        delete loader.options.presets;
-                    });
+                    // Enable babelrc and clear any presets
+                    appRule.options.configFile = true;
+                    delete appRule.options.presets;
 
                     return webpackConfig;
                 },
