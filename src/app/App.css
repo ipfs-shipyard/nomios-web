@@ -1,8 +1,20 @@
 .app {
     position: relative;
-    width: 100vw;
     min-width: 102.4rem;
-    height: 100vh;
     min-height: 70rem;
-    overflow: auto;
+    display: flex;
+    flex-direction: column;
+
+    & .sidebar {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+    }
+
+    & .page {
+        width: calc(100% - 8rem);
+        margin-left: 8rem;
+        flex: 1 0 auto;
+    }
 }

@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import { CSSTransition } from 'react-transition-group';
 import { connectIdmWallet } from 'react-idm-wallet';
 import { SettingsIcon, BellIcon, ModalTrigger } from '@nomios/web-uikit';
-import NewIdentityFlow from '../../../modals/new-identity-flow';
+import NewIdentityFlow from '../../modals/new-identity-flow';
 import Scrollbar from './scrollbar';
 import AddIdentityItem from './add-identity-item';
 import IdentityItem from './identity-item';

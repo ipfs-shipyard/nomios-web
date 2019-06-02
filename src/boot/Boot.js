@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component, Fragment, cloneElement } from 'react';
 import pDelay from 'delay';
 import PropTypes from 'prop-types';
 import { IdmWalletProvider } from 'react-idm-wallet';
@@ -86,7 +86,7 @@ class Boot extends Component {
                 <PromiseState promise={ this.state.loadWalletPromise }>
                     { ({ status, value }) => {
                         switch (status) {
-                        case 'fulfilled': return this.props.children;
+                        case 'fulfilled': return cloneElement(this.props.children, { className: styles.successScreen });
                         case 'rejected': return this.renderError(value);
                         default: return null;
                         }
