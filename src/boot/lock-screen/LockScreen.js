@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import scrollbarCompensate from 'scrollbar-compensate';
 import pDelay from 'delay';
 import Lottie from 'lottie-react-web';
 import ReactModal from 'react-modal';
@@ -40,6 +41,10 @@ const unlockAnimationOptions = {
     loop: false,
     autoplay: false,
 };
+
+document.addEventListener('DOMContentLoaded', () => {
+    scrollbarCompensate([`.${styles.modalBodyOpen}`]);
+});
 
 class LockScreen extends Component {
     static getDerivedStateFromProps(props, state) {

@@ -22,6 +22,10 @@ body {
 }
 
 :global(#root) {
+    /* Every child needs to be positioned relative to the #root div */
+    /* The reason is that `padding-right` equal to the scrollbar width will be added */
+    /* to the body whenever a modal is opened */
+    position: relative;
     display: flex;
     flex: 1 0 auto;
     flex-direction: column;
