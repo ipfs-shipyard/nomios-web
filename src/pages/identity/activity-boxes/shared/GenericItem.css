@@ -1,4 +1,5 @@
 @import "@nomios/web-uikit/styles/colors";
+@import "./custom-medias.css";
 
 .item {
     display: flex;
@@ -82,7 +83,7 @@
     color: var(--color-armadillo);
 }
 
-@media (max-width: 1280px) {
+@media (--small-width) {
     .optional {
         display: none;
     }

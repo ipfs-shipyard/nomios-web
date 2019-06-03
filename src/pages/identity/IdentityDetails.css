@@ -1,5 +1,6 @@
 @import "@nomios/web-uikit/styles/colors";
 @import "@nomios/web-uikit/styles/mixins/typography";
+@import "./activity-boxes/shared/custom-medias";
 
 .detailsWrapper {
     width: 100%;
@@ -76,7 +77,7 @@
     }
 }
 
-@media (max-width: 1280px) {
+@media (--small-width) {
     .detailsWrapper .avatar {
         font-size: 1.5rem;
     }

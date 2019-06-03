@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connectIdmWallet } from 'react-idm-wallet';
+import devices from '../../../shared/data/devices';
 import StatusIndicator from './shared/StatusIndicator';
 import GenericItem from './shared/GenericItem';
 import GenericList from './shared/GenericList';
-import devices from '../../../shared/data/devices';
 
 function deviceDataFromId(id) {
     return devices.filter((device) => device.id === id)[0];

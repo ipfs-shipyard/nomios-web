@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { FacebookIcon, TwitterIcon, LinkedinIcon, GithubIcon, TextButton } from '@nomios/web-uikit';
 import StatusIndicator from './shared/StatusIndicator';
 import GenericList from './shared/GenericList';
-import { FacebookIcon, TwitterIcon, LinkedinIcon, GithubIcon, TextButton } from '@nomios/web-uikit';
 import styles from './SocialProofs.css';
 
 class SocialProofItem extends Component {

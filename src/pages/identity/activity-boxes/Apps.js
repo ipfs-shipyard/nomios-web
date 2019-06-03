@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Svg } from '@nomios/Web-uikit';
 import GenericItem from './shared/GenericItem';
 import GenericList from './shared/GenericList';
-import { Svg } from '@nomios/Web-uikit';
-import styles from './Apps.css';
 import appIcon from '../../../shared/media/backgrounds/background-pattern-1440p.png';
+import styles from './Apps.css';
 
 const globeSvg = import(/* webpackChunkName: "svg-illustrations-sprite" */ '../../../shared/media/illustrations/globe.svg');
 
@@ -57,19 +57,5 @@ const AppsBox = (props) => {
 AppsBox.propTypes = {
     apps: PropTypes.array,
 };
-
-// AppsBox.defaultProps = {
-//     apps: [
-//         {
-//             name: 'Facebook',
-//         },
-//         {
-//             name: 'Twitter',
-//         },
-//         {
-//             name: 'Facebook',
-//         },
-//     ],
-// };
 
 export default AppsBox;

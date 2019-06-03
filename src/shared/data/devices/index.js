@@ -1,3 +1,1 @@
-import devices from './devices';
-
-export default devices;
+export { default } from './devices';

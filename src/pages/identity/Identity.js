@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connectIdmWallet } from 'react-idm-wallet';
+import PageLayout from '../../shared/components/page-layout/PageLayout';
 import IdentityDetails from './IdentityDetails';
 import IdentityActivity from './IdentityActivity';
-import PageLayout from '../../shared/components/page-layout/PageLayout';
 import styles from './Identity.css';
 
 class Identity extends Component {
     render() {
         const { id } = this.props.match.params;
 
-        if (!this.props.hasIdentity(id)) {
+        if (!this.props.hasIdentity) {
             return null;
         }
 
@@ -34,13 +34,9 @@ class Identity extends Component {
 
 Identity.propTypes = {
     match: PropTypes.object.isRequired,
-    hasIdentity: PropTypes.func.isRequired,
+    hasIdentity: PropTypes.bool.isRequired,
 };
 
-export default connectIdmWallet((idmWallet) => {
-    const hasIdentity = (id) => idmWallet.identities.has(id);
-
-    return () => ({
-        hasIdentity,
-    });
-})(Identity);
+export default connectIdmWallet((idmWallet) => (ownProps) => ({
+    hasIdentity: idmWallet.identities.has(ownProps.match.params.id),
+}))(Identity);
