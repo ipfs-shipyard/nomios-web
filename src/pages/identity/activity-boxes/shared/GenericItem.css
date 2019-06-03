@@ -78,7 +78,7 @@
     }
 }
 
-& .name {
+.name {
     color: var(--color-armadillo);
 }
 

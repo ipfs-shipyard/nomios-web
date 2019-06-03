@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connectIdmWallet } from 'react-idm-wallet';
-import styles from './Identity.css';
 import IdentityDetails from './IdentityDetails';
 import IdentityActivity from './IdentityActivity';
 import PageLayout from '../../shared/components/page-layout/PageLayout';
-import backgroundPatternUrl from '../../shared/media/backgrounds/background-pattern-2160p.png';
+import styles from './Identity.css';
 
 class Identity extends Component {
     render() {
@@ -18,7 +17,7 @@ class Identity extends Component {
         return (
             <div className={ styles.splitWrapper }>
                 <div className={ styles.split }>
-                    <div className={ styles.background } style={ { backgroundImage: `url(${backgroundPatternUrl})` } } />
+                    <div className={ styles.background } />
                     <PageLayout>
                         <div className={ styles.top }>
                             <IdentityDetails id={ id } />

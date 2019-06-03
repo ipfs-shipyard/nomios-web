@@ -15,6 +15,7 @@ const PageLayout = (props) => {
 };
 
 PageLayout.propTypes = {
+    className: PropTypes.string,
     children: PropTypes.node.isRequired,
 };
 

@@ -1,5 +1,4 @@
 @import "@nomios/web-uikit/styles/colors";
-@import "@nomios/web-uikit/styles/mixins/typography";
 
 .appsWrapper {
     position: relative;
