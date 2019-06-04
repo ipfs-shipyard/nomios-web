@@ -120,7 +120,13 @@ class ProfileForm extends Component {
     async updateIdentity(data) {
         const { saveProfile } = this.props;
 
-        const properties = { ...data };
+        const properties = {
+            name: undefined,
+            nationality: undefined,
+            gender: undefined,
+            address: undefined,
+            ...data,
+        };
 
         if (this.state.image) {
             properties.image = {
