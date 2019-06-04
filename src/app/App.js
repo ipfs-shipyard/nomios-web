@@ -8,6 +8,7 @@ import Sidebar from './sidebar';
 import SetupLocker from '../modals/setup-locker';
 import Home from '../pages/home';
 import Identity from '../pages/identity';
+import ErrorBoundary from './error-boundary';
 import styles from './App.css';
 
 class App extends Component {
@@ -30,8 +31,10 @@ class App extends Component {
                     <Sidebar className={ styles.sidebar } />
 
                     <main className={ styles.page }>
-                        <Route path="/" exact component={ Home } />
-                        <Route path="/identity/:id" component={ Identity } />
+                        <ErrorBoundary>
+                            <Route path="/" exact component={ Home } />
+                            <Route path="/identity/:id" component={ Identity } />
+                        </ErrorBoundary>
                     </main>
 
                     <Transition in={ setupLockerOpen } timeout={ 2000 } mountOnEnter unmountOnExit>
