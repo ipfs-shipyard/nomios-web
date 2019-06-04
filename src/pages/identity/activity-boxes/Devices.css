@@ -1,0 +1,7 @@
+@import "./shared/custom-medias.css";
+
+@media (--small-width) {
+    .optional {
+        display: none;
+    }
+}

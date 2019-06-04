@@ -1,19 +1,40 @@
-import React, { Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { ModalTrigger } from '@nomios/web-uikit';
-import EditProfile from '../../modals/edit-profile';
+import { connectIdmWallet } from 'react-idm-wallet';
+import PageLayout from '../../shared/components/page-layout/PageLayout';
+import IdentityDetails from './IdentityDetails';
+import IdentityActivity from './IdentityActivity';
+import styles from './Identity.css';
 
-const Identity = ({ match }) => (
-    <Fragment>
-        <div>This is the identity page of { match.params.id }!</div>
-        <ModalTrigger modal={ <EditProfile id={ match.params.id } /> }>
-            <button>Edit Profile</button>
-        </ModalTrigger>
-    </Fragment>
-);
+class Identity extends Component {
+    render() {
+        const { id } = this.props.match.params;
+
+        if (!this.props.hasIdentity) {
+            return null;
+        }
+
+        return (
+            <div className={ styles.split }>
+                <div className={ styles.background } />
+                <PageLayout>
+                    <div className={ styles.top }>
+                        <IdentityDetails id={ id } />
+                    </div>
+                    <div className={ styles.bottom }>
+                        <IdentityActivity id={ id } />
+                    </div>
+                </PageLayout>
+            </div>
+        );
+    }
+}
 
 Identity.propTypes = {
     match: PropTypes.object.isRequired,
+    hasIdentity: PropTypes.bool.isRequired,
 };
 
-export default Identity;
+export default connectIdmWallet((idmWallet) => (ownProps) => ({
+    hasIdentity: idmWallet.identities.has(ownProps.match.params.id),
+}))(Identity);

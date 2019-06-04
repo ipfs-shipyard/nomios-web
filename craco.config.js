@@ -130,6 +130,7 @@ module.exports = {
                                 loader: require.resolve('svg-css-modules-loader'),
                                 options: {
                                     transformId: true,
+                                    localIdentName: '[name]__[local]',
                                 },
                             },
                         ],

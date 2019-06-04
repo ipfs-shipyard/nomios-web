@@ -1,0 +1,92 @@
+@import "@nomios/web-uikit/styles/colors";
+@import "@nomios/web-uikit/styles/mixins/typography";
+@import "./activity-boxes/shared/custom-medias";
+
+.detailsWrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+
+    & .avatar {
+        margin-bottom: 1rem;
+        font-size: 2.5rem;
+    }
+
+    & .name {
+        z-index: 2;
+        margin: 0;
+        margin-bottom: 1.5rem;
+        color: var(--color-white);
+    }
+
+    & .did {
+        @mixin typography-body-2 rem;
+        margin-bottom: 6rem;
+        opacity: 0.6;
+        color: var(--color-white);
+    }
+
+    & .lowerBar {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        & .attributes {
+            width: 76%;
+            min-width: 58rem;
+            max-width: 78rem;
+            display: flex;
+            flex-direction: row;
+
+            & .attribute {
+                opacity: 0.8;
+
+                &:first-of-type {
+                    flex-shrink: 0;
+                }
+
+                &:not(:last-of-type) {
+                    margin-right: 7%;
+                }
+
+                & .title {
+                    @mixin typography-captions rem;
+                    margin-bottom: 1rem;
+                    color: var(--color-tan);
+                }
+
+                & .value {
+                    color: var(--color-white);
+                }
+
+            }
+        }
+
+        & .editButton {
+            min-width: 16.5rem;
+            margin-left: 5rem;
+
+            & .buttonIcon {
+                font-size: 1.6rem;
+            }
+        }
+    }
+}
+
+@media (--small-width) {
+    .detailsWrapper .avatar {
+        font-size: 1.5rem;
+    }
+
+    .name {
+        @mixin typography-h2 rem;
+    }
+
+    .profileSpan {
+        display: none;
+    }
+}

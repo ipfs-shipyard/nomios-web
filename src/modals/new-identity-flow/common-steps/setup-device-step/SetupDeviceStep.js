@@ -3,11 +3,11 @@ import React, { Component, createRef } from 'react';
 import PropTypes from 'prop-types';
 import { startCase } from 'lodash';
 import { Form, Field, FormSpy } from 'react-final-form';
-import { Button, TypeGroup, TypeOption, TextInput, EditIcon } from '@nomios/web-uikit';
+import { Button, TypeGroup, TypeOption, TextInput, EditIcon, CheckmarkIcon } from '@nomios/web-uikit';
 import FadeContainer from '../../../../shared/components/fade-container';
 import { notEmpty } from '../../../../shared/form-validators';
-import { deviceInfo } from './deviceInfo';
-import devices from './devices';
+import devices from '../../../../shared/data/devices';
+import { deviceInfo } from './device-info';
 import styles from './SetupDeviceStep.css';
 
 const SUBSTEP_TRANSITION_DELAY = 300;
@@ -114,7 +114,7 @@ class SetupDeviceStep extends Component {
     renderDevices() {
         return (
             devices.map((device, index) => (
-                <TypeOption key={ index } id={ device.id } label={ device.label } badge={ device.badge }>
+                <TypeOption key={ index } id={ device.id } label={ device.label } badge={ <CheckmarkIcon /> }>
                     { device.icon }
                 </TypeOption>
             ))
