@@ -23,20 +23,14 @@ IdentityAttribute.propTypes = {
 
 class IdentityDetails extends PureComponent {
     render() {
-        const { name,
-            image,
-            didMethod,
-            documentId,
-            dateOfBirth,
-            nationality,
-            location,
-            gender } = this.buildDetailsObject();
+        const { id, did, profileDetails } = this.props;
+        const { name, image, dateOfBirth, nationality, address, gender } = profileDetails;
 
         return (
             <div className={ styles.detailsWrapper }>
                 <Avatar name={ name } image={ image } className={ styles.avatar } />
                 <h1 className={ styles.name }>{ name }</h1>
-                <div className={ styles.did }>{ didMethod } | did:{didMethod}:{documentId}</div>
+                <div className={ styles.did }>{ did }</div>
                 <div className={ styles.lowerBar }>
                     <div className={ styles.attributes }>
                         { dateOfBirth &&
@@ -45,10 +39,10 @@ class IdentityDetails extends PureComponent {
                             <IdentityAttribute title="Gender" value={ gender } /> }
                         { nationality &&
                             <IdentityAttribute title="Nationality" value={ nationality } /> }
-                        { location &&
-                            <IdentityAttribute title="Location" value={ location } /> }
+                        { address &&
+                            <IdentityAttribute title="Location" value={ address } /> }
                     </div>
-                    <ModalTrigger modal={ <EditProfile id={ documentId } /> }>
+                    <ModalTrigger modal={ <EditProfile id={ id } /> }>
                         <Button variant="negative" className={ styles.editButton } onClick={ this.handleEdit }>
                             Edit<span className={ styles.profileSpan }> Profile</span> <EditIcon className={ styles.buttonIcon } />
                         </Button>
@@ -58,19 +52,6 @@ class IdentityDetails extends PureComponent {
         );
     }
 
-    buildDetailsObject() {
-        const { profileDetails, id } = this.props;
-
-        const details = {
-            didMethod: 'ipid',
-            documentId: id,
-        };
-
-        Object.assign(details, profileDetails);
-
-        return details;
-    }
-
     handleEdit = () => {
         alert('Edit profile');
     };
@@ -78,9 +59,11 @@ class IdentityDetails extends PureComponent {
 
 IdentityDetails.propTypes = {
     id: PropTypes.string.isRequired,
+    did: PropTypes.string.isRequired,
     profileDetails: PropTypes.object.isRequired,
 };
 
 export default connectIdmWallet((idmWallet) => (ownProps) => ({
+    did: idmWallet.identities.get(ownProps.id).getDid(),
     profileDetails: idmWallet.identities.get(ownProps.id).profile.getDetails(),
 }))(IdentityDetails);
