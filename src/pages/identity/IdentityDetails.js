@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connectIdmWallet } from 'react-idm-wallet';
-import { Avatar, Button, EditIcon } from '@nomios/web-uikit';
+import { ModalTrigger, Avatar, Button, EditIcon } from '@nomios/web-uikit';
+import EditProfile from '../../modals/edit-profile';
 import styles from './IdentityDetails.css';
 
 const IdentityAttribute = (props) => {
@@ -47,9 +48,11 @@ class IdentityDetails extends PureComponent {
                         { location &&
                             <IdentityAttribute title="Location" value={ location } /> }
                     </div>
-                    <Button variant="negative" className={ styles.editButton } onClick={ this.handleEdit }>
-                        Edit<span className={ styles.profileSpan }> Profile</span> <EditIcon className={ styles.buttonIcon } />
-                    </Button>
+                    <ModalTrigger modal={ <EditProfile id={ documentId } /> }>
+                        <Button variant="negative" className={ styles.editButton } onClick={ this.handleEdit }>
+                            Edit<span className={ styles.profileSpan }> Profile</span> <EditIcon className={ styles.buttonIcon } />
+                        </Button>
+                    </ModalTrigger>
                 </div>
             </div>
         );

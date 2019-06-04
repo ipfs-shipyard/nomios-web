@@ -15,18 +15,16 @@ class Identity extends Component {
         }
 
         return (
-            <div className={ styles.splitWrapper }>
-                <div className={ styles.split }>
-                    <div className={ styles.background } />
-                    <PageLayout>
-                        <div className={ styles.top }>
-                            <IdentityDetails id={ id } />
-                        </div>
-                        <div className={ styles.bottom }>
-                            <IdentityActivity id={ id } />
-                        </div>
-                    </PageLayout>
-                </div>
+            <div className={ styles.split }>
+                <div className={ styles.background } />
+                <PageLayout>
+                    <div className={ styles.top }>
+                        <IdentityDetails id={ id } />
+                    </div>
+                    <div className={ styles.bottom }>
+                        <IdentityActivity id={ id } />
+                    </div>
+                </PageLayout>
             </div>
         );
     }
