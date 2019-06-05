@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Page500 } from '../../pages/errors';
+import { Page404, Page500 } from '../../pages/errors';
 
 class ErrorBoundary extends Component {
     state = {
@@ -21,11 +21,11 @@ class ErrorBoundary extends Component {
         if (hasError) {
             switch (error.code) {
             case 'UNKNOWN_IDENTITY':
-                return <Page500 onRetry={ this.handleRetry } error={ error } />;
+                return <Page404 />;
             default:
                 console.log('error.code', error.code);
 
-                return <h1>has error</h1>;
+                return <Page500 onRetry={ this.handleRetry } error={ error } />;
             }
         }
 
