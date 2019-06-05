@@ -15,6 +15,8 @@ class ErrorBoundary extends Component {
                 pathname: props.location.pathname,
             };
         }
+
+        return null;
     }
 
     constructor(props) {

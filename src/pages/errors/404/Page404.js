@@ -16,12 +16,4 @@ const Page404 = () => (
     </div>
 );
 
-// Page404.propTypes = {
-//     isBackgroundOn: PropTypes.bool,
-// };
-
-// Page404.defaultProps = {
-//     isBackgroundOn: false,
-// };
-
 export default Page404;
