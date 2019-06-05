@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connectIdmWallet } from 'react-idm-wallet';
-import { Avatar, Button } from '@nomios/web-uikit';
+import { Avatar, Button, ModalTrigger } from '@nomios/web-uikit';
+import NewIdentityFlow from '../../../modals/new-identity-flow';
 import styles from './Revoked.css';
 
 const Revoked = (props) => {
     const { name, image } = props.profileDetails;
+    const { deleteIdentity } = props;
 
     return (
         <div className={ styles.errorPage }>
@@ -16,8 +18,11 @@ const Revoked = (props) => {
             You&apos;ll still be able to use this identity in all your other devices, or import it again in this device.
             </p>
             <div className={ styles.actions }>
-                <Button className={ styles.import } variant="secondary" onClick={ props.onImport }>Import</Button>
-                <Button className={ styles.delete } variant="primary" onClick={ props.onDelete }>Delete</Button>
+                <ModalTrigger
+                    modal={ <NewIdentityFlow /> }>
+                    <Button className={ styles.import } variant="secondary">Import</Button>
+                </ModalTrigger>
+                <Button className={ styles.delete } variant="primary" onClick={ deleteIdentity }>Delete</Button>
             </div>
         </div>
     );
@@ -26,11 +31,13 @@ const Revoked = (props) => {
 Revoked.propTypes = {
     id: PropTypes.string.isRequired,
     profileDetails: PropTypes.object.isRequired,
+    deleteIdentity: PropTypes.func.isRequired,
     onImport: PropTypes.func,
     onDelete: PropTypes.func,
 };
 
 export default connectIdmWallet((idmWallet) => (ownProps) => ({
     profileDetails: idmWallet.identities.get(ownProps.id).profile.getDetails(),
+    deleteIdentity: () => idmWallet.identities.remove(ownProps.id),
 }))(Revoked);
 
