@@ -4,6 +4,7 @@
 .inputWrapper {
     position: relative;
     max-width: 65rem;
+    display: flex;
 
     & textarea {
         width: 100%;
@@ -18,7 +19,7 @@
 
     & .animatedBorder {
         position: absolute;
-        bottom: 0.6rem;
+        bottom: 0;
         left: 0;
         height: 0.1rem;
         background-color: var(--color-ocean-green);
