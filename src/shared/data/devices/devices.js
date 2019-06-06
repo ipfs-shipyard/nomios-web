@@ -3,7 +3,7 @@ import { MobileIcon, TabletIcon, LaptopIcon, DesktopIcon } from '@nomios/web-uik
 
 export default [
     {
-        id: 'mobile',
+        id: 'phone',
         label: 'Mobile',
         icon: <MobileIcon />,
     },

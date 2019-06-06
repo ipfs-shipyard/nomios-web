@@ -25,7 +25,7 @@ const getDeviceType = async () => {
 const getDeviceInfo = async () => {
     // isMobile returns true if device type is mobile or tablet
     if (isMobile) {
-        const type = isMobileOnly ? 'mobile' : 'tablet';
+        const type = isMobileOnly ? 'phone' : 'tablet';
         const mobileName = mobileVendor !== 'none' ? mobileVendor : type;
 
         return {
