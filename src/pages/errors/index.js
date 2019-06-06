@@ -1,7 +1,2 @@
-import Page500 from './500';
-import Page404 from './404';
-
-export {
-    Page500,
-    Page404,
-};
+export { default as Page500 } from './500';
+export { default as Page404 } from './404';

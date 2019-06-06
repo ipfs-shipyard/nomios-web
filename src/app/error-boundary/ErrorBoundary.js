@@ -8,7 +8,6 @@ class ErrorBoundary extends Component {
     static getDerivedStateFromProps(props, state) {
         if (props.location.pathname !== state.pathname) {
             return {
-                hasError: false,
                 error: undefined,
                 pathname: props.location.pathname,
             };
@@ -21,20 +20,19 @@ class ErrorBoundary extends Component {
         super(props);
 
         this.state = {
-            hasError: false,
             error: undefined,
             pathname: props.location.pathname,
         };
     }
 
     componentDidCatch(error) {
-        this.setState({ hasError: true, error });
+        this.setState({ error });
     }
 
     render() {
-        const { hasError, error } = this.state;
+        const { error } = this.state;
 
-        if (hasError) {
+        if (error) {
             switch (error.code) {
             case 'UNKNOWN_IDENTITY':
                 document.body.classList.add(styles.hideErrorOverlay);
