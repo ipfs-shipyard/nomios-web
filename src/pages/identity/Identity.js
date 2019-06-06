@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connectIdmWallet } from 'react-idm-wallet';
 import PageLayout from '../../shared/components/page-layout/PageLayout';
-import { Revoked } from '../errors';
+import Revoked from './revoked';
 import IdentityDetails from './IdentityDetails';
 import IdentityActivity from './IdentityActivity';
 import styles from './Identity.css';

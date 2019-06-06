@@ -7,7 +7,6 @@ import styles from './Revoked.css';
 
 const Revoked = (props) => {
     const { name, image } = props.profileDetails;
-    const { deleteIdentity } = props;
 
     return (
         <div className={ styles.errorPage }>
@@ -22,7 +21,7 @@ const Revoked = (props) => {
                     modal={ <NewIdentityFlow /> }>
                     <Button className={ styles.import } variant="secondary">Import</Button>
                 </ModalTrigger>
-                <Button className={ styles.delete } variant="primary" onClick={ deleteIdentity }>Delete</Button>
+                <Button className={ styles.delete } variant="primary" onClick={ () => alert('Delete identity') }>Delete</Button>
             </div>
         </div>
     );
