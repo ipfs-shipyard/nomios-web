@@ -7,8 +7,6 @@ import styles from './ErrorBoundary.css';
 class ErrorBoundary extends Component {
     static getDerivedStateFromProps(props, state) {
         if (props.location.pathname !== state.pathname) {
-            document.body.classList.remove(styles.hideErrorOverlay);
-
             return {
                 hasError: false,
                 error: undefined,
@@ -43,6 +41,8 @@ class ErrorBoundary extends Component {
 
                 return <Page404 />;
             default:
+                document.body.classList.remove(styles.hideErrorOverlay);
+
                 return <Page500 onRetry={ this.handleRetry } error={ error } />;
             }
         }
