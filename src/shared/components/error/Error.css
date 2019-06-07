@@ -1,7 +1,7 @@
 @import "@nomios/web-uikit/styles/colors";
 @import "@nomios/web-uikit/styles/mixins/typography";
 
-.errorScreen {
+.error {
     width: 100%;
     height: 100%;
     padding: 2rem;
@@ -49,7 +49,7 @@
         transition: height 0.3s ease;
     }
 
-    & .error {
+    & .errorBlock {
         margin-top: 4rem;
         @mixin typography-body-2 rem;
         padding: 2rem;

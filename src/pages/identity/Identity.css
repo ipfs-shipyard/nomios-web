@@ -55,9 +55,3 @@
         align-items: center;
     }
 }
-
-@media (min-height: 1024px) {
-    .split {
-        height: 100vh;
-    }
-}

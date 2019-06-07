@@ -123,10 +123,10 @@ SocialProofsBox.defaultProps = {
     proofs: {
         twitter: {
             username: 'satazor',
-            status: 'invalid',
+            status: 'approved',
         },
         github: {
-            username: 'njrhjfownjrkeqnrje',
+            username: 'satazor',
             status: 'invalid',
         },
     },

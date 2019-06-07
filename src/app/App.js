@@ -3,11 +3,13 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connectIdmWallet } from 'react-idm-wallet';
 import { Transition } from 'react-transition-group';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Sidebar from './sidebar';
 import SetupLocker from '../modals/setup-locker';
 import Home from '../pages/home';
 import Identity from '../pages/identity';
+import { Page404 } from '../pages/errors';
+import ErrorBoundary from './error-boundary';
 import styles from './App.css';
 
 class App extends Component {
@@ -30,8 +32,13 @@ class App extends Component {
                     <Sidebar className={ styles.sidebar } />
 
                     <main className={ styles.page }>
-                        <Route path="/" exact component={ Home } />
-                        <Route path="/identity/:id" component={ Identity } />
+                        <ErrorBoundary>
+                            <Switch>
+                                <Route path="/" exact component={ Home } />
+                                <Route path="/identity/:id" component={ Identity } />
+                                <Route path="/*" component={ Page404 } />
+                            </Switch>
+                        </ErrorBoundary>
                     </main>
 
                     <Transition in={ setupLockerOpen } timeout={ 2000 } mountOnEnter unmountOnExit>

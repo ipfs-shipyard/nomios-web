@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connectIdmWallet } from 'react-idm-wallet';
 import PageLayout from '../../shared/components/page-layout/PageLayout';
+import Revoked from './revoked';
 import IdentityDetails from './IdentityDetails';
 import IdentityActivity from './IdentityActivity';
 import styles from './Identity.css';
@@ -9,9 +10,10 @@ import styles from './Identity.css';
 class Identity extends Component {
     render() {
         const { id } = this.props.match.params;
+        const { isRevoked } = this.props;
 
-        if (!this.props.hasIdentity) {
-            return null;
+        if (isRevoked) {
+            return <Revoked id={ id } />;
         }
 
         return (
@@ -31,10 +33,10 @@ class Identity extends Component {
 }
 
 Identity.propTypes = {
+    isRevoked: PropTypes.bool.isRequired,
     match: PropTypes.object.isRequired,
-    hasIdentity: PropTypes.bool.isRequired,
 };
 
 export default connectIdmWallet((idmWallet) => (ownProps) => ({
-    hasIdentity: idmWallet.identities.has(ownProps.match.params.id),
+    isRevoked: idmWallet.identities.get(ownProps.match.params.id).isRevoked(),
 }))(Identity);
