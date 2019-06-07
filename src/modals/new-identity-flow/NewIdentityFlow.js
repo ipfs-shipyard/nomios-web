@@ -11,6 +11,7 @@ import {
     ImportConfirmIdentity,
     IdentityDevice as ImportIdentityDevice,
     ImportFeedback,
+    AutomaticRecovery,
 } from './import-identity-steps';
 
 const initialState = {
@@ -101,6 +102,12 @@ class NewIdentityFlow extends Component {
 
         return (
             <Fragment>
+                <FlowModalStep id="import-automatic-recovery">
+                    <AutomaticRecovery
+                        nextStepId="import-identity-confirm"
+                        onNextStep={ this.handleNextStep }
+                        secondaryStepId="import-manual-recovery" />
+                </FlowModalStep>
                 <FlowModalStep id="import-manual-recovery">
                     <ImportManualRecovery
                         nextStepId="import-identity-confirm"
@@ -223,7 +230,7 @@ class NewIdentityFlow extends Component {
     };
 
     handleChooseFlow = (flow) => {
-        const createIdentityFirstStepId = flow === 'create' ? 'create-identity-info' : 'import-manual-recovery';
+        const createIdentityFirstStepId = flow === 'create' ? 'create-identity-info' : 'import-automatic-recovery';
 
         this.setState({ currentFlow: flow, currentStepId: createIdentityFirstStepId });
     };

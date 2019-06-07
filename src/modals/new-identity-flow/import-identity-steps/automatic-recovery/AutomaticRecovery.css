@@ -10,37 +10,93 @@
 
     & .heading {
         margin-top: 0;
-        margin-bottom: 3rem;
+        margin-bottom: 2.5rem;
         color: var(--color-tan);
     }
 
     & > p {
         max-width: 65rem;
-        margin-bottom: 8.4rem;
+        margin-bottom: 5rem;
         opacity: 0.7;
         color: var(--color-armadillo);
     }
 
-    & .identityWrapper {
+    & .import {
+        width: 50rem;
         display: flex;
-        flex-direction: row;
-        align-items: center;
+        flex-direction: column;
+        box-shadow: inset 0 0 0 0.1rem color(var(--color-armadillo) alpha(0.3));
 
-        & .identityName {
-            margin-left: 7rem;
+        & .top {
+            position: relative;
+            height: 16rem;
+            padding-left: 3rem;
             display: flex;
             flex-direction: column;
             align-items: flex-start;
+            background-color: var(--color-armadillo);
+
+            & .background {
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                opacity: 0.7;
+                background-image: url("../../../../shared/media/backgrounds/background-pattern-2160p.png");
+                background-position: center center;
+                background-size: cover;
+            }
 
             & .title {
-                @mixin typography-captions rem;
-                margin-bottom: 0.8rem;
+                position: relative;
+                margin-bottom: 0.5rem;
                 color: var(--color-tan);
             }
 
-            & .text {
+            & .caption {
+                position: relative;
+                color: var(--color-white);
+                @mixin typography-body-2 rem;
+            }
+
+            & .pdfIcon {
+                position: absolute;
+                right: 3rem;
+                bottom: 3rem;
+                font-size: 4.8rem;
+                fill: var(--color-tan);
+            }
+        }
+
+        & .bottom {
+            height: 6.5rem;
+            padding-left: 3rem;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+
+            & .iconWrapper {
+                width: 3.5rem;
+                height: 3.5rem;
+                display: inline-flex;
+                border-width: 0.1rem;
+                border-style: solid;
+                border-color: color(var(--color-tan) alpha(0.5));
+                border-radius: 50%;
+
+                & i {
+                    margin: auto auto;
+                    font-size: 1.3rem;
+                    fill: var(--color-armadillo);
+                }
+            }
+
+            & .textButton {
+                @mixin typography-body-2 rem;
                 color: var(--color-armadillo);
             }
+
         }
     }
 
@@ -48,10 +104,6 @@
         margin-top: auto;
         display: flex;
         flex-direction: row;
-        justify-content: flex-end;
-
-        & .primaryButton {
-            margin-left: 2rem;
-        }
+        justify-content: space-between;
     }
 }

@@ -5,20 +5,27 @@ import styles from './AutomaticRecovery.css';
 
 class AutomaticRecovery extends Component {
     render() {
+        const importIcon = <div className={ styles.iconWrapper }><EditIcon className={ styles.importIcon } /></div>;
+
         return (
             <div className={ styles.contentWrapper }>
                 <h2 className={ styles.heading }>Import your Identity</h2>
                 <p>
-                    It&apos;s improtant to save your recovery key in a safe place to backup your identity.
+                    It&apos;s important to save your recovery key in a safe place to backup your identity.
                 </p>
-                <div className={ styles.identityWrapper }>
+                <div className={ styles.import }>
                     <div className={ styles.top }>
                         <div className={ styles.background } />
                         <h3 className={ styles.title }>Import using PDF file</h3>
                         <div className={ styles.caption }>Upload PDF with your recovery key.</div>
                         <PdfIcon className={ styles.pdfIcon } />
                     </div>
-                    <div className={ styles.bottom } />
+                    <div className={ styles.bottom }>
+                        <TextButton
+                            className={ styles.textButton }
+                            iconPosition="left"
+                            icon={ importIcon }>Browse or drag file</TextButton>
+                    </div>
                 </div>
                 <div className={ styles.advance }>
                     <TextButton
