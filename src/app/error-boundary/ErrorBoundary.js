@@ -34,6 +34,10 @@ class ErrorBoundary extends Component {
         if (error) {
             switch (error.code) {
             case 'UNKNOWN_IDENTITY':
+                process.env.NODE_ENV === 'development' &&
+                    console.info('This error is caused by an unknown identity. ' +
+                    'It is handled correctly by the Error Boundary component.' +
+                    '\n\nPlease close this overlay (this will not appear in production).');
 
                 return <Page404 />;
             default:
