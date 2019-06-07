@@ -35,17 +35,36 @@ class ErrorBoundary extends Component {
         if (error) {
             switch (error.code) {
             case 'UNKNOWN_IDENTITY':
-                document.body.classList.add(styles.hideErrorOverlay);
+                this.hideErrorOverlay();
 
                 return <Page404 />;
             default:
-                document.body.classList.remove(styles.hideErrorOverlay);
+                this.showErrorOverlay();
 
                 return <Page500 onRetry={ this.handleRetry } error={ error } />;
             }
+        } else {
+            this.destroyErrorOverlay();
+            this.showErrorOverlay();
         }
 
         return this.props.children;
+    }
+
+    showErrorOverlay() {
+        document.body.classList.remove(styles.hideErrorOverlay);
+    }
+
+    hideErrorOverlay() {
+        document.body.classList.add(styles.hideErrorOverlay);
+    }
+
+    destroyErrorOverlay() {
+        // Destroy
+        const errorOverlay = document.querySelector('body>iframe[style]');
+
+        errorOverlay &&
+            errorOverlay.remove();
     }
 
     handleRetry = () => {

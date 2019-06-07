@@ -1,3 +1,3 @@
-.hideErrorOverlay > iframe {
+.hideErrorOverlay > iframe[style] {
     display: none;
 }

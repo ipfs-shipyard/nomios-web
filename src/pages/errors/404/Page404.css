@@ -35,12 +35,14 @@
         margin-top: 0;
         margin-bottom: 2rem;
         color: var(--color-tan);
+        text-align: center;
 
     }
 
     & .body {
         margin-bottom: 6rem;
         color: var(--color-armadillo);
+        text-align: center;
     }
 
 }

@@ -17,7 +17,7 @@ class Error extends Component {
         const { showingDetails } = this.state;
 
         return (
-            <div className={ classNames(styles.errorScreen, className) }>
+            <div className={ classNames(styles.error, className) }>
                 <div className={ styles.wrapper }>
                     <Svg svg={ fadingLogoSvg } className={ styles.illustration } />
 
@@ -38,7 +38,7 @@ class Error extends Component {
                     </div>
 
                     <SlideDown closed={ !showingDetails } className={ styles.errorSlideDown }>
-                        <div className={ styles.error }>
+                        <div className={ styles.errorBlock }>
                             <p className={ styles.message }>
                                 { error.code && <Fragment>{ error.code }&nbsp;-&nbsp;</Fragment> }
                                 { error.message }
