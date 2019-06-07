@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { Page404, Page500 } from '../../pages/errors';
-import styles from './ErrorBoundary.css';
 
 class ErrorBoundary extends Component {
     static getDerivedStateFromProps(props, state) {
@@ -35,36 +34,14 @@ class ErrorBoundary extends Component {
         if (error) {
             switch (error.code) {
             case 'UNKNOWN_IDENTITY':
-                this.hideErrorOverlay();
 
                 return <Page404 />;
             default:
-                this.showErrorOverlay();
-
                 return <Page500 onRetry={ this.handleRetry } error={ error } />;
             }
-        } else {
-            this.destroyErrorOverlay();
-            this.showErrorOverlay();
         }
 
         return this.props.children;
-    }
-
-    showErrorOverlay() {
-        document.body.classList.remove(styles.hideErrorOverlay);
-    }
-
-    hideErrorOverlay() {
-        document.body.classList.add(styles.hideErrorOverlay);
-    }
-
-    destroyErrorOverlay() {
-        // Destroy
-        const errorOverlay = document.querySelector('body>iframe[style]');
-
-        errorOverlay &&
-            errorOverlay.remove();
     }
 
     handleRetry = () => {
