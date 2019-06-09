@@ -6,6 +6,8 @@ import Authenticate from '../pages/authenticate';
 import Sign from '../pages/sign';
 import LockScreen from '../shared/components/lock-screen';
 
+const dummyUnlockFn = () => {};
+
 class AppMediator extends Component {
     prompt = undefined;
 
@@ -24,7 +26,7 @@ class AppMediator extends Component {
     }
 
     render() {
-        const { locked/* , pristine*/ } = this.state;
+        const { locked, pristine } = this.state;
 
         return (
             <Fragment>
