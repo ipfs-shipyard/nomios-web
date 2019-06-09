@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Svg } from '@nomios/Web-uikit';
+import { Svg } from '@nomios/web-uikit';
 import GenericItem from './shared/GenericItem';
 import GenericList from './shared/GenericList';
 import appIcon from '../../../shared/media/backgrounds/background-pattern-1440p.png';

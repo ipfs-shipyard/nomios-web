@@ -122,7 +122,7 @@ class Sidebar extends PureComponent {
 
     handleMouseLeave = () => this.close();
 
-    handleModalTriggerChange = (open) => !open && this.close();
+    handleModalTriggerChange = (open) => open && this.close();
 
     handleLogoItemClick = () => this.close();
 

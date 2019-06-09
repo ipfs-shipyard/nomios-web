@@ -1,21 +1,19 @@
-import React, { Component, Fragment, cloneElement } from 'react';
-import pDelay from 'delay';
+import React, { Component, Fragment } from 'react';
 import pTimeout from 'p-timeout';
 import PropTypes from 'prop-types';
-import { IdmWalletProvider } from 'react-idm-wallet';
 import { PromiseState } from 'react-promiseful';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import ErrorScreen from './error-screen';
-import LoadingScreen from './loading-screen';
-import LockScreen from './lock-screen';
-import ActivityDetector from './activity-detector';
+import { CSSTransition } from 'react-transition-group';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { ModalGlobalProvider } from '@nomios/web-uikit';
+import ErrorScreen from '../shared/components/error-screen';
+import LoadingScreen from '../shared/components/loading-screen';
 import styles from './Boot.css';
-
-const RETRY_DELAY = 1700;
 
 const CSS_TRANSITION_PROPS = {
     timeout: 300,
+    appear: true,
+    mountOnEnter: true,
+    unmountOnExit: true,
     classNames: {
         appear: styles.enter,
         appearActive: styles.enterActive,
@@ -29,45 +27,42 @@ const CSS_TRANSITION_PROPS = {
     },
 };
 
-const createIdmWallet = async () => {
-    const createIdmWallet = await pTimeout(
-        import(/* webpackChunkName: "idm-wallet" */ 'idm-wallet'),
-        6000,
-    );
-
-    return createIdmWallet.default();
-};
-
 class Boot extends Component {
     state = {
-        createWalletPromise: createIdmWallet(),
-        loadWalletPromise: undefined,
+        promise: undefined,
     };
 
+    constructor(props) {
+        super(props);
+
+        this.state.promise = pTimeout(props.promise, props.timeout);
+    }
+
     render() {
+        const { promise } = this.state;
+
         return (
             <PromiseState
-                promise={ this.state.createWalletPromise }
-                onSettle={ this.handleBuildPromiseSettle }>
+                promise={ promise }>
                 { ({ status, value }) => (
                     <Fragment>
-                        <TransitionGroup component={ null }>
-                            { status === 'pending' && (
-                                <CSSTransition key="pending" { ...CSS_TRANSITION_PROPS }>
-                                    <div className={ styles.boot }>{ this.renderLoading() }</div>
-                                </CSSTransition>
-                            ) }
-                            { status === 'rejected' && (
-                                <CSSTransition key="error" { ...CSS_TRANSITION_PROPS }>
-                                    <div className={ styles.boot }>{ this.renderError(value) }</div>
-                                </CSSTransition>
-                            ) }
-                            { status === 'fulfilled' && (
-                                <CSSTransition key="fulfilled" { ...CSS_TRANSITION_PROPS }>
-                                    <div className={ styles.boot }>{ this.renderSuccess(value) }</div>
-                                </CSSTransition>
-                            ) }
-                        </TransitionGroup>
+                        <CSSTransition in={ status === 'pending' } { ...CSS_TRANSITION_PROPS }>
+                            <div className={ styles.boot }>
+                                { this.renderLoading() }
+                            </div>
+                        </CSSTransition>
+
+                        <CSSTransition in={ status === 'rejected' } { ...CSS_TRANSITION_PROPS }>
+                            <div className={ styles.boot }>
+                                { status === 'rejected' ? this.renderError(value) : null }
+                            </div>
+                        </CSSTransition>
+
+                        <CSSTransition in={ status === 'fulfilled' } { ...CSS_TRANSITION_PROPS }>
+                            <div className={ styles.boot }>
+                                { status === 'fulfilled' ? this.renderSuccess(value) : null }
+                            </div>
+                        </CSSTransition>
                     </Fragment>
                 ) }
             </PromiseState>
@@ -75,49 +70,45 @@ class Boot extends Component {
     }
 
     renderLoading() {
-        return <LoadingScreen className={ styles.loadingScreen } />;
+        return <LoadingScreen />;
     }
 
     renderError(error) {
-        return <ErrorScreen error={ error } onRetry={ this.handleRetry } className={ styles.errorScreen } />;
-    }
-
-    renderSuccess(idmWallet) {
         return (
-            <IdmWalletProvider idmWallet={ idmWallet }>
-                <ModalGlobalProvider>
-                    <LockScreen />
-                    <ActivityDetector />
-
-                    <PromiseState promise={ this.state.loadWalletPromise }>
-                        { ({ status, value }) => {
-                            switch (status) {
-                            case 'fulfilled': return cloneElement(this.props.children, { className: styles.successScreen });
-                            case 'rejected': return this.renderError(value);
-                            default: return null;
-                            }
-                        } }
-                    </PromiseState>
-                </ModalGlobalProvider>
-            </IdmWalletProvider>
+            <ErrorScreen
+                text="We're having a hard time booting the app."
+                error={ error }
+                onRetry={ this.handleRetry } />
         );
     }
 
-    handleBuildPromiseSettle = async ({ status, value: idmWallet }) => {
-        if (status === 'fulfilled') {
-            this.setState({ loadWalletPromise: idmWallet.identities.load() });
-        }
-    };
+    renderSuccess(value) {
+        return (
+            <Router>
+                <ModalGlobalProvider>
+                    { this.props.children(value) }
+                </ModalGlobalProvider>
+            </Router>
+        );
+    }
 
     handleRetry = () => {
-        this.setState({
-            createWalletPromise: pDelay(RETRY_DELAY).then(() => createIdmWallet()),
-        });
+        window.location.reload();
     };
 }
 
 Boot.propTypes = {
-    children: PropTypes.node,
+    promise: PropTypes.shape({
+        then: PropTypes.func.isRequired,
+        catch: PropTypes.func.isRequired,
+    }).isRequired,
+    timeout: PropTypes.number,
+    preventThrottling: PropTypes.bool,
+    children: PropTypes.func.isRequired,
+};
+
+Boot.defaultProps = {
+    timeout: 30000,
 };
 
 export default Boot;

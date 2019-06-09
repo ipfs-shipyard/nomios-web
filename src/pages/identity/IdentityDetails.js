@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connectIdmWallet } from 'react-idm-wallet';
 import { ModalTrigger, Avatar, Button, EditIcon } from '@nomios/web-uikit';
@@ -21,7 +21,7 @@ IdentityAttribute.propTypes = {
     value: PropTypes.string,
 };
 
-class IdentityDetails extends PureComponent {
+class IdentityDetails extends Component {
     render() {
         const { id, did, profileDetails } = this.props;
         const { name, image, dateOfBirth, nationality, address, gender } = profileDetails;

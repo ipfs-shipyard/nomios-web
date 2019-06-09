@@ -16,6 +16,11 @@ module.exports = {
                 overrideWebpackConfig: ({ webpackConfig }) => {
                     // Make react hooks work when libraries are linked: https://github.com/webpack/webpack/issues/8607
                     webpackConfig.resolve.alias.react = require.resolve('react');
+                    // Alias nextTick to setImmediate because of timers being throttled when background is inactive
+                    // This was making IPFS very slow
+                    // See: https://github.com/webpack/node-libs-browser/issues/92
+                    // See: https://github.com/ipfs/js-ipfs-bitswap/issues/196#issuecomment-502130902
+                    webpackConfig.resolve.alias['async/nextTick'] = require.resolve('async/setImmediate');
 
                     return webpackConfig;
                 },
@@ -91,8 +96,8 @@ module.exports = {
                             fs.realpathSync('node_modules/@nomios/web-uikit'),
                         ],
                         exclude: [
-                            fs.realpathSync('node_modules/@nomios/web-uikit/node_modules'),
-                        ],
+                            fs.existsSync('node_modules/@nomios/web-uikit/node_modules') && fs.realpathSync('node_modules/@nomios/web-uikit/node_modules'),
+                        ].filter(Boolean),
                         use: moduleCssRule.use,
                     };
 
