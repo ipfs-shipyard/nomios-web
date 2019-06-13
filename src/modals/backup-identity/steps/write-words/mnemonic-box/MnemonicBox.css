@@ -1,0 +1,40 @@
+@import "@nomios/web-uikit/styles/colors";
+
+.box {
+    width: 100%;
+
+    & .top,
+    & .bottom {
+        width: 100%;
+    }
+
+    & .top {
+        height: 16rem;
+        padding: 2rem;
+        display: flex;
+        flex-flow: column wrap;
+        background-color: var(--color-dawn-pink);
+
+        & .wordContainer {
+            margin-bottom: 0.8rem;
+
+            &:nth-child(4n+0) {
+                margin-bottom: 0;
+            }
+
+            & .number {
+                margin-right: 1.5rem;
+                opacity: 0.4;
+            }
+        }
+    }
+
+    & .bottom {
+        height: 6.5rem;
+        padding: 0 2rem;
+        display: flex;
+        align-items: center;
+        border: 0.1rem solid var(--color-dawn-pink);
+        background-color: var(--color-white);
+    }
+}
