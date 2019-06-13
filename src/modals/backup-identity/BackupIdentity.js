@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FlowModal, FlowModalStep } from '@nomios/web-uikit';
-import { Passphrase, PaperKey, WriteWords } from './steps';
+import { Passphrase, PaperKey, WriteWords, VerifyMnemonicWords } from './steps';
 import { connectIdmWallet } from 'react-idm-wallet';
 // import styles from './BackupIdentity.css';
 
@@ -33,11 +33,18 @@ class BackupIdentity extends Component {
                 <FlowModalStep id="write-words">
                     <WriteWords
                         mnemonic={ arrayMnemonic }
-                        nextStepId="verify-mnemonic"
+                        nextStepId="verify-mnemonic-words"
                         onNextStep={ this.handleNextStep } />
                 </FlowModalStep>
-                <FlowModalStep id="verify-mnemonic">
-                    <p>pedro</p>
+                <FlowModalStep id="verify-mnemonic-words">
+                    <VerifyMnemonicWords
+                        nextStepId="last"
+                        prevStepId="write-words"
+                        mnemonic={ arrayMnemonic }
+                        onNextStep={ this.handleNextStep } />
+                </FlowModalStep>
+                <FlowModalStep id="last">
+                    <p>Last</p>
                 </FlowModalStep>
             </FlowModal>
         );

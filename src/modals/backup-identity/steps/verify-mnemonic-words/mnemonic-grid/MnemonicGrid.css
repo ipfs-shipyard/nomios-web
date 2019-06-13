@@ -1,0 +1,16 @@
+.mnemonicGrid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    /* This pseudo-element is used to align the last row elements to the left */
+    &::after {
+        content: "";
+        flex: auto;
+    }
+
+    & .badge {
+        margin-bottom: 1.2rem;
+        margin-right: 1rem;
+    }
+}
