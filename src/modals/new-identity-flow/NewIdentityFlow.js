@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { connectIdmWallet } from 'react-idm-wallet';
 import { PromiseState } from 'react-promiseful';
 import { readAsArrayBuffer } from 'promise-file-reader';
-import { FlowModal, FlowModalStep, Button, TextButton } from '@nomios/web-uikit';
+import { FlowModal, FlowModalStep, Button, TextButton, withModalGlobal } from '@nomios/web-uikit';
 import GenericStep from './generic-step';
+import BackupIdentity from '../backup-identity';
 import { IdentityInfo, IdentityDevice as CreateIdentityDevice, Feedback } from './create-identity-steps';
 import {
     ImportManualRecovery,
@@ -22,6 +23,8 @@ const initialState = {
 
 class NewIdentityFlow extends Component {
     state = initialState;
+
+    createdIdentityId = undefined;
 
     render() {
         const { currentStepId } = this.state;
@@ -189,10 +192,14 @@ class NewIdentityFlow extends Component {
             };
         }
 
-        return createIdentity({
+        const identity = await createIdentity({
             profileDetails,
             deviceInfo,
         });
+
+        this.createdIdentityId = identity.getId();
+
+        return identity;
     }
 
     async importIdentity(data) {
@@ -200,6 +207,8 @@ class NewIdentityFlow extends Component {
 
         const mnemonic = this.state.data['import-manual-recovery'].mnemonic;
         const deviceInfo = data['import-identity-device'];
+
+        this.createdIdentityId = undefined;
 
         return importIdentity({
             mnemonic,
@@ -255,22 +264,30 @@ class NewIdentityFlow extends Component {
     };
 
     handleGoToBackupFlow = () => {
-        alert('Not yet implemented');
+        this.props.onRequestClose && this.props.onRequestClose();
     };
 
     handleExited = () => {
+        if (this.createdIdentityId) {
+            this.props.globalModal.openModal(<BackupIdentity id={ this.createdIdentityId } />);
+        }
+
         this.setState(initialState);
+        this.createdIdentityId = undefined;
         this.props.onExited && this.props.onExited();
     };
 }
 
 NewIdentityFlow.propTypes = {
     createIdentity: PropTypes.func.isRequired,
-    peekIdentity: PropTypes.func.isRequired,
     importIdentity: PropTypes.func.isRequired,
+    peekIdentity: PropTypes.func.isRequired,
+    globalModal: PropTypes.object.isRequired,
     onRequestClose: PropTypes.func,
     onExited: PropTypes.func,
 };
+
+const WrappedNewIdentityFlow = withModalGlobal(NewIdentityFlow);
 
 export default connectIdmWallet((idmWallet) => {
     const createIdentity = (params) => idmWallet.identities.create('ipid', params);
@@ -282,4 +299,4 @@ export default connectIdmWallet((idmWallet) => {
         peekIdentity,
         importIdentity,
     });
-})(NewIdentityFlow);
+})(WrappedNewIdentityFlow);
