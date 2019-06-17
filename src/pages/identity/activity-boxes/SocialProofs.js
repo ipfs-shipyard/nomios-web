@@ -120,16 +120,7 @@ SocialProofsBox.propTypes = {
 
 // For testing purposes only. In final version, have an empty object as a default
 SocialProofsBox.defaultProps = {
-    proofs: {
-        twitter: {
-            username: 'satazor',
-            status: 'approved',
-        },
-        github: {
-            username: 'satazor',
-            status: 'invalid',
-        },
-    },
+    proofs: {},
 };
 
 export default SocialProofsBox;
