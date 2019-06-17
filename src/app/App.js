@@ -5,7 +5,7 @@ import { Transition } from 'react-transition-group';
 import { Route, Switch } from 'react-router-dom';
 import Sidebar from './sidebar';
 import ErrorBoundary from './error-boundary';
-import WalletEnclave from '../shared/components/wallet-enclave';
+import WalletEnclave from './wallet-enclave';
 import SetupLocker from '../modals/setup-locker';
 import Home from '../pages/home';
 import Identity from '../pages/identity';

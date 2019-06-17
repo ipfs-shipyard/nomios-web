@@ -2,8 +2,8 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connectIdmWallet } from 'react-idm-wallet';
 import { PromiseState } from 'react-promiseful';
-import LockScreen from '../lock-screen';
-import ErrorScreen from '../error-screen';
+import LockScreen from '../../shared/components/lock-screen';
+import ErrorScreen from '../../shared/components/error-screen';
 
 class WalletEnclave extends Component {
     state = {
