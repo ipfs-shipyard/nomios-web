@@ -1,23 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connectIdmWallet } from 'react-idm-wallet';
 import { Svg } from '@nomios/web-uikit';
 import GenericItem from './shared/GenericItem';
 import GenericList from './shared/GenericList';
-import appIcon from '../../../shared/media/backgrounds/background-pattern-1440p.png';
 import styles from './Apps.css';
 
 const globeSvg = import(/* webpackChunkName: "svg-illustrations-sprite" */ '../../../shared/media/illustrations/globe.svg');
 
-function iconFromApptype() {
+function iconFromApptype(url) {
     return (
-        <div className={ styles.appIcon } style={ { backgroundImage: `url(${appIcon})` } } />
+        <div className={ styles.appIcon } style={ { backgroundImage: `url(${url})` } } />
     );
 }
 
 const AppItem = (props) => {
     const { app, ...rest } = props;
 
-    const appIcon = iconFromApptype();
+    const appIcon = app.iconUrl ? iconFromApptype(app.iconUrl) : null;
 
     return (
         <GenericItem
@@ -58,4 +58,6 @@ AppsBox.propTypes = {
     apps: PropTypes.array,
 };
 
-export default AppsBox;
+export default connectIdmWallet((idmWallet) => (ownProps) => ({
+    apps: idmWallet.identities.get(ownProps.id).apps.list(),
+}))(AppsBox);

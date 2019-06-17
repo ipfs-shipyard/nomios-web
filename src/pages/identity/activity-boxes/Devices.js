@@ -11,7 +11,7 @@ function deviceDataFromId(id) {
 }
 
 function statusFromDeviceStatus(device) {
-    if (device.privateKey) {
+    if (device.keyMaterial.privateKeyPem) {
         return {
             text: 'Current',
             class: 'current',

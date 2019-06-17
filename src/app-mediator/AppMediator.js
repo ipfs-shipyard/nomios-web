@@ -24,7 +24,7 @@ class AppMediator extends Component {
     }
 
     render() {
-        const { locked/* , pristine*/ } = this.state;
+        const { locked /* , pristine*/ } = this.state;
 
         return (
             <Fragment>
