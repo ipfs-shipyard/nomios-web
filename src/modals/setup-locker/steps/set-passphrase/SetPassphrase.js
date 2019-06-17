@@ -116,6 +116,7 @@ class SetPassphrase extends Component {
                                     return (
                                         <TextInput
                                             { ...input }
+                                            type="passphrase"
                                             label="Enter Passphrase"
                                             placeholder="Enter your passphrase"
                                             helperText="You may use any characters, including spaces"
