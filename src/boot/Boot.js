@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { PromiseState } from 'react-promiseful';
 import { CSSTransition } from 'react-transition-group';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { ModalGlobalProvider } from '@nomios/web-uikit';
 import ErrorScreen from '../shared/components/error-screen';
 import LoadingScreen from '../shared/components/loading-screen';
 import styles from './Boot.css';
@@ -85,9 +84,7 @@ class Boot extends Component {
     renderSuccess(value) {
         return (
             <Router>
-                <ModalGlobalProvider>
-                    { this.props.children(value) }
-                </ModalGlobalProvider>
+                { this.props.children(value) }
             </Router>
         );
     }
