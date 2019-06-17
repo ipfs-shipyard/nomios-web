@@ -9,6 +9,7 @@ import ErrorScreen from './error-screen';
 import LoadingScreen from './loading-screen';
 import LockScreen from './lock-screen';
 import ActivityDetector from './activity-detector';
+import { ModalGlobalProvider } from '@nomios/web-uikit';
 import styles from './Boot.css';
 
 const RETRY_DELAY = 1700;
@@ -84,18 +85,20 @@ class Boot extends Component {
     renderSuccess(idmWallet) {
         return (
             <IdmWalletProvider idmWallet={ idmWallet }>
-                <LockScreen />
-                <ActivityDetector />
+                <ModalGlobalProvider>
+                    <LockScreen />
+                    <ActivityDetector />
 
-                <PromiseState promise={ this.state.loadWalletPromise }>
-                    { ({ status, value }) => {
-                        switch (status) {
-                        case 'fulfilled': return cloneElement(this.props.children, { className: styles.successScreen });
-                        case 'rejected': return this.renderError(value);
-                        default: return null;
-                        }
-                    } }
-                </PromiseState>
+                    <PromiseState promise={ this.state.loadWalletPromise }>
+                        { ({ status, value }) => {
+                            switch (status) {
+                            case 'fulfilled': return cloneElement(this.props.children, { className: styles.successScreen });
+                            case 'rejected': return this.renderError(value);
+                            default: return null;
+                            }
+                        } }
+                    </PromiseState>
+                </ModalGlobalProvider>
             </IdmWalletProvider>
         );
     }
