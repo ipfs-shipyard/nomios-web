@@ -7,7 +7,7 @@ import Lottie from 'lottie-react-web';
 import ReactModal from 'react-modal';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { PromiseState, getPromiseState } from 'react-promiseful';
-import { connectIdmWallet } from 'react-idm-wallet';
+import ActivityDetector from './ActivityDetector';
 import unlockAnimationData from './unlock-animation.json';
 import styles from './LockScreen.css';
 
@@ -65,53 +65,58 @@ class LockScreen extends Component {
     };
 
     render() {
+        const { restartIdleTimer } = this.props;
         const { in: in_, promise, passphrase, startLogoAnimation } = this.state;
 
         return (
-            <ReactModal
-                isOpen={ in_ }
-                closeTimeoutMS={ lockScreenTimeout.exit }
-                className={ styles.modal }
-                onAfterClose={ this.handleModalClose }
-                overlayClassName={ styles.modalOverlay }
-                portalClassName={ styles.modalPortal }
-                bodyOpenClassName={ styles.modalBodyOpen }>
-                <CSSTransition classNames={ lockScreenTransitionClassNames } in={ in_ } appear timeout={ lockScreenTimeout }>
-                    <div className={ styles.lockScreen } onClick={ this.handleMouseClick }>
-                        <div className={ styles.background } />
-                        <div className={ styles.content }>
-                            <div className={ styles.logo }>
-                                <Lottie options={ unlockAnimationOptions } isStopped={ !startLogoAnimation } />
-                            </div>
-                            <h2 className={ styles.unlockTitle }>Unlock Nomios</h2>
-                            <p className={ styles.unlockHint } onTransitionEnd={ this.handleTransitionEnd }>
-                                Enter your passphrase to unlock Nomios and get access to all your data
-                            </p>
+            <Fragment>
+                { restartIdleTimer ? <ActivityDetector onDetect={ restartIdleTimer } /> : null }
+                <ReactModal
+                    isOpen={ in_ }
+                    closeTimeoutMS={ lockScreenTimeout.exit }
+                    className={ styles.modal }
+                    onAfterClose={ this.handleModalClose }
+                    overlayClassName={ styles.modalOverlay }
+                    portalClassName={ styles.modalPortal }
+                    bodyOpenClassName={ styles.modalBodyOpen }>
+                    <CSSTransition classNames={ lockScreenTransitionClassNames } in={ in_ } appear timeout={ lockScreenTimeout }>
+                        <div className={ styles.lockScreen } onClick={ this.handleMouseClick }>
+                            <div className={ styles.background } />
+                            <div className={ styles.content }>
+                                <div className={ styles.logo }>
+                                    <Lottie options={ unlockAnimationOptions } isStopped={ !startLogoAnimation } />
+                                </div>
+                                <h2 className={ styles.unlockTitle }>Unlock Nomios</h2>
+                                <p className={ styles.unlockHint } onTransitionEnd={ this.handleTransitionEnd }>
+                                    Enter your passphrase to unlock Nomios and get access to all your data
+                                </p>
 
-                            <PromiseState
-                                promise={ promise }
-                                onSettle={ this.handlePromiseSettle }>
-                                { ({ status }) => (
-                                    <Fragment>
-                                        <input
-                                            type="password"
-                                            className={ styles.passphraseInput }
-                                            ref={ this.storePassphraseInputRef }
-                                            value={ passphrase }
-                                            onKeyDown={ this.handleInputKeyDown }
-                                            onChange={ this.handleInputChange }
-                                            onBlur={ this.handleInputBlur } />
-                                        { this.renderPasswordDots(status) }
-                                        <p className={ classNames(styles.errorMessage, status === 'rejected' && styles.show) }>
-                                            The passphrase you entered does not match the saved passphrase. Please try again.
-                                        </p>
-                                    </Fragment>
-                                ) }
-                            </PromiseState>
+                                <PromiseState
+                                    promise={ promise }
+                                    onSettle={ this.handlePromiseSettle }>
+                                    { ({ status, value }) => (
+                                        <Fragment>
+                                            <input
+                                                type="password"
+                                                className={ styles.passphraseInput }
+                                                ref={ this.storePassphraseInputRef }
+                                                value={ passphrase }
+                                                onKeyDown={ this.handleInputKeyDown }
+                                                onChange={ this.handleInputChange }
+                                                onBlur={ this.handleInputBlur } />
+                                            { this.renderPasswordDots(status) }
+                                            <p className={ classNames(styles.errorMessage, status === 'rejected' && styles.show) }>
+                                                { status === 'rejected' && value.code === 'UNLOCK_INPUT_MISMATCH' ? 'The passphrase you entered does not match the saved passphrase. Please try again.' : null }
+                                                { status === 'rejected' && value.code !== 'UNLOCK_INPUT_MISMATCH' ? value.message : null }
+                                            </p>
+                                        </Fragment>
+                                    ) }
+                                </PromiseState>
+                            </div>
                         </div>
-                    </div>
-                </CSSTransition>
-            </ReactModal>
+                    </CSSTransition>
+                </ReactModal>
+            </Fragment>
         );
     }
 
@@ -167,7 +172,7 @@ class LockScreen extends Component {
 
         const promise = Promise.all([
             pDelay(MINIMUM_UNLOCK_ANIMATION_DURATION),
-            this.props.unlock('passphrase', this.state.passphrase).then(() => this.props.load()),
+            this.props.unlock('passphrase', this.state.passphrase),
         ]);
 
         this.setState({ promise });
@@ -184,7 +189,7 @@ class LockScreen extends Component {
     handlePromiseSettle = ({ status }) => {
         if (status === 'fulfilled') {
             this.setState({
-                in: this.props.locked,
+                in: false,
             });
         }
     };
@@ -249,16 +254,7 @@ class LockScreen extends Component {
 LockScreen.propTypes = {
     locked: PropTypes.bool,
     unlock: PropTypes.func.isRequired,
-    load: PropTypes.func.isRequired,
+    restartIdleTimer: PropTypes.func,
 };
 
-export default connectIdmWallet((idmWallet) => {
-    const unlock = (type, input) => idmWallet.locker.getLock(type).unlock(input);
-    const load = () => idmWallet.identities.load().catch(() => {}); // Error is being displayed underneath
-
-    return () => ({
-        locked: idmWallet.locker.isLocked(),
-        unlock,
-        load,
-    });
-})(LockScreen);
+export default LockScreen;

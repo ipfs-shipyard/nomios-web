@@ -2,22 +2,53 @@ import './index.css';
 import React from 'react';
 import { render } from 'react-dom';
 import ReactModal from 'react-modal';
-import { setAppElement } from '@nomios/web-uikit';
+import { setAppElement, ModalGlobalProvider } from '@nomios/web-uikit';
+import { IdmWalletProvider } from 'react-idm-wallet';
+import { hasParent, createMediatorSide, createWalletSide } from 'idm-bridge-postmsg';
 import App from './app';
+import AppMediator from './app-mediator';
 import Boot from './boot';
-import * as serviceWorker from './serviceWorker';
 
-ReactModal.setAppElement('#root');
-setAppElement('#root');
+const renderApp = (rootEl) => {
+    const createIdmWallet = async () => {
+        const createIdmWallet = await import(/* webpackChunkName: "idm-wallet" */ 'idm-wallet');
+        const idmWallet = await createIdmWallet.default();
 
-render(
-    <Boot>
-        <App />
+        createWalletSide(idmWallet);
+
+        return idmWallet;
+    };
+
+    return render(
+        <Boot promise={ createIdmWallet() }>
+            { (idmWallet) => (
+                <IdmWalletProvider idmWallet={ idmWallet }>
+                    <ModalGlobalProvider>
+                        <App />
+                    </ModalGlobalProvider>
+                </IdmWalletProvider>
+            ) }
+        </Boot>,
+        rootEl,
+    );
+};
+
+const renderAppMediator = (rootEl) => render(
+    <Boot promise={ createMediatorSide() }>
+        { (mediatorSide) => (
+            <AppMediator mediatorSide={ mediatorSide } />
+        ) }
     </Boot>,
-    document.getElementById('root')
+    rootEl,
 );
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+const rootEl = document.getElementById('root');
+
+ReactModal.setAppElement(rootEl);
+setAppElement(rootEl);
+
+if (hasParent()) {
+    renderAppMediator(rootEl);
+} else {
+    renderApp(rootEl);
+}

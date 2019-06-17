@@ -18,7 +18,7 @@ class ActivityBox extends Component {
                         icon={ <ArrowRightIcon className={ styles.arrow } /> }
                         iconPosition="left"
                         onClick={ onClick }>
-                        {title}
+                        { title }
                     </TextButton>
                 </div>
                 <div className={ styles.activityBlock }>
@@ -30,8 +30,8 @@ class ActivityBox extends Component {
 }
 
 ActivityBox.propTypes = {
-    title: PropTypes.string,
-    children: PropTypes.node,
+    title: PropTypes.string.isRequired,
+    children: PropTypes.node.isRequired,
     onClick: PropTypes.func,
 };
 

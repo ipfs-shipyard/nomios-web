@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { findDOMNode } from 'react-dom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { Form, Field } from 'react-final-form';
@@ -95,12 +94,6 @@ class SetPassphrase extends Component {
         promise: undefined,
     };
 
-    componentDidMount() {
-        findDOMNode(this)
-        .querySelector('input')
-        .focus();
-    }
-
     render() {
         const { promise } = this.state;
         const { validatePassphrase } = this.props;
@@ -129,6 +122,7 @@ class SetPassphrase extends Component {
                                             lineType="dashed"
                                             lineStrength={ lineStrength }
                                             feedback={ feedback }
+                                            autoFocus
                                             className={ styles.passphraseInput } />
                                     );
                                 } }

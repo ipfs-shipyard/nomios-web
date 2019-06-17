@@ -25,12 +25,12 @@ class FadeContainer extends Component {
 
     render() {
         const { activeIndex, requestNextActiveIndex } = this.state;
-        const { children } = this.props;
+        const { children, className } = this.props;
 
         const isVisible = typeof requestNextActiveIndex === 'boolean';
 
         return (
-            <div className={ classNames(styles.content, isVisible && styles.visible) }
+            <div className={ classNames(styles.content, isVisible && styles.visible, className) }
                 ref={ this.contentRef }
                 onTransitionEnd={ this.handleTransitionEnd }>
                 { children[activeIndex] }
@@ -54,8 +54,9 @@ class FadeContainer extends Component {
 }
 
 FadeContainer.propTypes = {
-    activeIndex: PropTypes.number,
     children: PropTypes.node.isRequired,
+    activeIndex: PropTypes.number,
+    className: PropTypes.string,
 };
 
 FadeContainer.defaultProps = {

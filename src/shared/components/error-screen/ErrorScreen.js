@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import SlideDown from 'react-slidedown';
 import { Svg, Button, TextButton, WarningIcon } from '@nomios/web-uikit';
-import styles from './Error.css';
+import styles from './ErrorScreen.css';
 
 const fadingLogoSvg = import(/* webpackChunkName: "svg-illustrations-sprite" */ '../../media/illustrations/brand-fading-symbol.svg');
 
-class Error extends Component {
+class ErrorScreen extends Component {
     state = {
         showingDetails: false,
     };
@@ -17,7 +17,7 @@ class Error extends Component {
         const { showingDetails } = this.state;
 
         return (
-            <div className={ classNames(styles.error, className) }>
+            <div className={ classNames(styles.errorScreen, className) }>
                 <div className={ styles.wrapper }>
                     <Svg svg={ fadingLogoSvg } className={ styles.illustration } />
 
@@ -81,11 +81,11 @@ class Error extends Component {
     };
 }
 
-Error.propTypes = {
+ErrorScreen.propTypes = {
     text: PropTypes.string.isRequired,
     error: PropTypes.shape({ message: PropTypes.string.isRequired, code: PropTypes.string }).isRequired,
     onRetry: PropTypes.func.isRequired,
     className: PropTypes.string,
 };
 
-export default Error;
+export default ErrorScreen;

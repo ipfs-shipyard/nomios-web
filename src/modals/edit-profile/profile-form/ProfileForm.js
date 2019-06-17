@@ -34,7 +34,7 @@ class ProfileForm extends Component {
     render() {
         const { promise, image, profileDetails } = this.state;
 
-        const initialValues = omit(profileDetails, '@context', '@type', 'image');
+        const initialValues = omit(profileDetails, '@context', '@type', 'identifier', 'image');
 
         return (
             <Form

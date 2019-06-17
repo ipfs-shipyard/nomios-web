@@ -38,9 +38,7 @@
         opacity: 0;
     }
 
-    & .loadingScreen,
-    & .errorScreen,
-    & .successScreen {
+    & > * {
         flex: 1 0 auto;
     }
 }
