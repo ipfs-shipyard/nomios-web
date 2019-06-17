@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import PdfBox from './pdf-box';
 import PdfActionItem from './pdf-action-item';
-import { BellIcon, DownloadIcon, TextButton, EditIcon, Button } from '@nomios/web-uikit';
+import { PrintIcon, DownloadIcon, TextButton, EditIcon, Button } from '@nomios/web-uikit';
 import styles from './PaperKey.css';
 
 class PaperKey extends Component {
@@ -20,7 +20,7 @@ class PaperKey extends Component {
                         </PdfActionItem>
                         <PdfActionItem
                             onClick={ this.handlePrintClick }
-                            icon={ <BellIcon className={ styles.icon } /> }>
+                            icon={ <PrintIcon className={ styles.icon } /> }>
                             Print
                         </PdfActionItem>
                     </div>

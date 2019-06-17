@@ -21,7 +21,7 @@ class Feedback extends Component {
                     You have already backed up your identity before. This identity is totally secure.
                 </p>
                 <div className={ styles.buttonsWrapper } onClick={ onRequestClose }>
-                    <Button className={ styles.button }>{ isBackedup ? 'Close' : 'Start using the app' }</Button>
+                    <Button className={ styles.button }>{ isBackedup ? 'Close' : 'Go to app' }</Button>
                 </div>
             </div>
         );

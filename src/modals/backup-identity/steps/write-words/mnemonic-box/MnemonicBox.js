@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import memoizeOne from 'memoize-one';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { TextButton, EditIcon } from '@nomios/web-uikit';
+import { TextButton, CopyIcon } from '@nomios/web-uikit';
 import styles from './MnemonicBox.css';
 
 class MnemonicBox extends Component {
@@ -23,7 +23,7 @@ class MnemonicBox extends Component {
                         <TextButton
                             variant="small"
                             iconPosition="left"
-                            icon={ <EditIcon /> }>
+                            icon={ <CopyIcon /> }>
                             { copied ? 'Copied!' : 'Copy to clipboard' }
                         </TextButton>
                     </CopyToClipboard>
