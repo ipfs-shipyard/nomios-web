@@ -24,7 +24,8 @@ class AutomaticRecovery extends Component {
                         <TextButton
                             className={ styles.textButton }
                             iconPosition="left"
-                            icon={ importIcon }>Browse or drag file</TextButton>
+                            icon={ importIcon }
+                            onClick={ this.handleFileSelection }>Browse or drag file</TextButton>
                     </div>
                 </div>
                 <div className={ styles.advance }>
@@ -50,6 +51,10 @@ class AutomaticRecovery extends Component {
         const { secondaryStepId } = this.props;
 
         this.props.onNextStep(secondaryStepId);
+    };
+
+    handleFileSelection = () => {
+        alert('Feature not yet implemented');
     };
 }
 
