@@ -45,10 +45,10 @@ class IdentityActivity extends Component {
                     <DevicesBox id={ id } />
                 </ActivityBox>
                 <ActivityBox title="My Social Proofs" onClick={ this.handleMySocialProofs }>
-                    <SocialProofsBox />
+                    <SocialProofsBox id={ id } />
                 </ActivityBox>
                 <ActivityBox title="My Apps" onClick={ this.handleMyApps }>
-                    <AppsBox />
+                    <AppsBox id={ id } />
                 </ActivityBox>
             </div>
         );

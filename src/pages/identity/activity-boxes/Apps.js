@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connectIdmWallet } from 'react-idm-wallet';
 import { Svg } from '@nomios/web-uikit';
 import GenericItem from './shared/GenericItem';
 import GenericList from './shared/GenericList';
@@ -58,4 +59,6 @@ AppsBox.propTypes = {
     apps: PropTypes.array,
 };
 
-export default AppsBox;
+export default connectIdmWallet((idmWallet) => (ownProps) => ({
+    apps: idmWallet.identities.get(ownProps.id).apps.list(),
+}))(AppsBox);
