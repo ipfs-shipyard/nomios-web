@@ -40,7 +40,7 @@ class Authenticate extends Component {
                             <div className={ styles.illustration }>
                                 <RequestInfoIllustration name={ app.name } iconUrl={ app.iconUrl } />
                             </div>
-                            <h2 className={ styles.title }>{ app.name } wants to authenticate you.</h2>
+                            <h2 className={ styles.title }>This app wants to authenticate you.</h2>
                             { noIdentities ? this.renderNoIdentitiesHelperText() : this.renderInfoDetailsContainer() }
                             { noIdentities ? this.renderCreateIdentityButton() : this.renderAuthenticationButtons() }
                         </Fragment>
