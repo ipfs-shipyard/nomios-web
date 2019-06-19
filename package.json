@@ -31,7 +31,7 @@
     "classnames": "^2.2.6",
     "delay": "^4.2.0",
     "final-form": "^4.12.0",
-    "idm-bridge-postmsg": "^0.2.6",
+    "idm-bridge-postmsg": "^0.2.7",
     "idm-wallet": "^0.4.1",
     "lottie-react-web": "^2.1.4",
     "memoize-one": "^5.0.4",
