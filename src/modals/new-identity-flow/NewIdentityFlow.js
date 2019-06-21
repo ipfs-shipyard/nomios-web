@@ -25,6 +25,7 @@ const initialState = {
 class NewIdentityFlow extends Component {
     state = initialState;
 
+    goToBackupFlow = false;
     createdIdentityId = undefined;
 
     render() {
@@ -271,15 +272,17 @@ class NewIdentityFlow extends Component {
     };
 
     handleGoToBackupFlow = () => {
+        this.goToBackupFlow = true;
         this.props.onRequestClose && this.props.onRequestClose();
     };
 
     handleExited = () => {
-        if (this.createdIdentityId) {
+        if (this.goToBackupFlow) {
             this.props.globalModal.openModal(<BackupIdentity id={ this.createdIdentityId } />);
         }
 
         this.setState(initialState);
+        this.goToBackupFlow = false;
         this.createdIdentityId = undefined;
         this.props.onExited && this.props.onExited();
     };
