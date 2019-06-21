@@ -1,25 +1,31 @@
-import React, { Fragment, Component } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { Logo, TextButton, EditIcon, Button } from '@nomios/web-uikit';
+import { Link } from 'react-router-dom';
 import RequestInfoIllustration from './request-info-illustration';
 import IdentitySelector from './identity-selector';
-import Feedback from './feedback';
 import FadeContainer from '../../shared/components/fade-container';
 import credentialScopes from './credentialScopes';
 import backgroundPatternUrl from '../../shared/media/backgrounds/background-pattern-1440p.png';
 import styles from './Authenticate.css';
 
 const MOCKED_CREDENTIAL_SCOPES = ['personalDetails', 'socialProofs'];
+const INITIAL_VALUE_INDEX = 0;
 
 class Authenticate extends Component {
-    state = {
-        activeStepId: 0,
-    };
+    state = { activeFeedbackStepId: 0 };
 
     selectedIdentityId = undefined;
 
+    constructor(props) {
+        super(props);
+
+        this.selectedIdentityId = props.identities.length > 0 && props.identities[INITIAL_VALUE_INDEX].id;
+    }
+
     render() {
-        const { activeStepId } = this.state;
+        const { activeFeedbackStepId } = this.state;
         const { identities, app } = this.props;
         const noIdentities = !identities || identities.length === 0;
 
@@ -27,14 +33,15 @@ class Authenticate extends Component {
             <div className={ styles.container }>
                 <div className={ styles.background } style={ { backgroundImage: `url(${backgroundPatternUrl})` } } />
                 <div className={ styles.infoContainer }>
-                    <FadeContainer activeIndex={ activeStepId }>
-                        <Fragment>
+                    <FadeContainer className={ styles.fadeContainer } activeIndex={ activeFeedbackStepId }>
+                        <>
                             <div className={ styles.header }>
                                 <Logo className={ styles.logo } variant="symbol" />
                                 { !noIdentities && (
                                     <IdentitySelector
+                                        identities={ this.props.identities }
                                         onChange={ this.handleIdentityChange }
-                                        identities={ this.props.identities } />
+                                        initialValueId={ this.props.identities[INITIAL_VALUE_INDEX].id } />
                                 ) }
                             </div>
                             <div className={ styles.illustration }>
@@ -43,11 +50,10 @@ class Authenticate extends Component {
                             <h2 className={ styles.title }>This app wants to authenticate you.</h2>
                             { noIdentities ? this.renderNoIdentitiesHelperText() : this.renderInfoDetailsContainer() }
                             { noIdentities ? this.renderCreateIdentityButton() : this.renderAuthenticationButtons() }
-                        </Fragment>
-                        <Feedback
-                            status="pending"
-                            credentialScopes={ MOCKED_CREDENTIAL_SCOPES }
-                            onRetry={ this.handleRetryAuthentication } />
+                        </>
+                        <div className={ styles.feedbackContainer }>
+                            <h2 className={ styles.title }>Please wait for the authentication…</h2>
+                        </div>
                     </FadeContainer>
                 </div>
             </div>
@@ -88,9 +94,13 @@ class Authenticate extends Component {
 
     renderCreateIdentityButton() {
         return (
-            <div className={ styles.singleButtonContainer }>
-                <Button variant="negative" onClick={ this.handleCreateIdentity }>Create identity</Button>
-            </div>
+            <Link
+                to="/?action=create-identity"
+                target="_blank"
+                className={ classNames(styles.link, styles.singleButtonContainer) }
+                rel="noopener">
+                <Button variant="negative">Create identity</Button>
+            </Link>
         );
     }
 
@@ -110,10 +120,9 @@ class Authenticate extends Component {
     };
 
     handleAllowAuthentication = () => {
+        this.setState({ activeFeedbackStepId: 1 });
         this.props.onAccept(this.selectedIdentityId);
     };
-
-    handleCreateIdentity = () => console.log('Create identity');
 
     handleRetryAuthentication = () => this.handleAllowAuthentication();
 

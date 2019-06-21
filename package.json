@@ -42,6 +42,7 @@
     "p-timeout": "^3.1.0",
     "pify": "^4.0.1",
     "promise-file-reader": "^1.0.2",
+    "query-string": "^6.7.0",
     "react": "^16.8.4",
     "react-copy-to-clipboard": "^5.0.1",
     "react-device-detect": "^1.6.2",

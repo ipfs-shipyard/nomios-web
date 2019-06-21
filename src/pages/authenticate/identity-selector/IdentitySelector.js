@@ -7,37 +7,23 @@ import { Dropdown, Avatar, ChevronIcon, TypeOption, PlusIcon } from '@nomios/web
 import styles from './IdentitySelector.css';
 
 const DEFAULT_SELECTED_INDEX = 0;
-const getIdentities = memoizeOne((list) =>
-    list.reduce((acc, identity) => Object.assign(acc, { [identity.id]: identity.profileDetails }), {})
-);
 
 class IdentitySelector extends Component {
-    static getDerivedStateFromProps(props) {
-        return {
-            identities: getIdentities(props.identities),
-        };
-    }
-
-    state = { identities: undefined };
-
-    createOptions = null;
     selectedValue = null;
+    createOptions = null;
+    findIdentity = null;
 
     constructor(props) {
         super(props);
 
-        // this.selectedValue = Object.keys(props.identities)[DEFAULT_SELECTED_INDEX];
-        this.selectedValue = props.identities[DEFAULT_SELECTED_INDEX].id;
+        this.selectedValue = props.initialValueId ? props.initialValueId : props.identities[DEFAULT_SELECTED_INDEX].id;
         this.createOptions = memoizeOne(this.createOptionsArray);
-    }
-
-    componentDidMount() {
-        // Call onChange to inform parent of intial selected value
-        this.props.onChange && this.props.onChange(this.selectedValue);
+        this.findIdentity = memoizeOne(this.findIdentityObject);
     }
 
     render() {
-        const options = this.createOptions(this.state.identities);
+        const { identities } = this.props;
+        const { options, defaultOption } = this.createOptions(identities);
 
         return (
             <div className={ styles.dropdownContainer }>
@@ -46,16 +32,16 @@ class IdentitySelector extends Component {
                     arrowPlacement="right"
                     menuClassName={ styles.menu }
                     onChange={ this.handleChange }
+                    defaultValue={ defaultOption }
                     controlClassName={ styles.control }
                     menuListClassName={ styles.menuList }
-                    renderTrigger={ this.renderCustomTrigger }
-                    defaultValue={ options[DEFAULT_SELECTED_INDEX + 1] } />
+                    renderTrigger={ this.renderCustomTrigger } />
             </div>
         );
     }
 
     renderCustomTrigger = ({ menuIsOpen }) => {
-        const { image, name } = this.state.identities[this.selectedValue];
+        const { image, name } = this.findIdentity(this.selectedValue).profileDetails;
         const chevronClasses = classNames(styles.chevron, menuIsOpen && styles.up);
 
         return (
@@ -67,17 +53,13 @@ class IdentitySelector extends Component {
     };
 
     renderOption = ({ isFocused, data }) => {
-        const identity = this.state.identities[data.value];
+        const { name, image } = this.findIdentity(data.value).profileDetails;
         const optionClassNames = classNames(styles.option, isFocused && styles.focused);
 
         return (
             <div className={ optionClassNames } >
-                <Avatar
-                    image={ identity.image }
-                    name={ identity.name }
-                    className={ styles.avatar }
-                    animateOnEnter={ false } />
-                <span className={ styles.name }>{ identity.name }</span>
+                <Avatar image={ image } name={ name } className={ styles.avatar } animateOnEnter={ false } />
+                <span className={ styles.name }>{ name }</span>
             </div>
         );
     };
@@ -86,7 +68,11 @@ class IdentitySelector extends Component {
         const optionClassNames = classNames(styles.option, isFocused && styles.focused);
 
         return (
-            <Link to="/" target="_blank" className={ styles.link }>
+            <Link
+                to="/?action=create-identity"
+                rel="noopener"
+                target="_blank"
+                className={ styles.link }>
                 <div className={ optionClassNames }>
                     <TypeOption selectable={ false } className={ styles.typeOption }>
                         <PlusIcon />
@@ -97,13 +83,29 @@ class IdentitySelector extends Component {
         );
     };
 
+    findIdentityObject = (id) => this.props.identities.find((identity) => identity.id === id);
+
     createOptionsArray = (identities) => {
+        let defaultOption;
         const createIdentityOption = { value: 'createCta', render: this.renderCreateIdentityOption };
-        const options = Object.keys(identities).map((key) => ({ value: key, render: this.renderOption }));
+
+        const options = identities.map((identity) => {
+            const option = { value: identity.id, render: this.renderOption };
+            const initialValueId = this.props.initialValueId ? this.props.initialValueId : identities[DEFAULT_SELECTED_INDEX].id;
+
+            if (identity.id === initialValueId) {
+                defaultOption = option;
+            }
+
+            return option;
+        });
 
         options.unshift(createIdentityOption);
 
-        return options;
+        return {
+            defaultOption: !defaultOption ? options[DEFAULT_SELECTED_INDEX + 1] : defaultOption,
+            options,
+        };
     };
 
     handleChange = ({ value }) => {
@@ -112,12 +114,11 @@ class IdentitySelector extends Component {
             this.props.onChange && this.props.onChange(value);
         }
     };
-
-    handleCreateIdentity = () => console.log('CREATE IDENTITY');
 }
 
 IdentitySelector.propTypes = {
     identities: PropTypes.array.isRequired,
+    initialValueId: PropTypes.string,
     onChange: PropTypes.func,
 };
 

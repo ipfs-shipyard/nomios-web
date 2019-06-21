@@ -21,6 +21,12 @@
         & .icon {
             height: 4.5rem;
         }
+
+        & span {
+            max-width: 18rem;
+            text-align: center;
+            word-wrap: break-word;
+        }
     }
 
     & .arrow {
