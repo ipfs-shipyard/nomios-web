@@ -21,7 +21,7 @@ const Pristine = ({ app }) => (
                 It looks like that you&apos;ve never used Nomios before, you must setup Nomios and create your first identity.
             </p>
             <Link
-                to="/?action=create-identity"
+                to="/"
                 target="_blank"
                 className={ styles.buttonContainer }
                 rel="noopener">
