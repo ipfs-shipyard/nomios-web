@@ -18,6 +18,7 @@
     & .globeSvg {
         height: 15rem;
         align-self: flex-end;
+        opacity: 0.8;
         fill: var(--color-armadillo);
 
         & :global path.globe__globe_orbs {
