@@ -1,0 +1,21 @@
+@import "@nomios/web-uikit/styles/colors";
+
+.typeOption {
+    & label {
+        color: var(--color-white);
+
+        & span {
+            max-width: 18rem;
+            text-align: center;
+            word-wrap: break-word;
+        }
+    }
+
+    & div {
+        background-color: var(--color-white);
+    }
+
+    & .icon {
+        height: 4.5rem;
+    }
+}
