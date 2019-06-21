@@ -6,7 +6,7 @@ const THROTTLE_TIME = 10000;
 const EVENT_LISTENERS_OPTIONS = { capture: true, passive: true };
 
 const ActivityDetector = ({ onDetect }) => {
-    onDetect = useMemo(() => throttle(() => onDetect, THROTTLE_TIME), [onDetect]);
+    onDetect = useMemo(() => throttle(onDetect, THROTTLE_TIME), [onDetect]);
 
     useEffect(() => {
         document.addEventListener('keydown', onDetect, EVENT_LISTENERS_OPTIONS);

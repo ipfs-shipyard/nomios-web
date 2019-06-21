@@ -78,7 +78,7 @@ WalletEnclave.defaultProps = {
 export default connectIdmWallet((idmWallet) => {
     const alreadyLoaded = idmWallet.identities.isLoaded();
     const load = () => idmWallet.identities.load();
-    const restartIdleTimer = () => idmWallet.locker.idleTimer.restartIdleTimer();
+    const restartIdleTimer = () => idmWallet.locker.idleTimer.restart();
     const unlock = async (type, input) => {
         await idmWallet.locker.getLock(type).unlock(input);
         await idmWallet.identities.load().catch(() => {}); // Error is being displayed underneath
