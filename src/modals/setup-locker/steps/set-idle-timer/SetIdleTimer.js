@@ -25,7 +25,7 @@ class SetIdleTimer extends Component {
         return (
             <div className={ styles.contentWrapper }>
                 <h2 className={ styles.title }>Setup expiration time.</h2>
-                <p>You may tweak the amount of time you are ablo to use
+                <p>You may tweak the amount of time you are able to use
                  the app before it locks again. You can go have a coffee without any worries.</p>
                 <div className={ styles.idlePicker } onKeyUp={ this.handleIdlePickerKeyUp }>
                     <IdlePicker defaultValue={ timeoutValue } onChange={ this.handlePickerChange } />
