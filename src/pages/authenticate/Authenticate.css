@@ -34,7 +34,7 @@
     }
 
     & .infoContainer {
-        min-width: 62rem;
+        width: 62rem;
         min-height: 70rem;
         z-index: 20;
         overflow-y: scroll;
