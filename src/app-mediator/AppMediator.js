@@ -60,17 +60,12 @@ class AppMediator extends Component {
         );
     }
 
-    promptUnlock = async ({ pristine, unlockFn }) => {
-        const mockedApp = {
-            name: 'Peerpad',
-            iconUrl: 'https://i.imgur.com/ZMAMFHY.png',
-        };
-
+    promptUnlock = async ({ app, pristine, unlockFn }) => {
         this.prompt = {
             pristine,
             unlockFn,
+            app,
             response: pDefer(),
-            app: mockedApp,
         };
 
         this.setState({ pristine, locked: !pristine });
