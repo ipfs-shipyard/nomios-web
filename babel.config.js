@@ -10,6 +10,12 @@ module.exports = (api) => {
         modules: false,
         react: true,
         loose: false, // Need this to be false, otherwise bip39 library fails
-        targets: ['browsers'],
+        targets: {
+            browsers: [
+                'last 2 Chrome versions',
+                'last 2 Firefox versions',
+                'last 2 Edge versions',
+            ],
+        },
     });
 };
