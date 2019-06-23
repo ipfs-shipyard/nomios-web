@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import memoizeOne from 'memoize-one';
-import { Avatar, Button } from '@nomios/web-uikit';
+import { Button } from '@nomios/web-uikit';
+import { IpfsAvatar } from '../../../../shared/components/ipfs';
 import styles from './Feedback.css';
 
 class Feedback extends Component {
@@ -15,7 +16,7 @@ class Feedback extends Component {
 
         return (
             <div className={ styles.contentWrapper }>
-                <Avatar name={ name } image={ image } className={ styles.avatar } />
+                <IpfsAvatar name={ name } image={ image } className={ styles.avatar } />
                 <h2 className={ styles.heading }>{ feedbackText }</h2>
                 <p>
                     You have already backed up your identity before. This identity is totally secure.

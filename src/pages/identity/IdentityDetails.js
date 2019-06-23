@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connectIdmWallet } from 'react-idm-wallet';
-import { ModalTrigger, Avatar, Button, EditIcon } from '@nomios/web-uikit';
+import { ModalTrigger, Button, EditIcon } from '@nomios/web-uikit';
+import { IpfsAvatar } from '../../shared/components/ipfs';
 import EditProfile from '../../modals/edit-profile';
 import styles from './IdentityDetails.css';
 
@@ -28,7 +29,7 @@ class IdentityDetails extends Component {
 
         return (
             <div className={ styles.detailsWrapper }>
-                <Avatar name={ name } image={ image } className={ styles.avatar } />
+                <IpfsAvatar name={ name } image={ image } className={ styles.avatar } />
                 <h1 className={ styles.name }>{ name }</h1>
                 <div className={ styles.did }>{ did }</div>
                 <div className={ styles.lowerBar }>

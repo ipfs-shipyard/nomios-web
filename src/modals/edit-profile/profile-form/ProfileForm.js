@@ -6,8 +6,9 @@ import { omit } from 'lodash';
 import { Form, Field } from 'react-final-form';
 import nationalities from 'ms-nationalities';
 import { readAsArrayBuffer } from 'promise-file-reader';
-import { TextInput, Button, AutocompleteSelect, Radio, AvatarPicker, UserIcon } from '@nomios/web-uikit';
+import { TextInput, Button, AutocompleteSelect, Radio, UserIcon } from '@nomios/web-uikit';
 import { ButtonPromiseState } from '../../../shared/components/button-promise-state';
+import { IpfsAvatarPicker } from '../../../shared/components/ipfs';
 import { notEmpty } from '../../../shared/form-validators';
 import LocationInput from './location-input';
 import styles from './ProfileForm.css';
@@ -82,7 +83,7 @@ class ProfileForm extends Component {
                                 <div className={ styles.field }>
                                     <label className={ styles.label }>Photo</label>
                                     <div className={ styles.avatarPickerWrapper }>
-                                        <AvatarPicker
+                                        <IpfsAvatarPicker
                                             image={ profileDetails.image }
                                             name={ profileDetails.name }
                                             icon={ <UserIcon /> }

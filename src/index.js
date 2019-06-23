@@ -5,6 +5,7 @@ import ReactModal from 'react-modal';
 import { setAppElement, ModalGlobalProvider } from '@nomios/web-uikit';
 import { IdmWalletProvider } from 'react-idm-wallet';
 import { hasParent, createMediatorSide, createWalletSide } from 'idm-bridge-postmsg';
+import { IpfsProvider } from './shared/components/ipfs';
 import App from './app';
 import AppMediator from './app-mediator';
 import Boot from './boot';
@@ -23,9 +24,11 @@ const renderApp = (rootEl) => {
         <Boot promise={ createIdmWallet() }>
             { (idmWallet) => (
                 <IdmWalletProvider idmWallet={ idmWallet }>
-                    <ModalGlobalProvider>
-                        <App />
-                    </ModalGlobalProvider>
+                    <IpfsProvider value={ idmWallet.ipfs }>
+                        <ModalGlobalProvider>
+                            <App />
+                        </ModalGlobalProvider>
+                    </IpfsProvider>
                 </IdmWalletProvider>
             ) }
         </Boot>,
