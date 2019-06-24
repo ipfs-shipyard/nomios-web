@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import RequestInfoIllustration from './request-info-illustration';
 import IdentitySelector from './identity-selector';
 import FadeContainer from '../../shared/components/fade-container';
-import credentialScopes from './credentialScopes';
+import credentialScopes from '../../shared/data/credential-scopes';
 import backgroundPatternUrl from '../../shared/media/backgrounds/background-pattern-1440p.png';
 import styles from './Authenticate.css';
 
@@ -41,7 +41,7 @@ class Authenticate extends Component {
                                     <IdentitySelector
                                         identities={ this.props.identities }
                                         onChange={ this.handleIdentityChange }
-                                        initialValueId={ this.props.identities[INITIAL_VALUE_INDEX].id } />
+                                        initialIdentityId={ this.props.identities[INITIAL_VALUE_INDEX].id } />
                                 ) }
                             </div>
                             <div className={ styles.illustration }>

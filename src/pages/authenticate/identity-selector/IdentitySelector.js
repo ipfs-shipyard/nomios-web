@@ -16,7 +16,7 @@ class IdentitySelector extends Component {
     constructor(props) {
         super(props);
 
-        this.selectedValue = props.initialValueId ? props.initialValueId : props.identities[DEFAULT_SELECTED_INDEX].id;
+        this.selectedValue = props.initialIdentityId ? props.initialIdentityId : props.identities[DEFAULT_SELECTED_INDEX].id;
         this.createOptions = memoizeOne(this.createOptionsArray);
         this.findIdentity = memoizeOne(this.findIdentityObject);
     }
@@ -91,9 +91,9 @@ class IdentitySelector extends Component {
 
         const options = identities.map((identity) => {
             const option = { value: identity.id, render: this.renderOption };
-            const initialValueId = this.props.initialValueId ? this.props.initialValueId : identities[DEFAULT_SELECTED_INDEX].id;
+            const initialIdentityId = this.props.initialIdentityId ? this.props.initialIdentityId : identities[DEFAULT_SELECTED_INDEX].id;
 
-            if (identity.id === initialValueId) {
+            if (identity.id === initialIdentityId) {
                 defaultOption = option;
             }
 
@@ -118,7 +118,7 @@ class IdentitySelector extends Component {
 
 IdentitySelector.propTypes = {
     identities: PropTypes.array.isRequired,
-    initialValueId: PropTypes.string,
+    initialIdentityId: PropTypes.string,
     onChange: PropTypes.func,
 };
 

@@ -1,5 +1,1 @@
-import Pristine from './pristine';
-
-export {
-    Pristine,
-};
+export { default as Pristine } from './pristine';
