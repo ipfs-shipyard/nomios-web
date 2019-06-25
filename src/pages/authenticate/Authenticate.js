@@ -97,6 +97,7 @@ class Authenticate extends Component {
             <Link
                 to="/?action=create-identity"
                 target="_blank"
+                onClick={ this.handleCreateIdentityClick }
                 className={ classNames(styles.link, styles.singleButtonContainer) }
                 rel="noopener">
                 <Button variant="negative">Create identity</Button>
@@ -129,6 +130,8 @@ class Authenticate extends Component {
     handleIdentityChange = (id) => {
         this.selectedIdentityId = id;
     };
+
+    handleCreateIdentityClick = () => window.close();
 }
 
 Authenticate.propTypes = {

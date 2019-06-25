@@ -72,7 +72,8 @@ class IdentitySelector extends Component {
                 to="/?action=create-identity"
                 rel="noopener"
                 target="_blank"
-                className={ styles.link }>
+                className={ styles.link }
+                onClick={ this.handleCreateIdentityClick }>
                 <div className={ optionClassNames }>
                     <TypeOption selectable={ false } className={ styles.typeOption }>
                         <PlusIcon />
@@ -114,6 +115,8 @@ class IdentitySelector extends Component {
             this.props.onChange && this.props.onChange(value);
         }
     };
+
+    handleCreateIdentityClick = () => window.close();
 }
 
 IdentitySelector.propTypes = {
