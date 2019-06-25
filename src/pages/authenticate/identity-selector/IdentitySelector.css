@@ -1,0 +1,73 @@
+@import "@nomios/web-uikit/styles/colors";
+@import "@nomios/web-uikit/styles/mixins/typography";
+
+.dropdownContainer {
+    & .trigger {
+        display: flex;
+        cursor: pointer;
+
+        & .chevron {
+            will-change: transform;
+            margin: 0.2rem 0 0 0.5rem;
+            font-size: 1.2rem;
+            transition: transform 0.2s ease;
+            fill: var(--color-white);
+
+            &.up {
+                transform: rotateZ(-180deg);
+            }
+        }
+    }
+
+    & .avatar {
+        font-size: 1rem;
+    }
+
+    & .menu {
+        right: 0;
+        width: 21rem;
+    }
+
+    & .menuList {
+        max-height: 26rem;
+    }
+
+    & .control {
+        transform: translateX(1.5rem);
+    }
+
+    & .link {
+        color: var(--color-armadillo);
+        text-decoration: none;
+    }
+
+    & .option {
+        will-change: background-color;
+        padding: 1rem 1.5rem;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+
+        &.focused {
+            background-color: var(--color-dawn-pink);
+        }
+
+        & .avatar,
+        & .typeOption {
+            margin-right: 1.5rem;
+        }
+
+        & .name {
+            @mixin typography-body-2 rem;
+        }
+
+        & .typeOption label > div {
+            font-size: 1rem;
+
+            & > i {
+                font-size: 2.2rem;
+            }
+        }
+    }
+}

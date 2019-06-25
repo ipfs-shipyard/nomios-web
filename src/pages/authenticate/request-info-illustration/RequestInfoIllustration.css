@@ -1,0 +1,38 @@
+@import "@nomios/web-uikit/styles/colors";
+
+:root {
+    --label-height: 2rem;
+    --circle-margin-bottom: 1.5rem;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+
+    & .typeOption {
+        & label {
+            color: var(--color-white);
+        }
+
+        & div {
+            background-color: var(--color-white);
+        }
+
+        & .icon {
+            height: 4.5rem;
+        }
+
+        & span {
+            max-width: 18rem;
+            text-align: center;
+            word-wrap: break-word;
+        }
+    }
+
+    & .arrow {
+        margin: auto 3rem;
+        transform: translateY(calc(((var(--label-height) + var(--circle-margin-bottom)) / 2) * -1)); /* This calc is used to align the arrow with the center of the circle */
+        font-size: 4rem;
+        fill: var(--color-tan);
+    }
+}

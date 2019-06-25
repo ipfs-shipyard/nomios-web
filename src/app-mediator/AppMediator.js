@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import pDefer from 'p-defer';
 import { Route, Switch, withRouter } from 'react-router-dom';
+import { Pristine as PristineScreen } from './screens';
 import Authenticate from '../pages/authenticate';
 import Sign from '../pages/sign';
 import LockScreen from '../shared/components/lock-screen';
@@ -24,7 +25,11 @@ class AppMediator extends Component {
     }
 
     render() {
-        const { locked /* , pristine*/ } = this.state;
+        const { locked, pristine } = this.state;
+
+        if (pristine) {
+            return <PristineScreen app={ this.prompt.app } />;
+        }
 
         return (
             <Fragment>
@@ -55,10 +60,11 @@ class AppMediator extends Component {
         );
     }
 
-    promptUnlock = async ({ pristine, unlockFn }) => {
+    promptUnlock = async ({ app, pristine, unlockFn }) => {
         this.prompt = {
             pristine,
             unlockFn,
+            app,
             response: pDefer(),
         };
 
