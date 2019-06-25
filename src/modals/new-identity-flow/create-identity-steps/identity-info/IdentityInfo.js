@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import { Form, Field, FormSpy } from 'react-final-form';
 import { Button, TypeGroup, TypeOption, AvatarPicker, TextInput } from '@nomios/web-uikit';
 import FadeContainer from '../../../../shared/components/fade-container';
-import { notEmpty } from '../../../../shared/form-validators';
 import BulletsIndicator from '../../../../shared/components/bullets-indicator';
+import { notEmpty } from '../../../../shared/form-validators';
 import identities from './identities';
 import styles from './IdentityInfo.css';
 

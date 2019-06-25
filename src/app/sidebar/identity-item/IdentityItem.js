@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { NavLink } from 'react-router-dom';
-import { Avatar } from '@nomios/web-uikit';
+import { IpfsAvatar } from '../../../shared/components/ipfs';
 import styles from './IdentityItem.css';
 
 const IdentityItem = ({ id, details, in: in_, staggerDelay, className, ...rest }) => (
@@ -10,7 +10,10 @@ const IdentityItem = ({ id, details, in: in_, staggerDelay, className, ...rest }
         <NavLink
             to={ `/identity/${id}` }
             activeClassName={ styles.active }>
-            <Avatar image={ details.image } name={ details.name } className={ styles.avatar } />
+            <IpfsAvatar
+                image={ details.image }
+                name={ details.name }
+                className={ styles.avatar } />
             <div
                 style={ in_ && staggerDelay ? { transitionDelay: `${staggerDelay}ms` } : undefined }
                 className={ styles.name }>

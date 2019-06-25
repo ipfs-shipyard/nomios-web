@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Avatar } from '@nomios/web-uikit';
+import { Button } from '@nomios/web-uikit';
+import { IpfsAvatar } from '../../../../shared/components/ipfs';
 import styles from './ImportConfirmIdentity.css';
 
 class ImportConfirmIdentity extends Component {
@@ -14,7 +15,7 @@ class ImportConfirmIdentity extends Component {
                     Confirm the ID that you&apos;re importing for this device.
                 </p>
                 <div className={ styles.identityWrapper }>
-                    <Avatar name={ identityData.name } image={ identityData.image } />
+                    <IpfsAvatar name={ identityData.name } image={ identityData.image } />
                     <div className={ styles.identityName }>
                         <div className={ styles.title }>Identity Name</div>
                         <div className={ styles.text }>{ identityData.name }</div>
