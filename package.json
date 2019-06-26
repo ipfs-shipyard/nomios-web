@@ -27,7 +27,7 @@
     "release": "standard-version"
   },
   "dependencies": {
-    "@nomios/web-uikit": "^0.2.2",
+    "@nomios/web-uikit": "^0.2.3",
     "classnames": "^2.2.6",
     "delay": "^4.2.0",
     "final-form": "^4.12.0",
