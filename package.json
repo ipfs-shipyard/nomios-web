@@ -55,6 +55,7 @@
     "react-scripts": "^3.0.0",
     "react-scrollbar-size": "^2.1.0",
     "react-slidedown": "^2.4.1",
+    "react-syntax-highlighter": "^10.3.0",
     "react-textarea-autosize": "^7.1.0",
     "scrollbar-compensate": "^0.2.2",
     "simplebar-react": "^1.0.0"

@@ -12,7 +12,7 @@ class Sign extends Component {
 
     render() {
         const { activeFeedbackStepId } = this.state;
-        const { app /* , identity */, data, onDeny } = this.props;
+        const { app, data, onDeny } = this.props;
 
         return (
             <div className={ styles.container }>
@@ -51,7 +51,6 @@ class Sign extends Component {
 
 Sign.propTypes = {
     app: PropTypes.object.isRequired,
-    identity: PropTypes.object.isRequired,
     data: PropTypes.any.isRequired,
     onAccept: PropTypes.func.isRequired,
     onDeny: PropTypes.func.isRequired,

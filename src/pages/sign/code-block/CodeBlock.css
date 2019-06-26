@@ -8,10 +8,5 @@
         top: 1.5rem;
         right: 1.5rem;
         color: var(--color-tan);
-
-        & i.icon {
-            margin-left: 1rem;
-            font-size: 1.5rem;
-        }
     }
 }
