@@ -1,3 +1,4 @@
+/* eslint-disable react/sort-comp */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import memoizeOne from 'memoize-one';
@@ -26,13 +27,6 @@ IdentityAttribute.propTypes = {
 
 class IdentityDetails extends Component {
     actions = undefined;
-    getActions = undefined;
-
-    constructor() {
-        super();
-
-        this.getActions = memoizeOne(this.computeActions);
-    }
 
     render() {
         const { did, profileDetails, isBackupComplete } = this.props;
@@ -65,7 +59,7 @@ class IdentityDetails extends Component {
         );
     }
 
-    computeActions = (isBackupComplete) => {
+    getActions = memoizeOne((isBackupComplete) => {
         const mainActionId = isBackupComplete ? 'edit' : 'backup';
         const defaultActions = [
             { id: 'edit', icon: <EditIcon />, text: 'Edit' },
@@ -79,7 +73,7 @@ class IdentityDetails extends Component {
             mainActionId,
             actions,
         };
-    };
+    });
 
     handleActionClick = (actionId) => {
         const { id, globalModal } = this.props;
