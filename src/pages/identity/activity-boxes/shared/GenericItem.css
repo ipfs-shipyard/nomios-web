@@ -1,7 +1,7 @@
 @import "@nomios/web-uikit/styles/colors";
 @import "./custom-medias.css";
 
-.item {
+.smallItem {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -14,8 +14,12 @@
         align-items: center;
 
         & .icon {
+            --size: 2.5rem;
+
+            width: var(--size);
+            height: var(--size);
             margin-right: 2rem;
-            font-size: 2.5rem;
+            font-size: var(--size);
             fill: var(--color-armadillo);
         }
 
@@ -39,8 +43,7 @@
     }
 }
 
-.singleItem {
-    margin-bottom: auto;
+.largeItem {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
