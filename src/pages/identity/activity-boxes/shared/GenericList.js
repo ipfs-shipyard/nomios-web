@@ -22,7 +22,6 @@ const GenericList = (props) => {
 
                 return (
                     <Fragment key={ index }>
-                        <div className={ styles.separator } />
                         { item }
                     </Fragment>
                 );
