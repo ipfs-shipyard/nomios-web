@@ -23,8 +23,11 @@
     "build": "craco build",
     "test": "exit 0",
     "lint": "eslint --ignore-path .gitignore . && stylelint --ignore-path .gitignore \"**/*.css\"",
-    "prerelease": "npm t && npm run lint && npm run build",
-    "release": "standard-version"
+    "prerelease": "npm t && npm run lint",
+    "release": "standard-version",
+    "postrelease": "npm run deploy",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "dependencies": {
     "@nomios/web-uikit": "^0.2.4",
@@ -68,6 +71,7 @@
     "babel-preset-moxy": "^3.1.0",
     "commitlint": "^8.0.0",
     "eslint-config-moxy": "^7.1.0",
+    "gh-pages": "^2.0.1",
     "husky": "^2.2.0",
     "lint-staged": "^8.1.5",
     "postcss-preset-moxy": "^4.1.1",

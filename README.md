@@ -39,4 +39,12 @@ We use conventional commit messages. When running this command it will run [**st
 3. Commits package.json and CHANGELOG.md
 4. Tags a new release
 
-And after the tagging step, it will run `git push --follow-tags origin master`, as defined [here](package.json#L47).
+And after the tagging step, it will run `git push --follow-tags origin master` and deploy.
+
+### `npm run deploy`
+
+```sh
+$ npm run deploy
+```
+
+Deploy the website to the `gh-pages` branch, updating `https://demo.nomios.io`. Note that it might take a few minutes to update the website due to caching. Alternatively, you may purge the cache manually in CloudFlare.
