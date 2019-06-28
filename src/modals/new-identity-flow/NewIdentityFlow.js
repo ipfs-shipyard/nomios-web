@@ -166,7 +166,7 @@ class NewIdentityFlow extends Component {
     renderImportFeedbackSuccessActions() {
         return (
             <Fragment>
-                <Button variant="primary" onClick={ this.props.onRequestClose }>Go to Homepage</Button>
+                <Button variant="primary" onClick={ this.props.onRequestClose }>Go to Identity page</Button>
             </Fragment>
         );
     }
