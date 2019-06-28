@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "9fdcb9a4640f1259432f29e137ecc8ed",
+    "revision": "8738f13e032d2bd14cead1f284359288",
     "url": "/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/css/8.34783450.chunk.css"
   },
   {
-    "revision": "cd6c30d2fce5b8b6be5f",
+    "revision": "6f7711c256a509a5809f",
     "url": "/static/css/main.680b3259.chunk.css"
   },
   {
@@ -32,8 +32,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/static/js/idm-wallet.b7d6d25f.chunk.js"
   },
   {
-    "revision": "cd6c30d2fce5b8b6be5f",
-    "url": "/static/js/main.a749ffc3.chunk.js"
+    "revision": "6f7711c256a509a5809f",
+    "url": "/static/js/main.7ea1bfb1.chunk.js"
   },
   {
     "revision": "aa7e4abf9274d2791d4f",
