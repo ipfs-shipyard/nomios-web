@@ -1,13 +1,14 @@
 import React from 'react';
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import styles from './PageLayout.css';
 
 const PageLayout = (props) => {
-    const { children } = props;
+    const { className, children } = props;
 
     return (
-        <div className={ styles.layoutWrapper }>
-            <div className={ styles.layout }>
+        <div className={ classNames(styles.pageLayout, className) }>
+            <div className={ styles.pageLayoutContent }>
                 { children }
             </div>
         </div>

@@ -1,9 +1,9 @@
-.layoutWrapper {
+.pageLayout {
     width: 100%;
     height: 100%;
     padding: 0 5%;
 
-    & .layout {
+    & .pageLayoutContent {
         max-width: 165.6rem;
         height: 100%;
         margin: 0 auto;

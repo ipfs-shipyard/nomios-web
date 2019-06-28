@@ -19,7 +19,7 @@ class Identity extends Component {
         return (
             <div className={ styles.split }>
                 <div className={ styles.background } />
-                <PageLayout>
+                <PageLayout className={ styles.layout }>
                     <div className={ styles.top }>
                         <IdentityDetails id={ id } />
                     </div>
