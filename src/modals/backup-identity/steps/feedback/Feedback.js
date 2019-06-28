@@ -10,17 +10,19 @@ class Feedback extends Component {
 
     render() {
         const { isBackedup, onRequestClose, profileDetails: { name, image } } = this.props;
-        const feedbackText = isBackedup ?
+
+        const feedbackTitle = isBackedup ?
             `${this.getFirstName(name)}, your identity is already backed up!` :
             `${this.getFirstName(name)}, your identity is now totally secure!`;
+        const feedbackMessage = isBackedup ?
+            'You have already backed up your identity before. This identity is totally secure.' :
+            'Nomios identities are decentralized, meaning that anyone who has the secret recovery key effectively owns this identity. Please keep your secret recovery key always safe.';
 
         return (
             <div className={ styles.contentWrapper }>
                 <IpfsAvatar name={ name } image={ image } className={ styles.avatar } />
-                <h2 className={ styles.heading }>{ feedbackText }</h2>
-                <p>
-                    You have already backed up your identity before. This identity is totally secure.
-                </p>
+                <h2 className={ styles.heading }>{ feedbackTitle }</h2>
+                <p>{ feedbackMessage }</p>
                 <div className={ styles.buttonsWrapper } onClick={ onRequestClose }>
                     <Button className={ styles.button }>{ isBackedup ? 'Close' : 'Go to app' }</Button>
                 </div>
