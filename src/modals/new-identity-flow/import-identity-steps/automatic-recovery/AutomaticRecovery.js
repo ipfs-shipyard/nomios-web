@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { TextButton, Button, EditIcon, UploadIcon, PdfIcon } from '@nomios/web-uikit';
+import PdfBox from '../../../../shared/components/pdf-box';
+import PdfActionItem from '../../../../shared/components/pdf-box/pdf-action-item';
+import { TextButton, Button, EditIcon, UploadIcon } from '@nomios/web-uikit';
 import styles from './AutomaticRecovery.css';
 
 class AutomaticRecovery extends Component {
     render() {
-        const importIcon = <div className={ styles.iconWrapper }><UploadIcon className={ styles.importIcon } /></div>;
-
         return (
             <div className={ styles.contentWrapper }>
                 <h2 className={ styles.heading }>Import your Identity</h2>
@@ -14,20 +14,13 @@ class AutomaticRecovery extends Component {
                     It&apos;s important to save your recovery key in a safe place to backup your identity.
                 </p>
                 <div className={ styles.import }>
-                    <div className={ styles.top }>
-                        <div className={ styles.background } />
-                        <h3 className={ styles.title }>Import using PDF file</h3>
-                        <div className={ styles.caption }>Upload PDF with your recovery key.</div>
-                        <PdfIcon className={ styles.pdfIcon } />
-                    </div>
-                    <div className={ styles.bottom }>
-                        <TextButton
-                            variant="small"
-                            className={ styles.textButton }
-                            iconPosition="left"
-                            icon={ importIcon }
-                            onClick={ this.handleFileSelection }>Browse or drag file</TextButton>
-                    </div>
+                    <PdfBox title="Import using PDF file" description="Upload PDF with your recovery key.">
+                        <PdfActionItem
+                            onClick={ this.handleFileSelection }
+                            icon={ <UploadIcon className={ styles.icon } /> }>
+                            Browse or drag files
+                        </PdfActionItem>
+                    </PdfBox>
                 </div>
                 <div className={ styles.advance }>
                     <TextButton
