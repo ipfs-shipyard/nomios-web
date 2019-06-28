@@ -3,7 +3,7 @@ import pTimeout from 'p-timeout';
 import PropTypes from 'prop-types';
 import { PromiseState } from 'react-promiseful';
 import { CSSTransition } from 'react-transition-group';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter, HashRouter } from 'react-router-dom';
 import ErrorScreen from '../shared/components/error-screen';
 import LoadingScreen from '../shared/components/loading-screen';
 import styles from './Boot.css';
@@ -82,6 +82,8 @@ class Boot extends Component {
     }
 
     renderSuccess(value) {
+        const Router = process.env.REACT_APP_HASH_ROUTER === '1' ? HashRouter : BrowserRouter;
+
         return (
             <Router>
                 { this.props.children(value) }
