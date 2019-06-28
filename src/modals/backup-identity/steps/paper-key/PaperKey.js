@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import PdfBox from './pdf-box';
-import PdfActionItem from './pdf-action-item';
+import PdfBox from '../../../../shared/components/pdf-box';
+import PdfActionItem from '../../../../shared/components/pdf-box/pdf-action-item';
 import { PrintIcon, DownloadIcon, TextButton, EditIcon, Button } from '@nomios/web-uikit';
 import styles from './PaperKey.css';
 
