@@ -9,12 +9,12 @@ class Feedback extends Component {
     getFirstName = memoizeOne((name) => name.split(' ')[0]);
 
     render() {
-        const { isBackedup, onRequestClose, profileDetails: { name, image } } = this.props;
+        const { isBackedUp, onRequestClose, profileDetails: { name, image } } = this.props;
 
-        const feedbackTitle = isBackedup ?
+        const feedbackTitle = isBackedUp ?
             `${this.getFirstName(name)}, your identity is already backed up!` :
             `${this.getFirstName(name)}, your identity is now totally secure!`;
-        const feedbackMessage = isBackedup ?
+        const feedbackMessage = isBackedUp ?
             'You have already backed up your identity before. This identity is totally secure.' :
             'Nomios identities are decentralized, meaning that anyone who has the secret recovery key effectively owns this identity. Please keep your secret recovery key always safe.';
 
@@ -24,7 +24,7 @@ class Feedback extends Component {
                 <h2 className={ styles.heading }>{ feedbackTitle }</h2>
                 <p>{ feedbackMessage }</p>
                 <div className={ styles.buttonsWrapper } onClick={ onRequestClose }>
-                    <Button className={ styles.button }>{ isBackedup ? 'Close' : 'Go to app' }</Button>
+                    <Button className={ styles.button }>{ isBackedUp ? 'Close' : 'Go to app' }</Button>
                 </div>
             </div>
         );
@@ -34,11 +34,11 @@ class Feedback extends Component {
 Feedback.propTypes = {
     profileDetails: PropTypes.object.isRequired,
     onRequestClose: PropTypes.func.isRequired,
-    isBackedup: PropTypes.bool,
+    isBackedUp: PropTypes.bool,
 };
 
 Feedback.defaultProps = {
-    isBackedup: false,
+    isBackedUp: false,
 };
 
 export default Feedback;
