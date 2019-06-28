@@ -1,9 +1,12 @@
+/* eslint-disable react/sort-comp */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import memoizeOne from 'memoize-one';
 import { connectIdmWallet } from 'react-idm-wallet';
-import { ModalTrigger, Button, EditIcon } from '@nomios/web-uikit';
+import { TrashIcon, CopyIcon, EditIcon, SplitButton, withModalGlobal } from '@nomios/web-uikit';
 import { IpfsAvatar } from '../../shared/components/ipfs';
 import EditProfile from '../../modals/edit-profile';
+import BackupIdentity from '../../modals/backup-identity';
 import styles from './IdentityDetails.css';
 
 const IdentityAttribute = (props) => {
@@ -11,8 +14,8 @@ const IdentityAttribute = (props) => {
 
     return (
         <div className={ styles.attribute }>
-            <div className={ styles.title }>{title.toUpperCase()}</div>
-            <div className={ styles.value }>{value}</div>
+            <div className={ styles.title }>{ title.toUpperCase() }</div>
+            <div className={ styles.value }>{ value }</div>
         </div>
     );
 };
@@ -23,9 +26,12 @@ IdentityAttribute.propTypes = {
 };
 
 class IdentityDetails extends Component {
+    actions = undefined;
+
     render() {
-        const { id, did, profileDetails } = this.props;
+        const { did, profileDetails, isBackupComplete } = this.props;
         const { name, image, dateOfBirth, nationality, address, gender } = profileDetails;
+        const { mainActionId, actions } = this.getActions(isBackupComplete);
 
         return (
             <div className={ styles.detailsWrapper }>
@@ -43,28 +49,63 @@ class IdentityDetails extends Component {
                         { address &&
                             <IdentityAttribute title="Location" value={ address } /> }
                     </div>
-                    <ModalTrigger modal={ <EditProfile id={ id } /> }>
-                        <Button variant="negative" className={ styles.editButton } onClick={ this.handleEdit }>
-                            Edit<span className={ styles.profileSpan }> Profile</span> <EditIcon className={ styles.buttonIcon } />
-                        </Button>
-                    </ModalTrigger>
+                    <SplitButton
+                        variant="negative"
+                        actions={ actions }
+                        mainActionId={ mainActionId }
+                        onActionClick={ this.handleActionClick } />
                 </div>
             </div>
         );
     }
 
-    handleEdit = () => {
-        alert('Edit profile');
+    getActions = memoizeOne((isBackupComplete) => {
+        const mainActionId = isBackupComplete ? 'edit' : 'backup';
+        const defaultActions = [
+            { id: 'edit', icon: <EditIcon />, text: 'Edit' },
+            { id: 'delete', icon: <TrashIcon />, text: 'Delete' },
+        ];
+        const actions = isBackupComplete ?
+            defaultActions :
+            [...defaultActions, { id: 'backup', icon: <CopyIcon />, text: 'Backup' }];
+
+        return {
+            mainActionId,
+            actions,
+        };
+    });
+
+    handleActionClick = (actionId) => {
+        const { id, globalModal } = this.props;
+
+        switch (actionId) {
+        case 'backup':
+            globalModal.openModal(<BackupIdentity id={ id } />);
+            break;
+        case 'edit':
+            globalModal.openModal(<EditProfile id={ id } />);
+            break;
+        case 'delete':
+            alert('Delete not implemented yet');
+            break;
+        default:
+            break;
+        }
     };
 }
 
 IdentityDetails.propTypes = {
     id: PropTypes.string.isRequired,
     did: PropTypes.string.isRequired,
+    globalModal: PropTypes.object.isRequired,
     profileDetails: PropTypes.object.isRequired,
+    isBackupComplete: PropTypes.bool.isRequired,
 };
+
+const WrappedIdentityDetails = withModalGlobal(IdentityDetails);
 
 export default connectIdmWallet((idmWallet) => (ownProps) => ({
     did: idmWallet.identities.get(ownProps.id).getDid(),
     profileDetails: idmWallet.identities.get(ownProps.id).profile.getDetails(),
-}))(IdentityDetails);
+    isBackupComplete: idmWallet.identities.get(ownProps.id).backup.isComplete(),
+}))(WrappedIdentityDetails);
