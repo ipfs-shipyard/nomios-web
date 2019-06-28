@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connectIdmWallet } from 'react-idm-wallet';
 import { PromiseState } from 'react-promiseful';
 import { readAsArrayBuffer } from 'promise-file-reader';
+import { withRouter } from 'react-router-dom';
 import { FlowModal, FlowModalStep, Button, TextButton, withModalGlobal } from '@nomios/web-uikit';
 import GenericStep from './generic-step';
 import BackupIdentity from '../backup-identity';
@@ -27,6 +28,7 @@ class NewIdentityFlow extends Component {
 
     goToBackupFlow = false;
     createdIdentityId = undefined;
+    importedIdentityId = undefined;
 
     render() {
         const { currentStepId } = this.state;
@@ -80,7 +82,7 @@ class NewIdentityFlow extends Component {
                         identityFirstName={ identityFirstName } />
                 </FlowModalStep>
                 <FlowModalStep id="create-identity-feedback">
-                    <PromiseState promise={ promise }>
+                    <PromiseState onSettle={ this.handleNewIdentitySettle } promise={ promise }>
                         { ({ status }) => (
                             <Feedback
                                 status={ status }
@@ -132,7 +134,7 @@ class NewIdentityFlow extends Component {
                         identityFirstName={ identityFirstName } />
                 </FlowModalStep>
                 <FlowModalStep id="import-identity-feedback">
-                    <PromiseState promise={ promise }>
+                    <PromiseState onSettle={ this.handleNewIdentitySettle } promise={ promise }>
                         { ({ status }) => (
                             <ImportFeedback
                                 status={ status }
@@ -206,6 +208,7 @@ class NewIdentityFlow extends Component {
         });
 
         this.createdIdentityId = identity.getId();
+        this.importedIdentityId = undefined;
 
         return identity;
     }
@@ -216,12 +219,15 @@ class NewIdentityFlow extends Component {
         const mnemonic = this.state.data['import-manual-recovery'].mnemonic;
         const deviceInfo = data['import-identity-device'];
 
-        this.createdIdentityId = undefined;
-
-        return importIdentity({
+        const identity = await importIdentity({
             mnemonic,
             deviceInfo,
         });
+
+        this.importedIdentityId = identity.getId();
+        this.createdIdentityId = undefined;
+
+        return identity;
     }
 
     createFlowPromise = (currentStepId, data) => {
@@ -284,7 +290,14 @@ class NewIdentityFlow extends Component {
         this.setState(initialState);
         this.goToBackupFlow = false;
         this.createdIdentityId = undefined;
+        this.importedIdentityId = undefined;
         this.props.onExited && this.props.onExited();
+    };
+
+    handleNewIdentitySettle = ({ status }) => {
+        if (status === 'fulfilled') {
+            this.props.history.push(`/identity/${this.createdIdentityId || this.importedIdentityId}`);
+        }
     };
 }
 
@@ -293,11 +306,12 @@ NewIdentityFlow.propTypes = {
     importIdentity: PropTypes.func.isRequired,
     peekIdentity: PropTypes.func.isRequired,
     globalModal: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
     onRequestClose: PropTypes.func,
     onExited: PropTypes.func,
 };
 
-const WrappedNewIdentityFlow = withModalGlobal(NewIdentityFlow);
+const WrappedNewIdentityFlow = withModalGlobal(withRouter(NewIdentityFlow));
 
 export default connectIdmWallet((idmWallet) => {
     const createIdentity = (params) => idmWallet.identities.create('ipid', params);
