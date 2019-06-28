@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { TextButton, Button, EditIcon, PdfIcon } from '@nomios/web-uikit';
+import { TextButton, Button, EditIcon, UploadIcon, PdfIcon } from '@nomios/web-uikit';
 import styles from './AutomaticRecovery.css';
 
 class AutomaticRecovery extends Component {
     render() {
-        const importIcon = <div className={ styles.iconWrapper }><EditIcon className={ styles.importIcon } /></div>;
+        const importIcon = <div className={ styles.iconWrapper }><UploadIcon className={ styles.importIcon } /></div>;
 
         return (
             <div className={ styles.contentWrapper }>
@@ -22,6 +22,7 @@ class AutomaticRecovery extends Component {
                     </div>
                     <div className={ styles.bottom }>
                         <TextButton
+                            variant="small"
                             className={ styles.textButton }
                             iconPosition="left"
                             icon={ importIcon }
@@ -30,6 +31,7 @@ class AutomaticRecovery extends Component {
                 </div>
                 <div className={ styles.advance }>
                     <TextButton
+                        variant="small"
                         onClick={ this.handleSecondaryStep }
                         iconPosition="left"
                         icon={ <EditIcon /> }>
