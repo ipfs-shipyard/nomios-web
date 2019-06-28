@@ -22,18 +22,18 @@ class BackupIdentity extends Component {
     render() {
         const { unlock, profileDetails, onRequestClose, setComplete } = this.props;
         const { currentStepId } = this.state;
-        const isBackedup = !this.mnemonic;
+        const isBackedUp = !this.mnemonic;
 
         return (
             <FlowModal
                 { ...this.props }
                 variant="simple"
-                step={ isBackedup ? 'info' : currentStepId }
+                step={ isBackedUp ? 'info' : currentStepId }
                 onExited={ this.handleExited }>
-                { isBackedup ? (
+                { isBackedUp ? (
                     <FlowModalStep id="info">
                         <Feedback
-                            isBackedup
+                            isBackedUp
                             onRequestClose={ onRequestClose }
                             profileDetails={ profileDetails } />
                     </FlowModalStep>
