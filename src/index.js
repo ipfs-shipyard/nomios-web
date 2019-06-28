@@ -17,6 +17,10 @@ const renderApp = (rootEl) => {
 
         createWalletSide(idmWallet);
 
+        if (process.env.REACT_APP_IDM_DEBUG === '1') {
+            window.__IDM_WALLET__ = idmWallet;
+        }
+
         return idmWallet;
     };
 
