@@ -6,7 +6,7 @@ const stepData = {
     loadingText: 'Please wait while we import your identity...',
     success: {
         title: 'Welcome! Your identity was imported sucessfully, against all odds.',
-        message: 'Your ID is ready and secure, you\'ll be redirected to your identity page, please wait. Thank you for your patience.',
+        message: 'Your ID is ready and secure, you can now see your identity page and edit your identity info.',
     },
     error: {
         title: 'Oops...',
