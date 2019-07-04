@@ -235,17 +235,18 @@ class LockScreen extends Component {
             break;
         // Disallow selection of all text
         case 'a':
-            if (navigator.platform.toLowerCase().indexOf('mac') !== -1) {
-                if (event.metaKey) {
-                    this.setState({ selected: true });
-                } else if (event.ctrlKey) {
+            if (event.ctrlKey) {
+                if (navigator.platform.toLowerCase().indexOf('mac') !== -1) {
+                    // Ctrl + a on Mac sends the cursor to the start of the input, so we need to ignore it
                     event.preventDefault();
                 } else {
-                    this.state.selected && this.setState({ selected: false });
+                    this.setState({ selected: true });
                 }
-            } else if (event.ctrlKey) {
+            } else if (event.metaKey) {
+                // Mac's meta key is cmd, and on Windows win + a has no effect on the input, so we don't need to ignore it
                 this.setState({ selected: true });
             } else {
+                // In case it is merely an a keypress
                 this.state.selected && this.setState({ selected: false });
             }
             break;
