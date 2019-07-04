@@ -142,6 +142,10 @@
                 border-radius: 0.6rem;
                 transition: background-color 0.1s ease;
 
+                &.selected {
+                    background-color: var(--color-white);
+                }
+
                 &:last-child {
                     margin-left: 0;
                 }

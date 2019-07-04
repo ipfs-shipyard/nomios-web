@@ -62,6 +62,7 @@ class LockScreen extends Component {
         passphrase: '',
         promise: undefined,
         startLogoAnimation: false,
+        selected: false,
     };
 
     render() {
@@ -121,7 +122,7 @@ class LockScreen extends Component {
     }
 
     renderPasswordDots(status) {
-        const { passphrase } = this.state;
+        const { passphrase, selected } = this.state;
 
         const passphraseLength = passphrase.length;
         const rejected = status === 'rejected';
@@ -140,7 +141,7 @@ class LockScreen extends Component {
                                 timeout={ 50 }
                                 exit={ !rejected }>
                                 <div
-                                    className={ classNames(styles.passphraseDot, loading && styles.loading) }
+                                    className={ classNames(styles.passphraseDot, loading && styles.loading, selected && styles.selected) }
                                     style={ { animationDelay: `${animationDelay * i}s` } } />
                             </CSSTransition>
                         ))
@@ -232,7 +233,7 @@ class LockScreen extends Component {
         // Disallow selection of all text
         case 'a':
             if (event.metaKey || event.ctrlKey) {
-                event.preventDefault();
+                this.setState({ selected: true });
             }
             break;
         // Submit!
@@ -241,6 +242,7 @@ class LockScreen extends Component {
             this.submit();
             break;
         default:
+            this.state.selected && this.setState({ selected: false });
         }
     };
 
