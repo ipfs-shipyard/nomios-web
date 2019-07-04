@@ -227,12 +227,20 @@ class LockScreen extends Component {
         case 'ArrowUp':
         case 'ArrowDown':
         case 'Home':
+        case 'Escape':
         case 'Tab':
             event.preventDefault();
             break;
         // Disallow selection of all text
         case 'a':
-            if (event.metaKey || event.ctrlKey) {
+            if (navigator.platform.toLowerCase().indexOf('mac') !== -1) {
+                if (event.metaKey) {
+                    this.setState({ selected: true });
+                }
+                if (event.ctrlKey) {
+                    event.preventDefault();
+                }
+            } else if (event.ctrlKey) {
                 this.setState({ selected: true });
             }
             break;
