@@ -228,6 +228,8 @@ class LockScreen extends Component {
         case 'ArrowDown':
         case 'Home':
         case 'Escape':
+        case 'Meta':
+        case 'Control':
         case 'Tab':
             event.preventDefault();
             break;
@@ -236,12 +238,15 @@ class LockScreen extends Component {
             if (navigator.platform.toLowerCase().indexOf('mac') !== -1) {
                 if (event.metaKey) {
                     this.setState({ selected: true });
-                }
-                if (event.ctrlKey) {
+                } else if (event.ctrlKey) {
                     event.preventDefault();
+                } else {
+                    this.state.selected && this.setState({ selected: false });
                 }
             } else if (event.ctrlKey) {
                 this.setState({ selected: true });
+            } else {
+                this.state.selected && this.setState({ selected: false });
             }
             break;
         // Submit!
