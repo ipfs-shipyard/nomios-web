@@ -104,6 +104,7 @@ class LockScreen extends Component {
                                                 value={ passphrase }
                                                 onKeyDown={ this.handleInputKeyDown }
                                                 onChange={ this.handleInputChange }
+                                                onKeyPress={ this.handleKeyPress }
                                                 onBlur={ this.handleInputBlur } />
                                             { this.renderPasswordDots(status) }
                                             <p className={ classNames(styles.errorMessage, status === 'rejected' && styles.show) }>
@@ -220,17 +221,19 @@ class LockScreen extends Component {
     };
 
     handleInputKeyDown = (event) => {
-        switch (event.key) {
+        const { key, ctrlKey, metaKey } = event;
+
+        switch (key) {
         // Disallow carret change & selection
         case 'a':
-            if (event.ctrlKey) {
+            if (ctrlKey) {
                 if (navigator.platform.toLowerCase().indexOf('mac') !== -1) {
                     // Ctrl + a on Mac sends the cursor to the start of the input, so we need to ignore it
                     event.preventDefault();
                 } else {
                     this.setState({ selected: true });
                 }
-            } else if (event.metaKey) {
+            } else if (metaKey) {
                 // Mac's meta key is cmd, and on Windows win + a has no effect on the input, so we don't need to ignore it
                 this.setState({ selected: true });
             } else {
@@ -244,12 +247,22 @@ class LockScreen extends Component {
             this.submit();
             break;
         default:
-            if (event.key.length === 1) {
-                this.state.selected && this.setState({ selected: false });
-            } else {
+            if (key.length === 1) {
+                // Disable control base navigational shortcuts on mac
+                if (navigator.platform.toLowerCase().indexOf('mac') !== -1 && ctrlKey) {
+                    event.preventDefault();
+                } else {
+                    // Remove selected state on input of a printable character
+                    this.state.selected && this.setState({ selected: false });
+                }
+            } else if (key !== 'Backspace') {
                 event.preventDefault();
             }
         }
+    };
+
+    handleKeyPress = (event) => {
+        event.key === 'a' && event.ctrlKey && navigator.platform.toLowerCase().indexOf('mac') !== -1 && event.preventDefault();
     };
 
     handleInputBlur = () => this.passphraseInputRef && this.passphraseInputRef.focus();
