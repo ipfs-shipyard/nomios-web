@@ -222,18 +222,6 @@ class LockScreen extends Component {
     handleInputKeyDown = (event) => {
         switch (event.key) {
         // Disallow carret change & selection
-        case 'ArrowLeft':
-        case 'ArrowRight':
-        case 'ArrowUp':
-        case 'ArrowDown':
-        case 'Home':
-        case 'Escape':
-        case 'Meta':
-        case 'Control':
-        case 'Tab':
-            event.preventDefault();
-            break;
-        // Disallow selection of all text
         case 'a':
             if (event.ctrlKey) {
                 if (navigator.platform.toLowerCase().indexOf('mac') !== -1) {
@@ -256,7 +244,11 @@ class LockScreen extends Component {
             this.submit();
             break;
         default:
-            this.state.selected && this.setState({ selected: false });
+            if (event.key.length === 1) {
+                this.state.selected && this.setState({ selected: false });
+            } else {
+                event.preventDefault();
+            }
         }
     };
 
